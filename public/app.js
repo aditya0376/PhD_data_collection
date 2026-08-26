@@ -75,11 +75,11 @@ function likertGrid(items, containerId) {
 let startTime = Date.now();
 let assignedCell = null;
 
-const STEP_ORDER = ['s-consent', 's-b1', 's-demo', 's-c', 's-stimulus', 's-e', 's-f', 's-done', 's-thankyou'];
+const STEP_ORDER = ['s-consent', 's-b1', 's-demo', 's-c', 's-stimulus', 's-e', 's-f', 's-done'];
 const STEP_LABELS = {
   's-consent': 'Consent', 's-b1': 'About you', 's-demo': 'About you',
   's-c': 'Your views', 's-stimulus': 'Product scenario', 's-e': 'Your reactions',
-  's-f': 'Your decision', 's-done': 'Done', 's-thankyou': 'Done'
+  's-f': 'Your decision', 's-done': 'Done'
 };
 
 function show(id) {
@@ -91,10 +91,13 @@ function show(id) {
 
 function updateProgress(id) {
   const idx = STEP_ORDER.indexOf(id);
-  const pct = Math.round(((idx + 1) / STEP_ORDER.length) * 100);
   const fill = document.getElementById('progressFill');
   const label = document.getElementById('progressLabel');
-  if (fill) fill.style.width = pct + '%';
+  if (fill) {
+    // Completion screens (done / thank-you) show a full bar.
+    const pct = (id === 's-done' || id === 's-thankyou') ? 100 : Math.round(((idx + 1) / STEP_ORDER.length) * 100);
+    fill.style.width = pct + '%';
+  }
   if (label) label.textContent = STEP_LABELS[id] || '';
 }
 
@@ -223,6 +226,29 @@ async function submitSurvey() {
   } catch (err) {
     alert('Network error. Please check your connection and try again.');
   }
+}
+
+// ---------------------------------------------------------------------------
+// Reset - allow submitting another response
+// ---------------------------------------------------------------------------
+async function resetSurvey() {
+  // Clear all form inputs
+  document.querySelectorAll('input[type="radio"]').forEach((r) => (r.checked = false));
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="email"]').forEach((r) => (r.value = ''));
+  document.querySelectorAll('textarea').forEach((r) => (r.value = ''));
+  document.getElementById('consentBox').checked = false;
+  document.getElementById('f2-wrap').style.display = 'none';
+
+  // Clear the old cell assignment and get a fresh one
+  localStorage.removeItem('p3_cell');
+  assignedCell = null;
+  await ensureCell();
+  renderStimulus(assignedCell, document.getElementById('stimulus'));
+
+  // Restart the timer for the new response
+  startTime = Date.now();
+
+  show('s-consent');
 }
 
 // ---------------------------------------------------------------------------
