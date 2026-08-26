@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Admin — Version Check &amp; Data</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h2>Admin — Version Check &amp; Data</h2>
+      <p class="instr">Use this page to verify each of the 4 versions is wired correctly, and to download collected data.</p>
+
+      <h3>Versions</h3>
+      <table class="admin-table">
+        <thead>
+          <tr><th>Cell</th><th>Version</th><th>Frame</th><th>Co-brand</th><th>Responses</th><th>Preview</th></tr>
+        </thead>
+        <tbody id="cell-rows"></tbody>
+      </table>
+
+      <h3>Data</h3>
+      <p>Total responses: <strong id="total">0</strong></p>
+      <button class="btn" onclick="location.href='/api/export'">Download Excel (.xlsx)</button>
+      <button class="btn" onclick="location.href='/api/export.csv'">Download CSV (.csv)</button>
+
+      <p class="instr" style="margin-top:20px">
+        <strong>Note:</strong> Co-brand cells (2 and 4) display the official FSSAI and AGMARK logos
+        (sourced from fssai.gov.in and uxdt.nic.in). Verify they render correctly in the previews.
+      </p>
+    </div>
+  </div>
+
+  <script src="stimuli.js"></script>
+  <script src="admin.js"></script>
+</body>
+</html>

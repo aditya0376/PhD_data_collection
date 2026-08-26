@@ -1,0 +1,18 @@
+# Dependencies
+node_modules/
+
+# Data (local Excel backup)
+data/
+
+# Secrets - NEVER commit the service account key
+service-account.json
+*-service-account*.json
+survey-writer-*.json
+
+# Logs
+server.log
+server.log.err
+
+# OS
+.DS_Store
+Thumbs.db
