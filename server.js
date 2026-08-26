@@ -81,6 +81,11 @@ app.get('/api/assign', async (req, res) => {
 
 app.get('/api/counts', async (req, res) => {
   try {
+    // Prefer the Google Sheet (source of truth for the cloud data).
+    const sheetCounts = await sheets.getCellCounts();
+    if (sheetCounts) return res.json(sheetCounts);
+
+    // Fall back to the local Excel file.
     const counts = await getCellCounts();
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
     res.json({ counts, total });
