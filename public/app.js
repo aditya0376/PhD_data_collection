@@ -137,10 +137,10 @@ const AC2_ITEM = [
 
 // Section G - G1 Purchase intention
 const PI_ITEMS = [
-  { n: 'pi1', t: 'I would consider buying this product for my child.' },
-  { n: 'pi2', t: 'I am likely to purchase this product.' },
-  { n: 'pi3', t: 'I would choose this product over a similar product without this information.' },
-  { n: 'pi4', t: 'I intend to buy this product the next time I shop for my child.' }
+  { n: 'pi1', t: 'I would consider buying this product, as described in the information shown earlier, for my child.' },
+  { n: 'pi2', t: 'I am likely to purchase this product, as described in the information shown earlier.' },
+  { n: 'pi3', t: 'I would choose this product, as described in the information shown earlier, over a similar product without this information.' },
+  { n: 'pi4', t: 'I intend to buy this product, as described in the information shown earlier, the next time I shop for my child.' }
 ];
 
 // Section G - G2 Resistance beliefs (asked of ALL respondents)
