@@ -187,7 +187,7 @@ const STEP_LABELS = {
   's-e': 'Your reactions',
   's-f': 'The checking technology',
   's-g': 'Your decision',
-  's-h': 'Final checks',
+  's-h': 'Thank you',
   's-done': 'Done'
 };
 

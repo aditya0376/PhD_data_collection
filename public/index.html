@@ -185,19 +185,35 @@
         <button class="btn" onclick="go('s-stimulus')">Continue</button>
       </section>
 
-      <!-- STEP: Section D - Product scenario (NO manipulation checks here) -->
+      <!-- STEP: Section D - Product scenario + manipulation checks (right after stimulus) -->
       <section class="step" id="s-stimulus">
         <h2>Product Scenario</h2>
         <p class="instr">Please read the following carefully.</p>
         <p class="instr">Imagine you are buying a packet of biscuits for your child, priced at Rs 50. The package carries a code that you can scan with your phone. When you scan it, the screen below appears.</p>
         <div id="stimulus"></div>
+
+        <p class="q">H1. The screen you saw mainly showed:</p>
+        <div class="opts">
+          <label><input type="radio" name="mc_a" value="a" /> How the price is shared among the people involved</label>
+          <label><input type="radio" name="mc_a" value="b" /> Which stages of the journey had been checked</label>
+          <label><input type="radio" name="mc_a" value="c" /> Only the ingredients and the price</label>
+          <label><input type="radio" name="mc_a" value="d" /> That the product was made in the same district where it is sold</label>
+        </div>
+
+        <p class="q">H2. Did the screen show any government certification marks?</p>
+        <div class="opts">
+          <label><input type="radio" name="mc_b" value="Yes" /> Yes</label>
+          <label><input type="radio" name="mc_b" value="No" /> No</label>
+          <label><input type="radio" name="mc_b" value="Not sure" /> Not sure</label>
+        </div>
+
         <button class="btn" onclick="go('s-e')">Continue</button>
       </section>
 
       <!-- STEP: Section E (PSA, TP, PF, PSI) -->
       <section class="step" id="s-e">
         <h2>Your Reactions to the Product</h2>
-        <p class="instr">The remaining questions refer to the product and the screen you have just read about. Please answer thinking about buying this product for your child.</p>
+        <p class="instr">The remaining questions refer to <strong>the packet of biscuits you saw on the screen above</strong>. Please answer thinking about buying this product for your child.</p>
         <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
 
         <h3>What the information shows</h3>
@@ -244,6 +260,7 @@
       <!-- STEP: Section G (PI, RES, WTP, G4 conditional, G5, email) -->
       <section class="step" id="s-g">
         <h2>Your Buying Decision</h2>
+        <p class="instr">These questions are about <strong>the packet of biscuits you saw on the screen earlier</strong>.</p>
         <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
 
         <h3>Buying this product</h3>
@@ -272,26 +289,11 @@
         <button class="btn" onclick="go('s-h')">Continue</button>
       </section>
 
-      <!-- STEP: Section H (manipulation checks, moved AFTER the DVs) + submit -->
+      <!-- STEP: Closing (email + submit) -->
       <section class="step" id="s-h">
-        <h2>A Few Final Checks</h2>
+        <h2>Thank You</h2>
 
-        <p class="q">H1. The screen you saw mainly showed:</p>
-        <div class="opts">
-          <label><input type="radio" name="mc_a" value="a" /> How the price is shared among the people involved</label>
-          <label><input type="radio" name="mc_a" value="b" /> Which stages of the journey had been checked</label>
-          <label><input type="radio" name="mc_a" value="c" /> Only the ingredients and the price</label>
-          <label><input type="radio" name="mc_a" value="d" /> That the product was made in the same district where it is sold</label>
-        </div>
-
-        <p class="q">H2. Did the screen show any government certification marks?</p>
-        <div class="opts">
-          <label><input type="radio" name="mc_b" value="Yes" /> Yes</label>
-          <label><input type="radio" name="mc_b" value="No" /> No</label>
-          <label><input type="radio" name="mc_b" value="Not sure" /> Not sure</label>
-        </div>
-
-        <p class="instr" style="margin-top:20px">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
+        <p class="instr">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
         <p class="instr">If you would like to receive a short summary of the findings when the study is complete, you may leave an email address below. This is entirely optional and will be stored separately from your responses.</p>
         <input type="email" name="email" placeholder="Optional email" />
 
