@@ -7,8 +7,10 @@ experiment (**FRAME**: Technical vs Beneficiary × **COBRAND**: Absent vs Presen
   participant is block-randomized to one of the 4 cells.
 - **Admin / version check:** `http://localhost:3000/admin.html` — preview each
   of the 4 versions directly and verify the correct manipulation-check answers.
-- **Data storage:** a central Excel file (`data/responses.xlsx`) — **no database**.
-  Every submission appends one row. CSV export is also available for SPSS/AMOS/R.
+- **Data storage:** a central Excel file (`data/responses.xlsx`) **and** a
+  Google Sheet (cloud copy that survives server restarts). Every submission
+  appends one row to both. CSV export is also available for SPSS/AMOS/R.
+- **Instrument:** Version 3.2 (TAM3) — 67 Likert items across B/C/E/F/G blocks.
 
 ## Run locally
 
@@ -33,17 +35,25 @@ http://localhost:3000/admin.html (admin).
 | `/api/export`    | Download `responses.xlsx`                            |
 | `/api/export.csv`| Download `responses.csv`                             |
 
-## Excel columns
+## Excel / Google Sheet columns (v3.2, 92 columns)
 
-`id, submitted_at, cell_id, frame, cobrand, completion_time_sec, b1..b11,
-ba1..ba6, dvc1..dvc6, ac1, saf1..saf3, mc_a, mc_b, vat1..vat6, tp1..tp6,
-ac2, psi1..psi5, pi1..pi5, f1_wtp, f2_reason, f3_comment, email`
+`id, submitted_at, cell_id, frame, cobrand, completion_time_sec,
+b1, b2, b3, b4, b5, b6, b7, b8_1, b8_2, b8_3, b9, b10, b11,
+pec1..pec3, gds1..gds3, tpr1..tpr3, mv1..mv3,
+dvc1..dvc4, ac1, saf1..saf4,
+psa1..psa6, tp1..tp6, pf1..pf3, psi1..psi5,
+pu1..pu4, peou1..peou4, itu1..itu3, pe1..pe3, sn1..sn3, ac2,
+pi1..pi4, res1..res4, g3_wtp, g4_reason, g5_comment,
+mc_a, mc_b, email`
 
 - `frame` = 0 (Technical) / 1 (Beneficiary); `cobrand` = 0 (Absent) / 1 (Present).
-- `mc_a` / `mc_b` are the manipulation checks (recorded, not blocking).
+- `b8_1 / b8_2 / b8_3` = number of children aged 1–5 / 6–10 / 11–16 (B8).
+- `mc_a` / `mc_b` are the manipulation checks (Section H, recorded, not blocking).
 - `ac1` (select "Disagree" = 2) and `ac2` (select "Strongly agree" = 5) are
   instructed-response attention checks (recorded, not blocking).
-- `dvc5` is reverse-coded in analysis.
+- `saf2` is reverse-coded in analysis.
+- `g3_wtp` = willingness-to-pay band (0 = Nothing … 4 = More than 15%);
+  `g4_reason` is shown only when `g3_wtp` = 0.
 - `completion_time_sec` supports the speed screening rule (< 1/3 pilot median → exclude).
 
 ## Deploying to a free server
@@ -61,6 +71,19 @@ survives restarts) **and** keep the local Excel file as a backup. See
   paste the **entire JSON content** of the key file into this variable
   (the code accepts raw JSON or a file path).
 - `GOOGLE_SHEET_ID` — the spreadsheet ID.
+
+**Current values for this project:**
+
+| Variable | Value |
+|---|---|
+| `GOOGLE_SHEET_ID` | `1PKzd96paNlyvCGUJ7FgEj7a-DTgHIIlIJWsmcieTe3E` |
+| `GOOGLE_SERVICE_ACCOUNT_KEY` | the full JSON content of `service-account.json` (service account: `survey-writer@survey-writer-506118.iam.gserviceaccount.com`) |
+
+> **Important:** the `Responses` tab must be empty (or its header must match the
+> v3.2 schema) before the first submission. The server refuses to append if the
+> stored header does not match the current instrument schema, to prevent
+> misaligned rows. If you change the instrument, clear the `Responses` tab
+> (all columns, e.g. `A1:ZZ500`) before restarting.
 
 If those are not set, the site falls back to local Excel only (download the file
 after each session to avoid losing data on a restart).
@@ -88,6 +111,10 @@ after each session to avoid losing data on a restart).
 - The co-brand cells (2 and 4) already display the **official FSSAI and AGMARK
   logos** (sourced from `fssai.gov.in` and `uxdt.nic.in`, stored in
   `public/logos/`). Confirm they render correctly in the admin previews.
+- The consent section uses the institutional contact details
+  (`aditya@awu.ac.in` / `+91-9707156777`). Replace the ethics-approval
+  reference placeholder (`[approval reference: ____________]`) with the real
+  reference number before fielding.
 - Run the pilot (n = 50) and check: manipulation-check pass rate > 80%,
   attention-check pass rate, median completion time (for the speed rule),
   and that all 4 cells are receiving traffic.
