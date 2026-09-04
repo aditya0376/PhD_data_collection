@@ -67,10 +67,10 @@ function init(columns) {
 
 async function ensureHeader(columns) {
   if (!sheetsClient || headerWritten) return;
-  // Check whether the sheet already has a header in A1.
+  // Read the entire first row (range '1:1' is width-independent).
   const res = await sheetsClient.spreadsheets.values.get({
     spreadsheetId: sheetId,
-    range: 'Responses!A1:Z1'
+    range: 'Responses!1:1'
   });
   const existing = res.data.values && res.data.values[0];
   if (!existing || existing.length === 0) {
@@ -81,6 +81,17 @@ async function ensureHeader(columns) {
       insertDataOption: 'INSERT_ROWS',
       requestBody: { values: [columns] }
     });
+  } else {
+    // Refuse to append if the stored header does not match the current
+    // instrument schema - misaligned rows would corrupt the dataset.
+    const matches = columns.length === existing.length &&
+      columns.every((c, i) => existing[i] === c);
+    if (!matches) {
+      throw new Error(
+        'Google Sheet header does not match the v3.2 instrument schema. ' +
+        'Clear the Responses tab (or rename it) so a fresh header can be written, then restart the server.'
+      );
+    }
   }
   headerWritten = true;
 }

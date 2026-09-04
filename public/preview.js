@@ -2,8 +2,9 @@
 
 const MC_A_TEXT = {
   a: 'How the price is shared among the people involved',
-  b: 'That the records cannot be changed once entered',
-  c: 'Only the ingredients and the price'
+  b: 'Which stages of the journey had been checked',
+  c: 'Only the ingredients and the price',
+  d: 'That the product was made in the same district where it is sold'
 };
 
 document.addEventListener('DOMContentLoaded', () => {

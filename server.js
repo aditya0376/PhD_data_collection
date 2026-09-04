@@ -17,18 +17,40 @@ if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 // ---------------------------------------------------------------------------
 // Column schema (one column per field). Order defines the Excel column order.
 // ---------------------------------------------------------------------------
+// v3.2 instrument: 67 Likert items + demographics + experimental metadata.
+// Column order follows the questionnaire: B (background) -> C (pre-stimulus)
+// -> E (product reactions) -> F (technology acceptance) -> G (outcomes)
+// -> H (manipulation checks) -> contact.
 const COLUMNS = [
   'id', 'submitted_at', 'cell_id', 'frame', 'cobrand', 'completion_time_sec',
-  'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8', 'b9', 'b10', 'b11',
-  'ba1', 'ba2', 'ba3', 'ba4', 'ba5', 'ba6',
-  'dvc1', 'dvc2', 'dvc3', 'dvc4', 'dvc5', 'dvc6',
-  'ac1', 'saf1', 'saf2', 'saf3',
-  'mc_a', 'mc_b',
-  'vat1', 'vat2', 'vat3', 'vat4', 'vat5', 'vat6',
+  'b1', 'b2', 'b3', 'b4', 'b5', 'b6', 'b7', 'b8_1', 'b8_2', 'b8_3', 'b9', 'b10', 'b11',
+  // B12-B15
+  'pec1', 'pec2', 'pec3',
+  'gds1', 'gds2', 'gds3',
+  'tpr1', 'tpr2', 'tpr3',
+  'mv1', 'mv2', 'mv3',
+  // C (pre-stimulus)
+  'dvc1', 'dvc2', 'dvc3', 'dvc4',
+  'ac1',
+  'saf1', 'saf2', 'saf3', 'saf4',
+  // E (product reactions)
+  'psa1', 'psa2', 'psa3', 'psa4', 'psa5', 'psa6',
   'tp1', 'tp2', 'tp3', 'tp4', 'tp5', 'tp6',
-  'ac2', 'psi1', 'psi2', 'psi3', 'psi4', 'psi5',
-  'pi1', 'pi2', 'pi3', 'pi4', 'pi5',
-  'f1_wtp', 'f2_reason', 'f3_comment', 'email'
+  'pf1', 'pf2', 'pf3',
+  'psi1', 'psi2', 'psi3', 'psi4', 'psi5',
+  // F (acceptance of the verification technology)
+  'pu1', 'pu2', 'pu3', 'pu4',
+  'peou1', 'peou2', 'peou3', 'peou4',
+  'itu1', 'itu2', 'itu3',
+  'pe1', 'pe2', 'pe3',
+  'sn1', 'sn2', 'sn3',
+  'ac2',
+  // G (outcomes)
+  'pi1', 'pi2', 'pi3', 'pi4',
+  'res1', 'res2', 'res3', 'res4',
+  'g3_wtp', 'g4_reason', 'g5_comment',
+  // H (manipulation checks) + contact
+  'mc_a', 'mc_b', 'email'
 ];
 
 // Serialize all Excel writes so concurrent submissions never corrupt the file.

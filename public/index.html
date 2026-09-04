@@ -18,18 +18,18 @@
   <div class="wrap">
     <div class="card" id="app">
 
-      <!-- STEP: Consent -->
+      <!-- STEP: Consent (Section A) -->
       <section class="step" id="s-consent">
         <h2>Information and Consent</h2>
         <p class="instr">You are invited to take part in a research study conducted by Mr. Aditya Man Borborah, Assistant Professor, Assam Women's University, as part of doctoral research at the Centre for Management Studies, North Eastern Regional Institute of Science and Technology (NERIST).</p>
         <div class="consent-block">
           <p><strong>What the study is about.</strong> This study examines how parents respond to different kinds of information printed on packaging for children's products, and how that information affects their buying decisions.</p>
-          <p><strong>What you will be asked to do.</strong> You will answer some questions about yourself and your shopping habits, read a short description of a product label, and then answer questions about your reactions to it. The survey takes about 10 minutes.</p>
+          <p><strong>What you will be asked to do.</strong> You will answer some questions about yourself and your shopping habits, read a short description of a product label, and then answer questions about your reactions to it. The survey takes about 18 to 20 minutes.</p>
           <p><strong>Voluntary participation.</strong> Your participation is entirely voluntary. You may skip any question or stop at any point without giving a reason and without any consequence.</p>
-          <p><strong>Confidentiality.</strong> Your responses are anonymous. No information that could identify you will be collected or stored. Data will be reported only in aggregate form and will be used solely for academic research and publication.</p>
+          <p><strong>Confidentiality.</strong> Your responses are anonymous. No information that could identify you will be collected or stored. Data will be reported only in aggregate form and will be used solely for academic research and publication. Data will be retained only as long as required for the research and then securely deleted, in line with the Digital Personal Data Protection Act, 2023.</p>
           <p><strong>Risks and benefits.</strong> There are no foreseeable risks to participating. There is no payment for participation.</p>
           <p><strong>Ethics approval.</strong> This study has been approved by the Institutional Research Ethics Committee, NERIST [approval reference: ____________].</p>
-          <p><strong>Questions.</strong> For any questions about this research, contact: aditya.borborah@gmail.com (email) / 9707156777 (phone).</p>
+          <p><strong>Questions.</strong> For any questions about this research, contact: [institutional email] / [institutional phone].</p>
         </div>
         <label class="consent">
           <input type="checkbox" id="consentBox" />
@@ -90,7 +90,7 @@
           <label><input type="radio" name="b5" value="8" /> Other</label>
         </div>
 
-        <p class="q">B6. Approximate monthly household income (₹)</p>
+        <p class="q">B6. Approximate monthly household income (Rs)</p>
         <div class="opts">
           <label><input type="radio" name="b6" value="1" /> Below 20,000</label>
           <label><input type="radio" name="b6" value="2" /> 20,000–50,000</label>
@@ -101,10 +101,23 @@
         </div>
 
         <p class="q">B7. Number of children aged 1–16 in your household</p>
-        <input type="number" name="b7" min="1" max="20" placeholder="e.g. 2" />
+        <input type="number" name="b7" min="0" max="20" placeholder="e.g. 2" />
 
-        <p class="q">B8. Age(s) of your child / children</p>
-        <input type="text" name="b8" placeholder="e.g. 4 and 7" />
+        <p class="q">B8. How many of your children are in each age group?</p>
+        <div class="num-row">
+          <div class="num-field">
+            <label for="b8_1">Aged 1–5</label>
+            <input type="number" id="b8_1" name="b8_1" min="0" max="15" placeholder="0" />
+          </div>
+          <div class="num-field">
+            <label for="b8_2">Aged 6–10</label>
+            <input type="number" id="b8_2" name="b8_2" min="0" max="15" placeholder="0" />
+          </div>
+          <div class="num-field">
+            <label for="b8_3">Aged 11–16</label>
+            <input type="number" id="b8_3" name="b8_3" min="0" max="15" placeholder="0" />
+          </div>
+        </div>
 
         <p class="q">B9. Where do you live?</p>
         <div class="opts">
@@ -115,9 +128,11 @@
 
         <p class="q">B10. How often do you scan QR codes printed on product packages?</p>
         <div class="opts">
-          <label><input type="radio" name="b10" value="1" /> Regularly</label>
-          <label><input type="radio" name="b10" value="2" /> Sometimes</label>
-          <label><input type="radio" name="b10" value="3" /> Never</label>
+          <label><input type="radio" name="b10" value="1" /> Never</label>
+          <label><input type="radio" name="b10" value="2" /> Once or twice ever</label>
+          <label><input type="radio" name="b10" value="3" /> Sometimes</label>
+          <label><input type="radio" name="b10" value="4" /> Often</label>
+          <label><input type="radio" name="b10" value="5" /> Almost every time I can</label>
         </div>
 
         <p class="q">B11. Who usually buys packaged food, clothing or toys for your child?</p>
@@ -128,76 +143,156 @@
           <label><input type="radio" name="b11" value="4" /> Another family member</label>
         </div>
 
+        <button class="btn" onclick="go('s-habits')">Continue</button>
+      </section>
+
+      <!-- STEP: B12-B15 digital access, self-efficacy, time pressure, marker -->
+      <section class="step" id="s-habits">
+        <h2>Shopping and Digital Habits</h2>
+        <p class="instr">Please indicate how much you agree or disagree with each statement below. There are no right or wrong answers.</p>
+        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+
+        <h3>Your digital access</h3>
+        <div id="pec-items"></div>
+
+        <h3>Your confidence with technology</h3>
+        <div id="gds-items"></div>
+
+        <h3>Your shopping habits</h3>
+        <div id="tpr-items"></div>
+
+        <h3>A few final statements</h3>
+        <div id="mv-items"></div>
+
         <button class="btn" onclick="go('s-c')">Continue</button>
       </section>
 
-      <!-- STEP: Section C (BA, DVC, AC1, SAF) -->
+      <!-- STEP: Section C (DVC, AC1, SAF) - BEFORE the scenario -->
       <section class="step" id="s-c">
         <h2>Your Background Views</h2>
         <p class="instr">Please indicate how much you agree or disagree with each statement below. There are no right or wrong answers.</p>
-        <div id="c-items"></div>
+        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+
+        <h3>Confidence in checking products digitally</h3>
+        <p class="instr">The next statements are about checking a product by scanning a code on the package with your phone.</p>
+        <div id="dvc-items"></div>
+
+        <div id="ac1-items"></div>
+
+        <h3>Shopping for your child</h3>
+        <div id="saf-items"></div>
+
         <button class="btn" onclick="go('s-stimulus')">Continue</button>
       </section>
 
-      <!-- STEP: Stimulus + manipulation checks -->
+      <!-- STEP: Section D - Product scenario (NO manipulation checks here) -->
       <section class="step" id="s-stimulus">
         <h2>Product Scenario</h2>
         <p class="instr">Please read the following carefully.</p>
-        <p class="instr">Imagine you are buying a packet of biscuits for your child. The package carries a code that you can scan with your phone. When you scan it, the screen below appears.</p>
+        <p class="instr">Imagine you are buying a packet of biscuits for your child, priced at Rs 50. The package carries a code that you can scan with your phone. When you scan it, the screen below appears.</p>
         <div id="stimulus"></div>
-        <p class="q">D-a. The screen you saw mainly showed:</p>
+        <button class="btn" onclick="go('s-e')">Continue</button>
+      </section>
+
+      <!-- STEP: Section E (PSA, TP, PF, PSI) -->
+      <section class="step" id="s-e">
+        <h2>Your Reactions to the Product</h2>
+        <p class="instr">The remaining questions refer to the product and the screen you have just read about. Please answer thinking about buying this product for your child.</p>
+        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+
+        <h3>What the information shows</h3>
+        <div id="psa-items"></div>
+
+        <h3>Trust in the product source</h3>
+        <div id="tp-items"></div>
+
+        <h3>Fairness</h3>
+        <div id="pf-items"></div>
+
+        <h3>What your purchase does for others</h3>
+        <div id="psi-items"></div>
+
+        <button class="btn" onclick="go('s-f')">Continue</button>
+      </section>
+
+      <!-- STEP: Section F (PU, PEOU, ITU, PE, SN, AC2) - technology in general -->
+      <section class="step" id="s-f">
+        <h2>The Checking Technology</h2>
+        <p class="instr">The following questions ask about the technology in general — that is, scanning a code on a product package with your phone to check the product — not about this specific product.</p>
+        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+
+        <h3>How useful it would be</h3>
+        <div id="pu-items"></div>
+
+        <h3>How easy it would be</h3>
+        <div id="peou-items"></div>
+
+        <h3>Whether you would use it</h3>
+        <div id="itu-items"></div>
+
+        <h3>How it would feel</h3>
+        <div id="pe-items"></div>
+
+        <h3>People around you</h3>
+        <div id="sn-items"></div>
+
+        <div id="ac2-items"></div>
+
+        <button class="btn" onclick="go('s-g')">Continue</button>
+      </section>
+
+      <!-- STEP: Section G (PI, RES, WTP, G4 conditional, G5, email) -->
+      <section class="step" id="s-g">
+        <h2>Your Buying Decision</h2>
+        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+
+        <h3>Buying this product</h3>
+        <div id="pi-items"></div>
+
+        <h3>Your views</h3>
+        <div id="res-items"></div>
+
+        <p class="q">G3. How much more, if anything, would you be willing to pay for this Rs 50 product compared with a similar product that does not carry this information?</p>
+        <div class="opts">
+          <label><input type="radio" name="g3_wtp" value="0" /> Nothing</label>
+          <label><input type="radio" name="g3_wtp" value="1" /> Up to 5%</label>
+          <label><input type="radio" name="g3_wtp" value="2" /> More than 5% up to 10%</label>
+          <label><input type="radio" name="g3_wtp" value="3" /> More than 10% up to 15%</label>
+          <label><input type="radio" name="g3_wtp" value="4" /> More than 15%</label>
+        </div>
+
+        <div id="g4-wrap" style="display:none">
+          <p class="q">G4. If you answered "Nothing", in your own words, what is the main reason?</p>
+          <textarea name="g4_reason" rows="3" placeholder="Optional"></textarea>
+        </div>
+
+        <p class="q">G5. In your own words, how would knowing who benefits from your purchase affect your decision to buy products for your child?</p>
+        <textarea name="g5_comment" rows="3" placeholder="Optional"></textarea>
+
+        <button class="btn" onclick="go('s-h')">Continue</button>
+      </section>
+
+      <!-- STEP: Section H (manipulation checks, moved AFTER the DVs) + submit -->
+      <section class="step" id="s-h">
+        <h2>A Few Final Checks</h2>
+
+        <p class="q">H1. The screen you saw mainly showed:</p>
         <div class="opts">
           <label><input type="radio" name="mc_a" value="a" /> How the price is shared among the people involved</label>
-          <label><input type="radio" name="mc_a" value="b" /> That the records cannot be changed once entered</label>
+          <label><input type="radio" name="mc_a" value="b" /> Which stages of the journey had been checked</label>
           <label><input type="radio" name="mc_a" value="c" /> Only the ingredients and the price</label>
+          <label><input type="radio" name="mc_a" value="d" /> That the product was made in the same district where it is sold</label>
         </div>
-        <p class="q">D-b. Did the screen show any government certification marks?</p>
+
+        <p class="q">H2. Did the screen show any government certification marks?</p>
         <div class="opts">
           <label><input type="radio" name="mc_b" value="Yes" /> Yes</label>
           <label><input type="radio" name="mc_b" value="No" /> No</label>
           <label><input type="radio" name="mc_b" value="Not sure" /> Not sure</label>
         </div>
-        <button class="btn" onclick="go('s-e')">Continue</button>
-      </section>
 
-      <!-- STEP: Section E (VAT, TP, AC2, PSI) -->
-      <section class="step" id="s-e">
-        <h2>Your Reactions to the Product</h2>
-        <p class="instr">The remaining questions refer to the product and the screen you have just read about. Please answer thinking about buying this product for your child.</p>
-        <div id="e-items"></div>
-        <button class="btn" onclick="go('s-f')">Continue</button>
-      </section>
-
-      <!-- STEP: Section F (PI, WTP, F2, comment, email) -->
-      <section class="step" id="s-f">
-        <h2>Your Buying Decision</h2>
-        <p class="instr">Please indicate how much you agree with each statement.</p>
-        <div id="f-items"></div>
-
-        <p class="q">F1. How much more, if anything, would you be willing to pay for this product compared with a similar product that does not carry this information?</p>
-        <div class="opts">
-          <label><input type="radio" name="f1_wtp" value="0" /> Nothing</label>
-          <label><input type="radio" name="f1_wtp" value="1" /> Up to 5%</label>
-          <label><input type="radio" name="f1_wtp" value="2" /> 5–10%</label>
-          <label><input type="radio" name="f1_wtp" value="3" /> 10–15%</label>
-          <label><input type="radio" name="f1_wtp" value="4" /> More than 15%</label>
-        </div>
-
-        <div id="f2-wrap" style="display:none">
-          <p class="q">F2. If you answered "Nothing", what is the main reason?</p>
-          <div class="opts">
-            <label><input type="radio" name="f2_reason" value="1" /> I cannot afford to pay more</label>
-            <label><input type="radio" name="f2_reason" value="2" /> Checking products this way is not something I would do</label>
-            <label><input type="radio" name="f2_reason" value="3" /> Honesty should not cost the customer extra - it is the government's job to ensure it</label>
-            <label><input type="radio" name="f2_reason" value="4" /> I already trust the brands I buy, so I do not need this</label>
-            <label><input type="radio" name="f2_reason" value="5" /> Other</label>
-          </div>
-        </div>
-
-        <p class="q">F3. In your own words, how would knowing who benefits from your purchase affect your decision to buy products for your child?</p>
-        <textarea name="f3_comment" rows="3" placeholder="Optional"></textarea>
-
-        <p class="q">If you would like to receive a short summary of the findings when the study is complete, you may leave an email address below. This is entirely optional and will be stored separately from your responses.</p>
+        <p class="instr" style="margin-top:20px">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
+        <p class="instr">If you would like to receive a short summary of the findings when the study is complete, you may leave an email address below. This is entirely optional and will be stored separately from your responses.</p>
         <input type="email" name="email" placeholder="Optional email" />
 
         <button class="btn" onclick="submitSurvey()">Submit</button>
