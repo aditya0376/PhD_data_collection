@@ -9,146 +9,151 @@
 //   G block: PI(4) RES(4)                                        =  8
 // 5-point Likert: 1 = Strongly disagree ... 5 = Strongly agree
 // SAF2 is reverse-coded at analysis; no (R) marker is shown to respondents.
+//
+// Each item carries both languages: `en` (English) and `as` (Assamese). The
+// active language is read via getLang() from i18n.js. The Assamese strings
+// are DRAFT translations and must be verified/back-translated before fielding
+// (see i18n.js header).
 // ---------------------------------------------------------------------------
 
 // Section B - B12 Perceptions of external control (digital access)
 const PEC_ITEMS = [
-  { n: 'pec1', t: 'I have a phone that can scan codes on product packages.' },
-  { n: 'pec2', t: 'I usually have enough mobile network or data to check a product while I am shopping.' },
-  { n: 'pec3', t: 'The shops where I buy things for my child have good enough network for this to work.' }
+  { n: 'pec1', en: 'I have a phone that can scan codes on product packages.', as: 'মোৰ হাতত এনে এটা ফোন আছে যিটোৰে পণ্যৰ বাকচত থকা কোড স্কেন কৰিব পাৰি।' },
+  { n: 'pec2', en: 'I usually have enough mobile network or data to check a product while I am shopping.', as: 'কিনাকিনি কৰি থকা সময়ত পণ্য পৰীক্ষা কৰিবলৈ সাধাৰণতে মোৰ যথেষ্ট মোবাইল নেটৱৰ্ক বা ডেটা থাকে।' },
+  { n: 'pec3', en: 'The shops where I buy things for my child have good enough network for this to work.', as: 'মই মোৰ সন্তানৰ বাবে কিনা দোকানবোৰত এই কামটো হ\u2019ব পৰাকৈ ভাল নেটৱৰ্ক থাকে।' }
 ];
 
 // Section B - B13 General digital self-efficacy
 const GDS_ITEMS = [
-  { n: 'gds1', t: 'I am confident using my smartphone for most things I need to do.' },
-  { n: 'gds2', t: 'I can usually work out how to use a new app on my own.' },
-  { n: 'gds3', t: 'I would describe myself as good with digital technology.' }
+  { n: 'gds1', en: 'I am confident using my smartphone for most things I need to do.', as: 'প্ৰয়োজনীয় বেছিভাগ কামত মোৰ স্মাৰ্টফোন ব্যৱহাৰ কৰাত মই আত্মবিশ্বাসী।' },
+  { n: 'gds2', en: 'I can usually work out how to use a new app on my own.', as: 'নতুন এপ এটা নিজে কেনেকৈ ব্যৱহাৰ কৰিব লাগে সাধাৰণতে মই বুজি পাওঁ।' },
+  { n: 'gds3', en: 'I would describe myself as good with digital technology.', as: 'ডিজিটেল প্ৰযুক্তিত মই ভাল বুলি নিজকে বৰ্ণনা কৰিম।' }
 ];
 
 // Section B - B14 Situational constraints (time pressure)
 const TPR_ITEMS = [
-  { n: 'tpr1', t: 'I am usually in a hurry when I shop for my family.' },
-  { n: 'tpr2', t: 'I often shop with my children with me, which makes it harder to take time over choices.' },
-  { n: 'tpr3', t: 'I rarely have time to compare products carefully in the shop.' }
+  { n: 'tpr1', en: 'I am usually in a hurry when I shop for my family.', as: 'পৰিয়ালৰ বাবে কিনাকিনি কৰোঁতে সাধাৰণতে মই খৰখেদাত থাকোঁ।' },
+  { n: 'tpr2', en: 'I often shop with my children with me, which makes it harder to take time over choices.', as: 'সন্তানক লগত লৈয়ে প্ৰায়ে কিনাকিনি কৰোঁ, যাৰ বাবে বাছনিৰ ওপৰত সময় দিয়া কঠিন হয়।' },
+  { n: 'tpr3', en: 'I rarely have time to compare products carefully in the shop.', as: 'দোকানত পণ্যবোৰ ভালদৰে তুলনা কৰিবলৈ মোৰ সময় বিৰলভাৱে থাকে।' }
 ];
 
 // Section B - B15 Marker variable (theoretically unrelated, CFA marker technique)
 const MV_ITEMS = [
-  { n: 'mv1', t: 'I prefer to plan my day in advance rather than decide as I go.' },
-  { n: 'mv2', t: 'I enjoy trying food I have never eaten before.' },
-  { n: 'mv3', t: 'I would rather spend a free evening at home than go out.' }
+  { n: 'mv1', en: 'I prefer to plan my day in advance rather than decide as I go.', as: 'যেতিয়াই যাওঁ তেতিয়াই ঠিক কৰাতকৈ মই দিনটো আগতীয়াকৈ পৰিকল্পনা কৰিবলৈ ভাল পাওঁ।' },
+  { n: 'mv2', en: 'I enjoy trying food I have never eaten before.', as: 'আগতে কেতিয়াও নোখোৱা খাদ্য চেষ্টা কৰিবলৈ মই ভাল পাওঁ।' },
+  { n: 'mv3', en: 'I would rather spend a free evening at home than go out.', as: 'বাহিৰলৈ যোৱাতকৈ মই ঘৰতে মুক্ত সন্ধিয়া কটাবলৈহে ভাল পাওঁ।' }
 ];
 
 // Section C - C1 Digital verification self-efficacy
 const DVC_ITEMS = [
-  { n: 'dvc1', t: 'I am confident I could scan a code on a product package if I wanted to.' },
-  { n: 'dvc2', t: 'I would know what to do with the screen that appears after scanning a code.' },
-  { n: 'dvc3', t: 'I could work out for myself whether the information shown after scanning is worth trusting.' },
-  { n: 'dvc4', t: 'I have the skills needed to check products digitally when I shop.' }
+  { n: 'dvc1', en: 'I am confident I could scan a code on a product package if I wanted to.', as: 'ইচ্ছা কৰিলে পণ্যৰ বাকচত থকা কোড স্কেন কৰিব পাৰিম বুলি মই আত্মবিশ্বাসী।' },
+  { n: 'dvc2', en: 'I would know what to do with the screen that appears after scanning a code.', as: 'কোড স্কেন কৰাৰ পিছত ওলোৱা স্ক্ৰীনটোৰ সৈতে কি কৰিব লাগে মই জানিম।' },
+  { n: 'dvc3', en: 'I could work out for myself whether the information shown after scanning is worth trusting.', as: 'স্কেন কৰাৰ পিছত দেখুওৱা তথ্য বিশ্বাসযোগ্য হয় নে নহয় মই নিজেই বুজি পাব পাৰিম।' },
+  { n: 'dvc4', en: 'I have the skills needed to check products digitally when I shop.', as: 'কিনাকিনি কৰোঁতে ডিজিটেলভাৱে পণ্য পৰীক্ষা কৰিবলৈ প্ৰয়োজনীয় দক্ষতা মোৰ আছে।' }
 ];
 
 // Section C - C2 Attention check (instructed response: select 2)
 const AC1_ITEM = [
-  { n: 'ac1', t: 'This is a check to confirm you are reading carefully. Please select "Disagree" (2) for this statement.' }
+  { n: 'ac1', en: 'This is a check to confirm you are reading carefully. Please select "Disagree" (2) for this statement.', as: 'আপুনি মনোযোগেৰে পঢ়ি আছে নে নাই পৰীক্ষা কৰিবলৈ এইটো এটা পৰীক্ষা। এই উক্তিটোৰ বাবে অনুগ্ৰহ কৰি "অসন্মত" (2) বাছনি কৰক।' }
 ];
 
 // Section C - C3 Concern for child product safety
 const SAF_ITEMS = [
-  { n: 'saf1', t: 'I would switch to a different brand if I learned it was safer for my child.' },
-  { n: 'saf2', t: 'I sometimes buy products for my child without checking the label.' },
-  { n: 'saf3', t: 'I have refused to buy a product for my child because I was unsure it was genuine.' },
-  { n: 'saf4', t: 'I check where a children\u2019s product came from before buying it.' }
+  { n: 'saf1', en: 'I would switch to a different brand if I learned it was safer for my child.', as: 'মোৰ সন্তানৰ বাবে বেছি সুৰক্ষিত বুলি জানিলে মই আন এটা ব্ৰেণ্ডলৈ সলনি কৰিম।' },
+  { n: 'saf2', en: 'I sometimes buy products for my child without checking the label.', as: 'লেবেল নোচোৱাকৈয়ে মই কেতিয়াবা মোৰ সন্তানৰ বাবে পণ্য কিনো।' },
+  { n: 'saf3', en: 'I have refused to buy a product for my child because I was unsure it was genuine.', as: 'পণ্যটো প্ৰকৃত নে নহয় নিশ্চিত নোহোৱাত মই মোৰ সন্তানৰ বাবে সেই পণ্য কিনিবলৈ অস্বীকাৰ কৰিছো।' },
+  { n: 'saf4', en: 'I check where a children\u2019s product came from before buying it.', as: 'কিনাৰ আগতে শিশুৰ পণ্যটো ক\u2019ৰ পৰা আহিছে মই পৰীক্ষা কৰোঁ।' }
 ];
 
 // Section E - E1 Perceived signal accessibility (PSA5/PSA6 are
 // manipulation-strength checks, analysed separately, still collected here)
 const PSA_ITEMS = [
-  { n: 'psa1', t: 'The information tells me enough about how this product reached the shop.' },
-  { n: 'psa2', t: 'It is clear to me what this record is telling me about the product.' },
-  { n: 'psa3', t: 'The information appears accurate and complete.' },
-  { n: 'psa4', t: 'Overall, this record makes the product\u2019s journey visible to me.' },
-  { n: 'psa5', t: 'I can identify the different people or groups involved in making this product.' },
-  { n: 'psa6', t: 'I can tell what each of them receives from the price I pay.' }
+  { n: 'psa1', en: 'The information tells me enough about how this product reached the shop.', as: 'এই পণ্যটো দোকানলৈ কেনেকৈ আহিল সেই বিষয়ে তথ্যই মোক যথেষ্ট কয়।' },
+  { n: 'psa2', en: 'It is clear to me what this record is telling me about the product.', as: 'এই ৰেকৰ্ডটোৱে পণ্যৰ বিষয়ে মোক কি কৈছে সেয়া মোৰ ওচৰত স্পষ্ট।' },
+  { n: 'psa3', en: 'The information appears accurate and complete.', as: 'তথ্যটো শুদ্ধ আৰু সম্পূৰ্ণ যেন লাগে।' },
+  { n: 'psa4', en: 'Overall, this record makes the product\u2019s journey visible to me.', as: 'সামগ্ৰিকভাৱে, এই ৰেকৰ্ডটোৱে পণ্যটোৰ যাত্ৰা মোৰ ওচৰত দৃশ্যমান কৰে।' },
+  { n: 'psa5', en: 'I can identify the different people or groups involved in making this product.', as: 'এই পণ্যটো তৈয়াৰ কৰাত জড়িত বিভিন্ন লোক বা গোটবোৰ মই চিনাক্ত কৰিব পাৰোঁ।' },
+  { n: 'psa6', en: 'I can tell what each of them receives from the price I pay.', as: 'মই দিয়া দামৰ পৰা তেওঁলোকৰ প্ৰতিজনে কি পায় মই ক\u2019ব পাৰোঁ।' }
 ];
 
 // Section E - E2 Trust in the product source
 const TP_ITEMS = [
-  { n: 'tp1', t: 'I believe the people behind this product are capable of doing what they claim.' },
-  { n: 'tp2', t: 'The assurances given about this product are reliable.' },
-  { n: 'tp3', t: 'I believe the information given about this product is honest.' },
-  { n: 'tp4', t: 'Those responsible for this product would act in my child\u2019s best interest.' },
-  { n: 'tp5', t: 'I can depend on this product being what it says it is.' },
-  { n: 'tp6', t: 'The claims made about this product are sincere.' }
+  { n: 'tp1', en: 'I believe the people behind this product are capable of doing what they claim.', as: 'এই পণ্যৰ পিছত থকা লোকসকল তেওঁলোকে দাবী কৰা কাম কৰিবলৈ সক্ষম বুলি মই বিশ্বাস কৰোঁ।' },
+  { n: 'tp2', en: 'The assurances given about this product are reliable.', as: 'এই পণ্যৰ বিষয়ে দিয়া আশ্বাসবোৰ বিশ্বাসযোগ্য।' },
+  { n: 'tp3', en: 'I believe the information given about this product is honest.', as: 'এই পণ্যৰ বিষয়ে দিয়া তথ্য সত্য বুলি মই বিশ্বাস কৰোঁ।' },
+  { n: 'tp4', en: 'Those responsible for this product would act in my child\u2019s best interest.', as: 'এই পণ্যৰ বাবে দায়ী লোকসকলে মোৰ সন্তানৰ স্বাৰ্থত কাম কৰিব।' },
+  { n: 'tp5', en: 'I can depend on this product being what it says it is.', as: 'এই পণ্যটো যি বুলি কোৱা হয় সেয়াই হ\u2019ব বুলি মই নিৰ্ভৰ কৰিব পাৰোঁ।' },
+  { n: 'tp6', en: 'The claims made about this product are sincere.', as: 'এই পণ্যৰ বিষয়ে কৰা দাবীবোৰ আন্তৰিক।' }
 ];
 
 // Section E - E3 Perceived fairness (worded to be answerable in all four cells)
 const PF_ITEMS = [
-  { n: 'pf1', t: 'This product seems to be produced in a way that treats people fairly.' },
-  { n: 'pf2', t: 'The people who produced this product are probably paid reasonably.' },
-  { n: 'pf3', t: 'I feel this product\u2019s supply chain is fair to the people working in it.' }
+  { n: 'pf1', en: 'This product seems to be produced in a way that treats people fairly.', as: 'এই পণ্যটো লোকসকলক ন্যায্য ব্যৱহাৰ কৰা ধৰণেৰে উৎপাদিত যেন লাগে।' },
+  { n: 'pf2', en: 'The people who produced this product are probably paid reasonably.', as: 'এই পণ্যটো উৎপাদন কৰা লোকসকলক সম্ভৱতঃ যুক্তিসংগতভাৱে দৰমহা দিয়া হয়।' },
+  { n: 'pf3', en: 'I feel this product\u2019s supply chain is fair to the people working in it.', as: 'এই পণ্যৰ যোগান শৃংখল ইয়াত কাম কৰা লোকসকলৰ প্ৰতি ন্যায্য বুলি মই অনুভৱ কৰোঁ।' }
 ];
 
 // Section E - E4 Perceived social impact (outcome belief, NOT social influence)
 const PSI_ITEMS = [
-  { n: 'psi1', t: 'Buying products like this can help improve the lives of the people who produce them.' },
-  { n: 'psi2', t: 'My buying choices can help reduce poverty among small producers.' },
-  { n: 'psi3', t: 'Buying products like this supports fair wages and decent working conditions.' },
-  { n: 'psi4', t: 'People like me can make a difference to society through what we buy.' },
-  { n: 'psi5', t: 'When I buy products like this, I feel my purchase does some good.' }
+  { n: 'psi1', en: 'Buying products like this can help improve the lives of the people who produce them.', as: 'এনেধৰণৰ পণ্য কিনিলে উৎপাদনকাৰী লোকসকলৰ জীৱন উন্নত কৰাত সহায় হ\u2019ব পাৰে।' },
+  { n: 'psi2', en: 'My buying choices can help reduce poverty among small producers.', as: 'মোৰ কিনা বাছনিবোৰে সৰু উৎপাদকসকলৰ মাজত দৰিদ্ৰতা হ্ৰাস কৰাত সহায় কৰিব পাৰে।' },
+  { n: 'psi3', en: 'Buying products like this supports fair wages and decent working conditions.', as: 'এনেধৰণৰ পণ্য কিনিলে ন্যায্য মজুৰি আৰু ভাল কামৰ পৰিস্থিতি সমৰ্থন হয়।' },
+  { n: 'psi4', en: 'People like me can make a difference to society through what we buy.', as: 'মোৰ দৰে লোকসকলে আমি কি কিনো তাৰ জৰিয়তে সমাজত পৰিৱৰ্তন আনিব পাৰে।' },
+  { n: 'psi5', en: 'When I buy products like this, I feel my purchase does some good.', as: 'এনেধৰণৰ পণ্য কিনোঁতে মোৰ কিনাই কিছু ভাল কাম কৰে বুলি অনুভৱ কৰোঁ।' }
 ];
 
 // Section F - acceptance of the verification technology (TAM3)
 const PU_ITEMS = [
-  { n: 'pu1', t: 'Using this digital verification helps me make a better buying decision for my child.' },
-  { n: 'pu2', t: 'The information I get from scanning the code is useful to me.' },
-  { n: 'pu3', t: 'Checking products this way improves the quality of my purchase decision.' },
-  { n: 'pu4', t: 'Overall, I find checking products this way useful.' }
+  { n: 'pu1', en: 'Using this digital verification helps me make a better buying decision for my child.', as: 'এই ডিজিটেল পৰীক্ষণ ব্যৱহাৰ কৰিলে মোৰ সন্তানৰ বাবে ভাল কিনা সিদ্ধান্ত ল\u2019বলৈ সহায় হয়।' },
+  { n: 'pu2', en: 'The information I get from scanning the code is useful to me.', as: 'কোড স্কেন কৰি পোৱা তথ্য মোৰ বাবে উপযোগী।' },
+  { n: 'pu3', en: 'Checking products this way improves the quality of my purchase decision.', as: 'এইদৰে পণ্য পৰীক্ষা কৰিলে মোৰ কিনা সিদ্ধান্তৰ মান উন্নত হয়।' },
+  { n: 'pu4', en: 'Overall, I find checking products this way useful.', as: 'সামগ্ৰিকভাৱে, এইদৰে পণ্য পৰীক্ষা কৰাটো মোৰ বাবে উপযোগী বুলি পাওঁ।' }
 ];
 
 const PEOU_ITEMS = [
-  { n: 'peou1', t: 'Learning to check a product this way would be easy for me.' },
-  { n: 'peou2', t: 'I would find it easy to scan and check a product.' },
-  { n: 'peou3', t: 'Checking a product this way is clear and understandable.' },
-  { n: 'peou4', t: 'Overall, I would find checking products this way easy to use.' }
+  { n: 'peou1', en: 'Learning to check a product this way would be easy for me.', as: 'এইদৰে পণ্য পৰীক্ষা কৰিবলৈ শিকাটো মোৰ বাবে সহজ হ\u2019ব।' },
+  { n: 'peou2', en: 'I would find it easy to scan and check a product.', as: 'পণ্য স্কেন আৰু পৰীক্ষা কৰাটো মোৰ বাবে সহজ হ\u2019ব।' },
+  { n: 'peou3', en: 'Checking a product this way is clear and understandable.', as: 'এইদৰে পণ্য পৰীক্ষা কৰাটো স্পষ্ট আৰু বুজিব পৰা।' },
+  { n: 'peou4', en: 'Overall, I would find checking products this way easy to use.', as: 'সামগ্ৰিকভাৱে, এইদৰে পণ্য পৰীক্ষা কৰাটো ব্যৱহাৰ কৰিবলৈ সহজ হ\u2019ব।' }
 ];
 
 const ITU_ITEMS = [
-  { n: 'itu1', t: 'I intend to scan and check products this way when I shop for my child.' },
-  { n: 'itu2', t: 'I will try to check products this way in future.' },
-  { n: 'itu3', t: 'I plan to use this way of checking products when it is available.' }
+  { n: 'itu1', en: 'I intend to scan and check products this way when I shop for my child.', as: 'মোৰ সন্তানৰ বাবে কিনোঁতে এইদৰে পণ্য স্কেন আৰু পৰীক্ষা কৰিবলৈ মোৰ মন আছে।' },
+  { n: 'itu2', en: 'I will try to check products this way in future.', as: 'ভৱিষ্যতে এইদৰে পণ্য পৰীক্ষা কৰিবলৈ মই চেষ্টা কৰিম।' },
+  { n: 'itu3', en: 'I plan to use this way of checking products when it is available.', as: 'উপলব্ধ হ\u2019লে এইদৰে পণ্য পৰীক্ষা কৰা ব্যৱহাৰ কৰিবলৈ মই পৰিকল্পনা কৰিছো।' }
 ];
 
 const PE_ITEMS = [
-  { n: 'pe1', t: 'I find the idea of checking products this way interesting.' },
-  { n: 'pe2', t: 'Checking products this way would be enjoyable.' },
-  { n: 'pe3', t: 'I would find the process of scanning and checking a product pleasant.' }
+  { n: 'pe1', en: 'I find the idea of checking products this way interesting.', as: 'এইদৰে পণ্য পৰীক্ষা কৰাৰ ধাৰণাটো মোৰ বাবে আকৰ্ষণীয়।' },
+  { n: 'pe2', en: 'Checking products this way would be enjoyable.', as: 'এইদৰে পণ্য পৰীক্ষা কৰাটো আনন্দদায়ক হ\u2019ব।' },
+  { n: 'pe3', en: 'I would find the process of scanning and checking a product pleasant.', as: 'পণ্য স্কেন আৰু পৰীক্ষা কৰা প্ৰক্ৰিয়াটো মোৰ বাবে সুখদায়ক হ\u2019ব।' }
 ];
 
 const SN_ITEMS = [
-  { n: 'sn1', t: 'People who are important to me would think I should check products this way.' },
-  { n: 'sn2', t: 'People whose opinions I value would want me to check products this way.' },
-  { n: 'sn3', t: 'My family would expect me to check products this way when buying for my child.' }
+  { n: 'sn1', en: 'People who are important to me would think I should check products this way.', as: 'মোৰ বাবে গুৰুত্বপূৰ্ণ লোকসকলে ভাবিব যে মোৰ এইদৰে পণ্য পৰীক্ষা কৰা উচিত।' },
+  { n: 'sn2', en: 'People whose opinions I value would want me to check products this way.', as: 'যিসকলৰ মতামতক মই মূল্য দিওঁ তেওঁলোকে মোক এইদৰে পণ্য পৰীক্ষা কৰিবলৈ বিচাৰিব।' },
+  { n: 'sn3', en: 'My family would expect me to check products this way when buying for my child.', as: 'সন্তানৰ বাবে কিনোঁতে মোৰ পৰিয়ালে মোক এইদৰে পণ্য পৰীক্ষা কৰিবলৈ আশা কৰিব।' }
 ];
 
 // Section F - F6 Attention check (instructed response: select 5)
 const AC2_ITEM = [
-  { n: 'ac2', t: 'Please select "Strongly agree" (5) for this statement so that we know you are reading carefully.' }
+  { n: 'ac2', en: 'Please select "Strongly agree" (5) for this statement so that we know you are reading carefully.', as: 'আপুনি মনোযোগেৰে পঢ়ি আছে বুলি জানিবলৈ এই উক্তিটোৰ বাবে অনুগ্ৰহ কৰি "দৃঢ়ভাৱে সন্মত" (5) বাছনি কৰক।' }
 ];
 
 // Section G - G1 Purchase intention
 const PI_ITEMS = [
-  { n: 'pi1', t: 'I would consider buying this product, as described in the information shown earlier, for my child.' },
-  { n: 'pi2', t: 'I am likely to purchase this product, as described in the information shown earlier.' },
-  { n: 'pi3', t: 'I would choose this product, as described in the information shown earlier, over a similar product without this information.' },
-  { n: 'pi4', t: 'I intend to buy this product, as described in the information shown earlier, the next time I shop for my child.' }
+  { n: 'pi1', en: 'I would consider buying this product, as described in the information shown earlier, for my child.', as: 'আগতে দেখুওৱা তথ্যত বৰ্ণনা কৰা এই পণ্যটো মোৰ সন্তানৰ বাবে কিনিবলৈ মই বিবেচনা কৰিম।' },
+  { n: 'pi2', en: 'I am likely to purchase this product, as described in the information shown earlier.', as: 'আগতে দেখুওৱা তথ্যত বৰ্ণনা কৰা এই পণ্যটো কিনাৰ সম্ভাৱনা আছে।' },
+  { n: 'pi3', en: 'I would choose this product, as described in the information shown earlier, over a similar product without this information.', as: 'এই তথ্য নথকা একেধৰণৰ পণ্যতকৈ আগতে দেখুওৱা তথ্যত বৰ্ণনা কৰা এই পণ্যটোকে মই বাছি ল\u2019ম।' },
+  { n: 'pi4', en: 'I intend to buy this product, as described in the information shown earlier, the next time I shop for my child.', as: 'মোৰ সন্তানৰ বাবে পৰৱৰ্তী কিনাত আগতে দেখুওৱা তথ্যত বৰ্ণনা কৰা এই পণ্যটো কিনিবলৈ মোৰ মন আছে।' }
 ];
 
 // Section G - G2 Resistance beliefs (asked of ALL respondents)
 const RES_ITEMS = [
-  { n: 'res1', t: 'I could not afford to pay extra for a product like this.' },
-  { n: 'res2', t: 'Checking products this way is not something I would do.' },
-  { n: 'res3', t: 'Honesty should not cost the customer extra \u2014 it is the government\u2019s job to ensure it.' },
-  { n: 'res4', t: 'I already trust the brands I buy, so I do not need this information.' }
+  { n: 'res1', en: 'I could not afford to pay extra for a product like this.', as: 'এনেধৰণৰ পণ্যৰ বাবে বেছি দাম দিবলৈ মোৰ সাধ্য নাই।' },
+  { n: 'res2', en: 'Checking products this way is not something I would do.', as: 'এইদৰে পণ্য পৰীক্ষা কৰাটো মই নকৰা কাম।' },
+  { n: 'res3', en: 'Honesty should not cost the customer extra \u2014 it is the government\u2019s job to ensure it.', as: 'সততাই গ্ৰাহকক বেছি খৰচ নকৰা উচিত \u2014 সেয়া নিশ্চিত কৰা চৰকাৰৰ কাম।' },
+  { n: 'res4', en: 'I already trust the brands I buy, so I do not need this information.', as: 'মই কিনা ব্ৰেণ্ডবোৰত মই ইতিমধ্যে বিশ্বাস কৰোঁ, গতিকে এই তথ্যৰ প্ৰয়োজন নাই।' }
 ];
 
 // ---------------------------------------------------------------------------
@@ -156,13 +161,14 @@ const RES_ITEMS = [
 // ---------------------------------------------------------------------------
 function likertGrid(items, containerId) {
   const el = document.getElementById(containerId);
+  const lang = getLang();
   let html = '';
   for (const it of items) {
-    html += `<div class="item"><p class="q">${it.t}</p><div class="likert">`;
+    html += `<div class="item"><p class="q">${it[lang] || it.en}</p><div class="likert">`;
     for (let v = 1; v <= 5; v++) {
       html += `<label class="lk"><input type="radio" name="${it.n}" value="${v}" /><span>${v}</span></label>`;
     }
-    html += `</div><div class="lk-labels"><span>Strongly disagree</span><span>Strongly agree</span></div></div>`;
+    html += `</div><div class="lk-labels"><span>${t('lk.stronglyDisagree')}</span><span>${t('lk.stronglyAgree')}</span></div></div>`;
   }
   el.innerHTML = html;
 }
@@ -276,6 +282,80 @@ function checkB1() {
 }
 
 // ---------------------------------------------------------------------------
+// Language switching
+// ---------------------------------------------------------------------------
+function applyLanguage() {
+  // Capture current answers so nothing is lost when the grids re-render.
+  const radioVals = {};
+  document.querySelectorAll('input[type="radio"]:checked').forEach((r) => { radioVals[r.name] = r.value; });
+  const inputVals = {};
+  document.querySelectorAll('input[type="text"], input[type="number"], input[type="email"]').forEach((r) => { inputVals[r.name] = r.value; });
+  const textareaVals = {};
+  document.querySelectorAll('textarea').forEach((r) => { textareaVals[r.name] = r.value; });
+  const consentChecked = document.getElementById('consentBox').checked;
+
+  // Swap static text (data-i18n) and placeholders (data-i18n-placeholder).
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    el.textContent = t(el.getAttribute('data-i18n'));
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
+    el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
+  });
+
+  // Re-render all Likert grids in the new language.
+  likertGrid(PEC_ITEMS, 'pec-items');
+  likertGrid(GDS_ITEMS, 'gds-items');
+  likertGrid(TPR_ITEMS, 'tpr-items');
+  likertGrid(MV_ITEMS, 'mv-items');
+  likertGrid(DVC_ITEMS, 'dvc-items');
+  likertGrid(AC1_ITEM, 'ac1-items');
+  likertGrid(SAF_ITEMS, 'saf-items');
+  likertGrid(PSA_ITEMS, 'psa-items');
+  likertGrid(TP_ITEMS, 'tp-items');
+  likertGrid(PF_ITEMS, 'pf-items');
+  likertGrid(PSI_ITEMS, 'psi-items');
+  likertGrid(PU_ITEMS, 'pu-items');
+  likertGrid(PEOU_ITEMS, 'peou-items');
+  likertGrid(ITU_ITEMS, 'itu-items');
+  likertGrid(PE_ITEMS, 'pe-items');
+  likertGrid(SN_ITEMS, 'sn-items');
+  likertGrid(AC2_ITEM, 'ac2-items');
+  likertGrid(PI_ITEMS, 'pi-items');
+  likertGrid(RES_ITEMS, 'res-items');
+
+  // Re-render the stimulus in the new language.
+  if (assignedCell) renderStimulus(assignedCell, document.getElementById('stimulus'));
+
+  // Restore captured answers.
+  Object.keys(radioVals).forEach((name) => {
+    const el = document.querySelector(`input[name="${name}"][value="${radioVals[name]}"]`);
+    if (el) el.checked = true;
+  });
+  Object.keys(inputVals).forEach((name) => {
+    const el = document.querySelector(`input[name="${name}"]`);
+    if (el) el.value = inputVals[name];
+  });
+  Object.keys(textareaVals).forEach((name) => {
+    const el = document.querySelector(`textarea[name="${name}"]`);
+    if (el) el.value = textareaVals[name];
+  });
+  document.getElementById('consentBox').checked = consentChecked;
+
+  // Re-apply the conditional G4 visibility.
+  document.getElementById('g4-wrap').style.display = (radioVals['g3_wtp'] === '0') ? 'block' : 'none';
+}
+
+function wireLanguageToggle() {
+  document.querySelectorAll('.lang-btn').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      setLang(btn.getAttribute('data-lang'));
+      document.querySelectorAll('.lang-btn').forEach((b) => b.classList.toggle('active', b === btn));
+      applyLanguage();
+    });
+  });
+}
+
+// ---------------------------------------------------------------------------
 // Randomization (server-side assignment, cached in localStorage)
 // ---------------------------------------------------------------------------
 async function ensureCell() {
@@ -297,6 +377,7 @@ async function submitSurvey() {
   const cell = window.CELLS[assignedCell];
   payload.frame = cell.frame;
   payload.cobrand = cell.cobrand;
+  payload.lang = getLang();
   payload.completion_time_sec = Math.round((Date.now() - startTime) / 1000);
 
   // All radio groups
@@ -394,5 +475,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   });
 
+  wireLanguageToggle();
   show('s-consent');
 });

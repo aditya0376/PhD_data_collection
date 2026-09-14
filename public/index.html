@@ -8,8 +8,12 @@
 </head>
 <body>
   <header class="site-header">
-    <h1>Understanding Consumer Perception of Product Transparency</h1>
-    <p>Centre for Management Studies, NERIST</p>
+    <h1 data-i18n="site.title">Understanding Consumer Perception of Product Transparency</h1>
+    <p data-i18n="site.subtitle">Centre for Management Studies, NERIST</p>
+    <div class="lang-toggle" role="group" aria-label="Language / ভাষা">
+      <button type="button" class="lang-btn active" data-lang="en" data-i18n="lang.english">English</button>
+      <button type="button" class="lang-btn" data-lang="as" data-i18n="lang.assamese">অসমীয়া</button>
+    </div>
   </header>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
@@ -20,303 +24,306 @@
 
       <!-- STEP: Consent (Section A) -->
       <section class="step" id="s-consent">
-        <h2>Information and Consent</h2>
-        <p class="instr">You are invited to take part in a research study conducted by Mr. Aditya Man Borborah, Assistant Professor, Assam Women's University, as part of doctoral research at the Centre for Management Studies, North Eastern Regional Institute of Science and Technology (NERIST).</p>
+        <h2 data-i18n="consent.title">Information and Consent</h2>
+        <p class="instr" data-i18n="consent.intro">You are invited to take part in a research study conducted by Mr. Aditya Man Borborah, Assistant Professor, Assam Women's University, as part of doctoral research at the Centre for Management Studies, North Eastern Regional Institute of Science and Technology (NERIST).</p>
         <div class="consent-block">
-          <p><strong>What the study is about.</strong> This study examines how parents respond to different kinds of information printed on packaging for children's products, and how that information affects their buying decisions.</p>
-          <p><strong>What you will be asked to do.</strong> You will answer some questions about yourself and your shopping habits, read a short description of a product label, and then answer questions about your reactions to it. The survey takes about 18 to 20 minutes.</p>
-          <p><strong>Voluntary participation.</strong> Your participation is entirely voluntary. You may skip any question or stop at any point without giving a reason and without any consequence.</p>
-          <p><strong>Confidentiality.</strong> Your responses are anonymous. No information that could identify you will be collected or stored. Data will be reported only in aggregate form and will be used solely for academic research and publication. Data will be retained only as long as required for the research and then securely deleted, in line with the Digital Personal Data Protection Act, 2023.</p>
-          <p><strong>Risks and benefits.</strong> There are no foreseeable risks to participating. There is no payment for participation.</p>
-          <p><strong>Ethics approval.</strong> This study has been approved by the Institutional Research Ethics Committee, NERIST [approval reference: ____________].</p>
-          <p><strong>Questions.</strong> For any questions about this research, contact: aditya@awu.ac.in (email) / +91-9707156777 (phone).</p>
+          <p data-i18n="consent.about"><strong>What the study is about.</strong> This study examines how parents respond to different kinds of information printed on packaging for children's products, and how that information affects their buying decisions.</p>
+          <p data-i18n="consent.asked"><strong>What you will be asked to do.</strong> You will answer some questions about yourself and your shopping habits, read a short description of a product label, and then answer questions about your reactions to it. The survey takes about 18 to 20 minutes.</p>
+          <p data-i18n="consent.voluntary"><strong>Voluntary participation.</strong> Your participation is entirely voluntary. You may skip any question or stop at any point without giving a reason and without any consequence.</p>
+          <p data-i18n="consent.confidentiality"><strong>Confidentiality.</strong> Your responses are anonymous. No information that could identify you will be collected or stored. Data will be reported only in aggregate form and will be used solely for academic research and publication. Data will be retained only as long as required for the research and then securely deleted, in line with the Digital Personal Data Protection Act, 2023.</p>
+          <p data-i18n="consent.risks"><strong>Risks and benefits.</strong> There are no foreseeable risks to participating. There is no payment for participation.</p>
+          <p data-i18n="consent.ethics"><strong>Ethics approval.</strong> This study has been approved by the Institutional Research Ethics Committee, NERIST [approval reference: ____________].</p>
+          <p data-i18n="consent.questions"><strong>Questions.</strong> For any questions about this research, contact: aditya@awu.ac.in (email) / +91-9707156777 (phone).</p>
         </div>
         <label class="consent">
           <input type="checkbox" id="consentBox" />
-          I have read and understood the information above, and I voluntarily agree to participate in this study.
+          <span data-i18n="consent.agree">I have read and understood the information above, and I voluntarily agree to participate in this study.</span>
         </label>
-        <button class="btn" onclick="go('s-b1')">Continue</button>
+        <button class="btn" onclick="go('s-b1')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: B1 screening -->
       <section class="step" id="s-b1">
-        <h2>About you</h2>
-        <p class="q">B1. Are you the parent or primary guardian of at least one child aged between 1 and 16 years?</p>
+        <h2 data-i18n="b1.title">About you</h2>
+        <p class="q" data-i18n="b1.q">B1. Are you the parent or primary guardian of at least one child aged between 1 and 16 years?</p>
         <div class="opts">
-          <label><input type="radio" name="b1" value="1" /> Yes</label>
-          <label><input type="radio" name="b1" value="0" /> No</label>
+          <label><input type="radio" name="b1" value="1" /><span data-i18n="opt.yes">Yes</span></label>
+          <label><input type="radio" name="b1" value="0" /><span data-i18n="opt.no">No</span></label>
         </div>
-        <button class="btn" onclick="checkB1()">Continue</button>
+        <button class="btn" onclick="checkB1()" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: Demographics B2-B11 -->
       <section class="step" id="s-demo">
-        <h2>About you</h2>
-        <p class="q">B2. Gender</p>
+        <h2 data-i18n="b1.title">About you</h2>
+        <p class="q" data-i18n="b2.q">B2. Gender</p>
         <div class="opts">
-          <label><input type="radio" name="b2" value="1" /> Male</label>
-          <label><input type="radio" name="b2" value="2" /> Female</label>
-          <label><input type="radio" name="b2" value="3" /> Prefer not to say</label>
+          <label><input type="radio" name="b2" value="1" /><span data-i18n="opt.male">Male</span></label>
+          <label><input type="radio" name="b2" value="2" /><span data-i18n="opt.female">Female</span></label>
+          <label><input type="radio" name="b2" value="3" /><span data-i18n="opt.preferNot">Prefer not to say</span></label>
         </div>
 
-        <p class="q">B3. Age</p>
+        <p class="q" data-i18n="b3.q">B3. Age</p>
         <div class="opts">
-          <label><input type="radio" name="b3" value="1" /> Under 25</label>
-          <label><input type="radio" name="b3" value="2" /> 25–34</label>
-          <label><input type="radio" name="b3" value="3" /> 35–44</label>
-          <label><input type="radio" name="b3" value="4" /> 45–54</label>
-          <label><input type="radio" name="b3" value="5" /> 55 or above</label>
+          <label><input type="radio" name="b3" value="1" /><span data-i18n="opt.under25">Under 25</span></label>
+          <label><input type="radio" name="b3" value="2" /><span data-i18n="opt.25_34">25–34</span></label>
+          <label><input type="radio" name="b3" value="3" /><span data-i18n="opt.35_44">35–44</span></label>
+          <label><input type="radio" name="b3" value="4" /><span data-i18n="opt.45_54">45–54</span></label>
+          <label><input type="radio" name="b3" value="5" /><span data-i18n="opt.55plus">55 or above</span></label>
         </div>
 
-        <p class="q">B4. Highest level of education completed</p>
+        <p class="q" data-i18n="b4.q">B4. Highest level of education completed</p>
         <div class="opts">
-          <label><input type="radio" name="b4" value="1" /> Up to Class 10</label>
-          <label><input type="radio" name="b4" value="2" /> Class 12 / Higher Secondary</label>
-          <label><input type="radio" name="b4" value="3" /> Diploma / ITI</label>
-          <label><input type="radio" name="b4" value="4" /> Graduate (Bachelor's)</label>
-          <label><input type="radio" name="b4" value="5" /> Postgraduate (Master's)</label>
-          <label><input type="radio" name="b4" value="6" /> Doctorate / Professional degree</label>
+          <label><input type="radio" name="b4" value="1" /><span data-i18n="opt.upTo10">Up to Class 10</span></label>
+          <label><input type="radio" name="b4" value="2" /><span data-i18n="opt.class12">Class 12 / Higher Secondary</span></label>
+          <label><input type="radio" name="b4" value="3" /><span data-i18n="opt.diploma">Diploma / ITI</span></label>
+          <label><input type="radio" name="b4" value="4" /><span data-i18n="opt.graduate">Graduate (Bachelor's)</span></label>
+          <label><input type="radio" name="b4" value="5" /><span data-i18n="opt.postgrad">Postgraduate (Master's)</span></label>
+          <label><input type="radio" name="b4" value="6" /><span data-i18n="opt.doctorate">Doctorate / Professional degree</span></label>
         </div>
 
-        <p class="q">B5. Occupation</p>
+        <p class="q" data-i18n="b5.q">B5. Occupation</p>
         <div class="opts">
-          <label><input type="radio" name="b5" value="1" /> Private sector</label>
-          <label><input type="radio" name="b5" value="2" /> Government / public sector</label>
-          <label><input type="radio" name="b5" value="3" /> Self-employed / business</label>
-          <label><input type="radio" name="b5" value="4" /> Agriculture</label>
-          <label><input type="radio" name="b5" value="5" /> Homemaker</label>
-          <label><input type="radio" name="b5" value="6" /> Daily wage / informal work</label>
-          <label><input type="radio" name="b5" value="7" /> Student</label>
-          <label><input type="radio" name="b5" value="8" /> Other</label>
+          <label><input type="radio" name="b5" value="1" /><span data-i18n="opt.private">Private sector</span></label>
+          <label><input type="radio" name="b5" value="2" /><span data-i18n="opt.govt">Government / public sector</span></label>
+          <label><input type="radio" name="b5" value="3" /><span data-i18n="opt.selfEmployed">Self-employed / business</span></label>
+          <label><input type="radio" name="b5" value="4" /><span data-i18n="opt.agriculture">Agriculture</span></label>
+          <label><input type="radio" name="b5" value="5" /><span data-i18n="opt.homemaker">Homemaker</span></label>
+          <label><input type="radio" name="b5" value="6" /><span data-i18n="opt.dailyWage">Daily wage / informal work</span></label>
+          <label><input type="radio" name="b5" value="7" /><span data-i18n="opt.student">Student</span></label>
+          <label><input type="radio" name="b5" value="8" /><span data-i18n="opt.other">Other</span></label>
         </div>
 
-        <p class="q">B6. Approximate monthly household income (Rs)</p>
+        <p class="q" data-i18n="b6.q">B6. Approximate monthly household income (Rs)</p>
         <div class="opts">
-          <label><input type="radio" name="b6" value="1" /> Below 20,000</label>
-          <label><input type="radio" name="b6" value="2" /> 20,000–50,000</label>
-          <label><input type="radio" name="b6" value="3" /> 50,000–1,00,000</label>
-          <label><input type="radio" name="b6" value="4" /> 1,00,000–2,00,000</label>
-          <label><input type="radio" name="b6" value="5" /> Above 2,00,000</label>
-          <label><input type="radio" name="b6" value="6" /> Prefer not to say</label>
+          <label><input type="radio" name="b6" value="1" /><span data-i18n="opt.below20k">Below 20,000</span></label>
+          <label><input type="radio" name="b6" value="2" /><span data-i18n="opt.20_50k">20,000–50,000</span></label>
+          <label><input type="radio" name="b6" value="3" /><span data-i18n="opt.50_100k">50,000–1,00,000</span></label>
+          <label><input type="radio" name="b6" value="4" /><span data-i18n="opt.100_200k">1,00,000–2,00,000</span></label>
+          <label><input type="radio" name="b6" value="5" /><span data-i18n="opt.above200k">Above 2,00,000</span></label>
+          <label><input type="radio" name="b6" value="6" /><span data-i18n="opt.preferNot">Prefer not to say</span></label>
         </div>
 
-        <p class="q">B7. Number of children aged 1–16 in your household</p>
-        <input type="number" name="b7" min="0" max="20" placeholder="e.g. 2" />
+        <p class="q" data-i18n="b7.q">B7. Number of children aged 1–16 in your household</p>
+        <input type="number" name="b7" min="0" max="20" data-i18n-placeholder="b7.placeholder" placeholder="e.g. 2" />
 
-        <p class="q">B8. How many of your children are in each age group?</p>
+        <p class="q" data-i18n="b8.q">B8. How many of your children are in each age group?</p>
         <div class="num-row">
           <div class="num-field">
-            <label for="b8_1">Aged 1–5</label>
+            <label for="b8_1" data-i18n="b8.1_5">Aged 1–5</label>
             <input type="number" id="b8_1" name="b8_1" min="0" max="15" value="0" />
           </div>
           <div class="num-field">
-            <label for="b8_2">Aged 6–10</label>
+            <label for="b8_2" data-i18n="b8.6_10">Aged 6–10</label>
             <input type="number" id="b8_2" name="b8_2" min="0" max="15" value="0" />
           </div>
           <div class="num-field">
-            <label for="b8_3">Aged 11–16</label>
+            <label for="b8_3" data-i18n="b8.11_16">Aged 11–16</label>
             <input type="number" id="b8_3" name="b8_3" min="0" max="15" value="0" />
           </div>
         </div>
 
-        <p class="q">B9. Where do you live?</p>
+        <p class="q" data-i18n="b9.q">B9. Where do you live?</p>
         <div class="opts">
-          <label><input type="radio" name="b9" value="1" /> Urban (town or city)</label>
-          <label><input type="radio" name="b9" value="2" /> Semi-urban</label>
-          <label><input type="radio" name="b9" value="3" /> Rural / village</label>
+          <label><input type="radio" name="b9" value="1" /><span data-i18n="opt.urban">Urban (town or city)</span></label>
+          <label><input type="radio" name="b9" value="2" /><span data-i18n="opt.semiUrban">Semi-urban</span></label>
+          <label><input type="radio" name="b9" value="3" /><span data-i18n="opt.rural">Rural / village</span></label>
         </div>
 
-        <p class="q">B10. How often do you scan QR codes printed on product packages?</p>
+        <p class="q" data-i18n="b10.q">B10. How often do you scan QR codes printed on product packages?</p>
         <div class="opts">
-          <label><input type="radio" name="b10" value="1" /> Never</label>
-          <label><input type="radio" name="b10" value="2" /> Once or twice ever</label>
-          <label><input type="radio" name="b10" value="3" /> Sometimes</label>
-          <label><input type="radio" name="b10" value="4" /> Often</label>
-          <label><input type="radio" name="b10" value="5" /> Almost every time I can</label>
+          <label><input type="radio" name="b10" value="1" /><span data-i18n="opt.never">Never</span></label>
+          <label><input type="radio" name="b10" value="2" /><span data-i18n="opt.onceTwice">Once or twice ever</span></label>
+          <label><input type="radio" name="b10" value="3" /><span data-i18n="opt.sometimes">Sometimes</span></label>
+          <label><input type="radio" name="b10" value="4" /><span data-i18n="opt.often">Often</span></label>
+          <label><input type="radio" name="b10" value="5" /><span data-i18n="opt.almostEvery">Almost every time I can</span></label>
         </div>
 
-        <p class="q">B11. Who usually buys packaged food, clothing or toys for your child?</p>
+        <p class="q" data-i18n="b11.q">B11. Who usually buys packaged food, clothing or toys for your child?</p>
         <div class="opts">
-          <label><input type="radio" name="b11" value="1" /> Mostly me</label>
-          <label><input type="radio" name="b11" value="2" /> Mostly my spouse/partner</label>
-          <label><input type="radio" name="b11" value="3" /> Shared roughly equally</label>
-          <label><input type="radio" name="b11" value="4" /> Another family member</label>
+          <label><input type="radio" name="b11" value="1" /><span data-i18n="opt.mostlyMe">Mostly me</span></label>
+          <label><input type="radio" name="b11" value="2" /><span data-i18n="opt.mostlySpouse">Mostly my spouse/partner</span></label>
+          <label><input type="radio" name="b11" value="3" /><span data-i18n="opt.shared">Shared roughly equally</span></label>
+          <label><input type="radio" name="b11" value="4" /><span data-i18n="opt.anotherFamily">Another family member</span></label>
         </div>
 
-        <button class="btn" onclick="go('s-habits')">Continue</button>
+        <button class="btn" onclick="go('s-habits')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: B12-B15 digital access, self-efficacy, time pressure, marker -->
       <section class="step" id="s-habits">
-        <h2>Shopping and Digital Habits</h2>
-        <p class="instr">Please indicate how much you agree or disagree with each statement below. There are no right or wrong answers.</p>
-        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+        <h2 data-i18n="habits.title">Shopping and Digital Habits</h2>
+        <p class="instr" data-i18n="habits.instr">Please indicate how much you agree or disagree with each statement below. There are no right or wrong answers.</p>
+        <p class="scale-note" data-i18n="scale.note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
 
-        <h3>Your digital access</h3>
+        <h3 data-i18n="habits.digitalAccess">Your digital access</h3>
         <div id="pec-items"></div>
 
-        <h3>Your confidence with technology</h3>
+        <h3 data-i18n="habits.techConfidence">Your confidence with technology</h3>
         <div id="gds-items"></div>
 
-        <h3>Your shopping habits</h3>
+        <h3 data-i18n="habits.shopping">Your shopping habits</h3>
         <div id="tpr-items"></div>
 
-        <h3>A few final statements</h3>
+        <h3 data-i18n="habits.final">A few final statements</h3>
         <div id="mv-items"></div>
 
-        <button class="btn" onclick="go('s-c')">Continue</button>
+        <button class="btn" onclick="go('s-c')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: Section C (DVC, AC1, SAF) - BEFORE the scenario -->
       <section class="step" id="s-c">
-        <h2>Your Background Views</h2>
-        <p class="instr">Please indicate how much you agree or disagree with each statement below. There are no right or wrong answers.</p>
-        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+        <h2 data-i18n="c.title">Your Background Views</h2>
+        <p class="instr" data-i18n="c.instr">Please indicate how much you agree or disagree with each statement below. There are no right or wrong answers.</p>
+        <p class="scale-note" data-i18n="scale.note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
 
-        <h3>Confidence in checking products digitally</h3>
-        <p class="instr">The next statements are about checking a product by scanning a code on the package with your phone.</p>
+        <h3 data-i18n="c.dvcHeading">Confidence in checking products digitally</h3>
+        <p class="instr" data-i18n="c.dvcInstr">The next statements are about checking a product by scanning a code on the package with your phone.</p>
         <div id="dvc-items"></div>
 
         <div id="ac1-items"></div>
 
-        <h3>Shopping for your child</h3>
+        <h3 data-i18n="c.safHeading">Shopping for your child</h3>
         <div id="saf-items"></div>
 
-        <button class="btn" onclick="go('s-stimulus')">Continue</button>
+        <button class="btn" onclick="go('s-stimulus')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: Section D - Product scenario + manipulation checks (right after stimulus) -->
       <section class="step" id="s-stimulus">
-        <h2>Product Scenario</h2>
-        <p class="instr">Please read the following carefully.</p>
-        <p class="instr">Imagine you are buying a packet of biscuits for your child, priced at Rs 50. The package carries a code that you can scan with your phone. When you scan it, the screen below appears.</p>
+        <h2 data-i18n="stimulus.title">Product Scenario</h2>
+        <p class="instr" data-i18n="stimulus.instr">Please read the following carefully.</p>
+        <p class="instr" data-i18n="stimulus.scenario">Imagine you are buying a packet of biscuits for your child, priced at Rs 50. The package carries a code that you can scan with your phone. When you scan it, the screen below appears.</p>
         <div id="stimulus"></div>
 
-        <p class="q">H1. The screen you saw mainly showed:</p>
+        <p class="q" data-i18n="h1.q">H1. The screen you saw mainly showed:</p>
         <div class="opts">
-          <label><input type="radio" name="mc_a" value="a" /> How the price is shared among the people involved</label>
-          <label><input type="radio" name="mc_a" value="b" /> Which stages of the journey had been checked</label>
-          <label><input type="radio" name="mc_a" value="c" /> Only the ingredients and the price</label>
-          <label><input type="radio" name="mc_a" value="d" /> That the product was made in the same district where it is sold</label>
+          <label><input type="radio" name="mc_a" value="a" /><span data-i18n="h1.a">How the price is shared among the people involved</span></label>
+          <label><input type="radio" name="mc_a" value="b" /><span data-i18n="h1.b">Which stages of the journey had been checked</span></label>
+          <label><input type="radio" name="mc_a" value="c" /><span data-i18n="h1.c">Only the ingredients and the price</span></label>
+          <label><input type="radio" name="mc_a" value="d" /><span data-i18n="h1.d">That the product was made in the same district where it is sold</span></label>
         </div>
 
-        <p class="q">H2. Did the screen show any government certification marks?</p>
+        <p class="q" data-i18n="h2.q">H2. Did the screen show any government certification marks?</p>
         <div class="opts">
-          <label><input type="radio" name="mc_b" value="Yes" /> Yes</label>
-          <label><input type="radio" name="mc_b" value="No" /> No</label>
-          <label><input type="radio" name="mc_b" value="Not sure" /> Not sure</label>
+          <label><input type="radio" name="mc_b" value="Yes" /><span data-i18n="opt.yes">Yes</span></label>
+          <label><input type="radio" name="mc_b" value="No" /><span data-i18n="opt.no">No</span></label>
+          <label><input type="radio" name="mc_b" value="Not sure" /><span data-i18n="opt.notSure">Not sure</span></label>
         </div>
 
-        <button class="btn" onclick="go('s-e')">Continue</button>
+        <button class="btn" onclick="go('s-e')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: Section E (PSA, TP, PF, PSI) -->
       <section class="step" id="s-e">
-        <h2>Your Reactions to the Product</h2>
-        <p class="instr">The remaining questions refer to <strong>the packet of biscuits you saw on the screen above</strong>. Please answer thinking about buying this product for your child.</p>
-        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+        <h2 data-i18n="e.title">Your Reactions to the Product</h2>
+        <p class="instr" data-i18n="e.instr">The remaining questions refer to <strong>the packet of biscuits you saw on the screen above</strong>. Please answer thinking about buying this product for your child.</p>
+        <p class="scale-note" data-i18n="scale.note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
 
-        <h3>What the information shows</h3>
+        <h3 data-i18n="e.psaHeading">What the information shows</h3>
         <div id="psa-items"></div>
 
-        <h3>Trust in the product source</h3>
+        <h3 data-i18n="e.tpHeading">Trust in the product source</h3>
         <div id="tp-items"></div>
 
-        <h3>Fairness</h3>
+        <h3 data-i18n="e.pfHeading">Fairness</h3>
         <div id="pf-items"></div>
 
-        <h3>What your purchase does for others</h3>
+        <h3 data-i18n="e.psiHeading">What your purchase does for others</h3>
         <div id="psi-items"></div>
 
-        <button class="btn" onclick="go('s-f')">Continue</button>
+        <button class="btn" onclick="go('s-f')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: Section F (PU, PEOU, ITU, PE, SN, AC2) - technology in general -->
       <section class="step" id="s-f">
-        <h2>The Checking Technology</h2>
-        <p class="instr">The following questions ask about the technology in general — that is, scanning a code on a product package with your phone to check the product — not about this specific product.</p>
-        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+        <h2 data-i18n="f.title">The Checking Technology</h2>
+        <p class="instr" data-i18n="f.instr">The following questions ask about the technology in general — that is, scanning a code on a product package with your phone to check the product — not about this specific product.</p>
+        <p class="scale-note" data-i18n="scale.note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
 
-        <h3>How useful it would be</h3>
+        <h3 data-i18n="f.puHeading">How useful it would be</h3>
         <div id="pu-items"></div>
 
-        <h3>How easy it would be</h3>
+        <h3 data-i18n="f.peouHeading">How easy it would be</h3>
         <div id="peou-items"></div>
 
-        <h3>Whether you would use it</h3>
+        <h3 data-i18n="f.ituHeading">Whether you would use it</h3>
         <div id="itu-items"></div>
 
-        <h3>How it would feel</h3>
+        <h3 data-i18n="f.peHeading">How it would feel</h3>
         <div id="pe-items"></div>
 
-        <h3>People around you</h3>
+        <h3 data-i18n="f.snHeading">People around you</h3>
         <div id="sn-items"></div>
 
         <div id="ac2-items"></div>
 
-        <button class="btn" onclick="go('s-g')">Continue</button>
+        <button class="btn" onclick="go('s-g')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: Section G (PI, RES, WTP, G4 conditional, G5, email) -->
       <section class="step" id="s-g">
-        <h2>Your Buying Decision</h2>
-        <p class="instr">These questions are about <strong>the packet of biscuits you saw on the screen earlier</strong>.</p>
-        <p class="scale-note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+        <h2 data-i18n="g.title">Your Buying Decision</h2>
+        <p class="instr" data-i18n="g.instr">These questions are about <strong>the packet of biscuits you saw on the screen earlier</strong>.</p>
+        <p class="scale-note" data-i18n="scale.note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
 
-        <h3>Buying the product</h3>
-        <p class="instr">These statements are about <strong>this product as described in the information shown earlier</strong>.</p>
+        <h3 data-i18n="g.piHeading">Buying the product</h3>
+        <p class="instr" data-i18n="g.piInstr">These statements are about <strong>this product as described in the information shown earlier</strong>.</p>
         <div id="pi-items"></div>
 
-        <h3>Your views</h3>
+        <h3 data-i18n="g.resHeading">Your views</h3>
         <div id="res-items"></div>
 
-        <p class="q">G3. How much more, if anything, would you be willing to pay for this Rs 50 product compared with a similar product that does not carry this information?</p>
+        <p class="q" data-i18n="g3.q">G3. How much more, if anything, would you be willing to pay for this Rs 50 product compared with a similar product that does not carry this information?</p>
         <div class="opts">
-          <label><input type="radio" name="g3_wtp" value="0" /> Nothing</label>
-          <label><input type="radio" name="g3_wtp" value="1" /> Up to 5%</label>
-          <label><input type="radio" name="g3_wtp" value="2" /> More than 5% up to 10%</label>
-          <label><input type="radio" name="g3_wtp" value="3" /> More than 10% up to 15%</label>
-          <label><input type="radio" name="g3_wtp" value="4" /> More than 15%</label>
+          <label><input type="radio" name="g3_wtp" value="0" /><span data-i18n="opt.nothing">Nothing</span></label>
+          <label><input type="radio" name="g3_wtp" value="1" /><span data-i18n="opt.upTo5">Up to 5%</span></label>
+          <label><input type="radio" name="g3_wtp" value="2" /><span data-i18n="opt.5_10">More than 5% up to 10%</span></label>
+          <label><input type="radio" name="g3_wtp" value="3" /><span data-i18n="opt.10_15">More than 10% up to 15%</span></label>
+          <label><input type="radio" name="g3_wtp" value="4" /><span data-i18n="opt.moreThan15">More than 15%</span></label>
         </div>
 
         <div id="g4-wrap" style="display:none">
-          <p class="q">G4. If you answered "Nothing", in your own words, what is the main reason?</p>
-          <textarea name="g4_reason" rows="3" placeholder="Optional"></textarea>
+          <p class="q" data-i18n="g4.q">G4. If you answered "Nothing", in your own words, what is the main reason?</p>
+          <p class="instr" data-i18n="g4.englishNote">Please write your answer in English.</p>
+          <textarea name="g4_reason" rows="3" data-i18n-placeholder="opt.optional" placeholder="Optional"></textarea>
         </div>
 
-        <p class="q">G5. In your own words, how would knowing who benefits from your purchase affect your decision to buy products for your child?</p>
-        <textarea name="g5_comment" rows="3" placeholder="Optional"></textarea>
+        <p class="q" data-i18n="g5.q">G5. In your own words, how would knowing who benefits from your purchase affect your decision to buy products for your child?</p>
+        <p class="instr" data-i18n="g5.englishNote">Please write your answer in English.</p>
+        <textarea name="g5_comment" rows="3" data-i18n-placeholder="opt.optional" placeholder="Optional"></textarea>
 
-        <button class="btn" onclick="go('s-h')">Continue</button>
+        <button class="btn" onclick="go('s-h')" data-i18n="btn.continue">Continue</button>
       </section>
 
       <!-- STEP: Closing (email + submit) -->
       <section class="step" id="s-h">
-        <h2>Thank You</h2>
+        <h2 data-i18n="closing.title">Thank You</h2>
 
-        <p class="instr">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
-        <p class="instr">If you would like to receive a short summary of the findings when the study is complete, you may leave an email address below. This is entirely optional and will be stored separately from your responses.</p>
-        <input type="email" name="email" placeholder="Optional email" />
+        <p class="instr" data-i18n="closing.thanks">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
+        <p class="instr" data-i18n="closing.emailInstr">If you would like to receive a short summary of the findings when the study is complete, you may leave an email address below. This is entirely optional and will be stored separately from your responses.</p>
+        <input type="email" name="email" data-i18n-placeholder="closing.emailPlaceholder" placeholder="Optional email" />
 
-        <button class="btn" onclick="submitSurvey()">Submit</button>
+        <button class="btn" onclick="submitSurvey()" data-i18n="btn.submit">Submit</button>
       </section>
 
       <!-- STEP: Done -->
       <section class="step" id="s-done">
-        <h2>Thank you</h2>
-        <p>Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
-        <button class="btn" onclick="resetSurvey()">Submit another response</button>
+        <h2 data-i18n="done.title">Thank you</h2>
+        <p data-i18n="done.thanks">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
+        <button class="btn" onclick="resetSurvey()" data-i18n="btn.another">Submit another response</button>
       </section>
 
       <!-- STEP: Thank you (B1 = No) -->
       <section class="step" id="s-thankyou">
-        <h2>Thank you</h2>
-        <p>This survey is for parents who buy food products for their children. Thank you for your time.</p>
+        <h2 data-i18n="thankyou.title">Thank you</h2>
+        <p data-i18n="thankyou.msg">This survey is for parents who buy food products for their children. Thank you for your time.</p>
       </section>
 
     </div>
   </div>
 
+  <script src="i18n.js"></script>
   <script src="stimuli.js"></script>
   <script src="app.js"></script>
 </body>

@@ -28,21 +28,21 @@ const MC_CORRECT = {
 // sentence and an identical Verification ID. Only the middle content block
 // varies by FRAME, and only the certification block varies by COBRAND. Both
 // middle blocks list six entities so visual density matches.
+//
+// All text is pulled through the i18n layer (t()) so the stimulus renders in
+// the participant's chosen language. The card title is frame-aware: technical
+// cells show "VERIFIED PRODUCT RECORD", beneficiary cells show "VERIFIED
+// VALUE RECORD" (per the design protocol §2).
 // ---------------------------------------------------------------------------
-const SHARED_OPEN =
-  'Every step of this product\u2019s journey \u2014 from farm to shelf \u2014 is stored in a secure digital record that cannot be changed once entered.';
-const SHARED_CLOSE =
-  'This record is tamper-resistant. It cannot be altered by anyone in the supply chain.';
-
-const STAGES = ['Harvest', 'Processing', 'Packaging', 'Storage', 'Transport', 'Retail'];
+const STAGE_KEYS = ['stage.harvest', 'stage.processing', 'stage.packaging', 'stage.storage', 'stage.transport', 'stage.retail'];
 
 const SHARES = [
-  { label: 'Farmer', pct: 30, color: '#2e9e5b' },
-  { label: 'Processing unit', pct: 20, color: '#3b82c4' },
-  { label: 'Transport co-operative', pct: 10, color: '#f0a03a' },
-  { label: 'Retailer', pct: 25, color: '#8e5bbf' },
-  { label: 'Community fund', pct: 5, color: '#e06a8a' },
-  { label: 'Company', pct: 10, color: '#9aa0a6' }
+  { key: 'share.farmer', pct: 30, color: '#2e9e5b' },
+  { key: 'share.processing', pct: 20, color: '#3b82c4' },
+  { key: 'share.transport', pct: 10, color: '#f0a03a' },
+  { key: 'share.retailer', pct: 25, color: '#8e5bbf' },
+  { key: 'share.community', pct: 5, color: '#e06a8a' },
+  { key: 'share.company', pct: 10, color: '#9aa0a6' }
 ];
 
 function buildStimulus(cellId) {
@@ -54,28 +54,28 @@ function buildStimulus(cellId) {
   // Middle content block - the only part that varies by FRAME.
   let middle;
   if (isTech) {
-    const checks = STAGES.map(
-      (s) => `<div class="check"><span class="tick">&#10003;</span>${s}: verified</div>`
+    const checks = STAGE_KEYS.map(
+      (k) => `<div class="check"><span class="tick">&#10003;</span>${t(k)}: ${t('stim.verified')}</div>`
     ).join('');
     middle = `
       <div class="stage-grid">${checks}</div>
-      <p class="stim-line">This record confirms that the product is genuine and has not been substituted or relabelled at any stage.</p>`;
+      <p class="stim-line">${t('stim.techLine')}</p>`;
   } else {
     const bar = SHARES.map(
-      (s) => `<div class="seg" style="width:${s.pct}%;background:${s.color}" title="${s.label} \u2014 ${s.pct}%"></div>`
+      (s) => `<div class="seg" style="width:${s.pct}%;background:${s.color}" title="${t(s.key)} \u2014 ${s.pct}%"></div>`
     ).join('');
     const legend = SHARES.map(
-      (s) => `<div class="lg"><span class="dot" style="background:${s.color}"></span>${s.label} \u2014 ${s.pct}%</div>`
+      (s) => `<div class="lg"><span class="dot" style="background:${s.color}"></span>${t(s.key)} \u2014 ${s.pct}%</div>`
     ).join('');
     middle = `
       <div class="share-bar">${bar}</div>
       <div class="share-legend">${legend}</div>
-      <p class="stim-line">This record shows how the price you pay is shared among the people involved at each stage.</p>`;
+      <p class="stim-line">${t('stim.benLine')}</p>`;
   }
 
   // Certification block - the only part that varies by COBRAND.
   const cobrand = hasCo
-    ? `<p class="stim-line co-brand-line">The brand behind this product is FSSAI-licensed and AGMARK-certified.</p>
+    ? `<p class="stim-line co-brand-line">${t('stim.coBrandLine')}</p>
        <div class="cobrand-row">
          <img class="cobrand-logo" src="logos/fssai.png" alt="FSSAI mark" title="FSSAI mark" />
          <img class="cobrand-logo" src="logos/agmark.png" alt="AGMARK mark" title="AGMARK mark" />
@@ -86,13 +86,13 @@ function buildStimulus(cellId) {
     <div class="phone-card">
       <div class="card-head">
         <span class="head-icon">&#128196;</span>
-        <span class="head-title">VERIFIED PRODUCT RECORD</span>
+        <span class="head-title">${t(isTech ? 'stim.head.product' : 'stim.head.value')}</span>
       </div>
-      <p class="stim-line">${SHARED_OPEN}</p>
+      <p class="stim-line">${t('stim.sharedOpen')}</p>
       ${middle}
       ${cobrand}
-      <p class="stim-line">${SHARED_CLOSE}</p>
-      <div class="ver-id">Verification ID: TX-4471</div>
+      <p class="stim-line">${t('stim.sharedClose')}</p>
+      <div class="ver-id">${t('stim.verId')}</div>
     </div>`;
 }
 

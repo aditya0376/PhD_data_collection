@@ -35,9 +35,10 @@ http://localhost:3000/admin.html (admin).
 | `/api/export`    | Download `responses.xlsx`                            |
 | `/api/export.csv`| Download `responses.csv`                             |
 
-## Excel / Google Sheet columns (v3.2, 92 columns)
+## Excel / Google Sheet columns (v3.2, 93 columns)
 
-`id, submitted_at, cell_id, frame, cobrand, completion_time_sec,
+`id, submitted_at, cell_id, frame, cobrand, version, lang,
+completion_time_sec,
 b1, b2, b3, b4, b5, b6, b7, b8_1, b8_2, b8_3, b9, b10, b11,
 pec1..pec3, gds1..gds3, tpr1..tpr3, mv1..mv3,
 dvc1..dvc4, ac1, saf1..saf4,
@@ -47,6 +48,7 @@ pi1..pi4, res1..res4, g3_wtp, g4_reason, g5_comment,
 mc_a, mc_b, email`
 
 - `frame` = 0 (Technical) / 1 (Beneficiary); `cobrand` = 0 (Absent) / 1 (Present).
+- `lang` = the language the participant completed the survey in: `en` (English) or `as` (Assamese). Recorded so you can test measurement invariance across language groups and use it as a covariate.
 - `b8_1 / b8_2 / b8_3` = number of children aged 1–5 / 6–10 / 11–16 (B8).
 - `mc_a` / `mc_b` are the manipulation checks (Section H, recorded, not blocking).
 - `ac1` (select "Disagree" = 2) and `ac2` (select "Strongly agree" = 5) are
@@ -55,6 +57,26 @@ mc_a, mc_b, email`
 - `g3_wtp` = willingness-to-pay band (0 = Nothing … 4 = More than 15%);
   `g4_reason` is shown only when `g3_wtp` = 0.
 - `completion_time_sec` supports the speed screening rule (< 1/3 pilot median → exclude).
+
+## Language toggle (English / Assamese)
+
+The participant page (`/`) offers a **language toggle** in the header (English ⇄
+অসমীয়া). Participants can switch at any point; their answers are preserved
+across the switch. The chosen language is stored in the `lang` column.
+
+- All survey text, Likert items, and the four experimental stimuli are
+  translated. The stimulus card title is frame-aware: technical cells show
+  "VERIFIED PRODUCT RECORD", beneficiary cells show "VERIFIED VALUE RECORD".
+- **Translation status:** the Assamese strings in `public/i18n.js` and
+  `public/app.js` are **DRAFT translations** prepared for the build. They MUST
+  be verified by a bilingual researcher and passed through the forward
+  translation / blind back-translation / third-reviewer reconciliation
+  procedure (design protocol §7.3) BEFORE fielding. To revise, edit the `as`
+  block in `public/i18n.js` and the `as` fields in `public/app.js` — no code
+  changes are needed.
+- **Analysis note:** because respondents self-select their language, test
+  configural/metric/scalar invariance across the `en` and `as` groups (in
+  addition to across the four cells) and treat `lang` as a covariate.
 
 ## Deploying to a free server
 

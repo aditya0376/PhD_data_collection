@@ -33,6 +33,7 @@ const SCHEMA = [
   { key: 'frame', header: 'frame' },
   { key: 'cobrand', header: 'cobrand' },
   { key: 'version', header: 'version' },
+  { key: 'lang', header: 'lang' },
   { key: 'completion_time_sec', header: 'completion_time_sec' },
   // B1-B11 demographics
   { key: 'b1', header: 'B1_ParentGuardian_1to16' },
