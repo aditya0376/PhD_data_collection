@@ -318,6 +318,14 @@ app.post('/api/submit', (req, res) => {
   const data = req.body || {};
   if (!data.cell_id) return res.status(400).json({ error: 'missing cell_id' });
 
+  // Derive the condition if the caller omitted it, so a submission without
+  // frame/cobrand can never leave those analysis columns blank.
+  const cell = Number(data.cell_id);
+  if (cell in FRAME_BY_CELL) {
+    if (data.frame === undefined || data.frame === '') data.frame = FRAME_BY_CELL[cell];
+    if (data.cobrand === undefined || data.cobrand === '') data.cobrand = COBRAND_BY_CELL[cell];
+  }
+
   writeQueue = writeQueue
     .then(async () => {
       const { wb, ws } = await getSheet();
