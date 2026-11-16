@@ -310,7 +310,15 @@ app.get('/api/counts', async (req, res) => {
 
 // Diagnostics for the storage pipeline (admin page uses this).
 app.get('/api/status', (req, res) => {
-  res.json({ sheet: sheets.status(), dataFile: fs.existsSync(DATA_FILE) });
+  res.json({
+    sheet: sheets.status(),
+    dataFile: fs.existsSync(DATA_FILE),
+    // Which build is actually running: Render injects RENDER_GIT_COMMIT at
+    // deploy time, and startedAt proves whether this process has restarted.
+    commit: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || null,
+    startedAt: new Date(Date.now() - Math.round(process.uptime() * 1000)).toISOString(),
+    uptimeSec: Math.round(process.uptime())
+  });
 });
 
 // Append one response row to the central Excel file.
