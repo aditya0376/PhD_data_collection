@@ -99,9 +99,18 @@ async function readRows(file) {
     const idKey = [flat.submitted_at, flat.cell_id, flat.email].join('|');
     if (seen.has(idKey)) { console.log('skip (already in sheet):', idKey); continue; }
     toAppend.push(SCHEMA_HEADERS.map((h) => {
-      const v = flat[h];
+      let v = flat[h];
       if (v === undefined || v === null) return '';
-      return v instanceof Date ? v.toISOString() : String(v);
+      if (v instanceof Date) return v.toISOString();
+      // ExcelJS can hand back rich objects (hyperlink, formula, rich text).
+      if (typeof v === 'object') {
+        if (v instanceof Object && 'result' in v) return v.result;
+        if ('text' in v) return v.text;
+        if ('richText' in v) return v.richText.map((t) => t.text).join('');
+        return String(v);
+      }
+      // Keep numbers as numbers so the sheet is analysis-ready.
+      return v;
     }));
     seen.add(idKey);
   }
