@@ -20,6 +20,8 @@ const { google } = require('googleapis');
 let sheetsClient = null;
 let sheetId = null;
 let headerWritten = false;
+let lastError = null;
+let lastOkAt = null;
 
 function init(columns) {
   const keySetting = process.env.GOOGLE_SERVICE_ACCOUNT_KEY;
@@ -67,13 +69,17 @@ function init(columns) {
 
 async function ensureHeader(columns) {
   if (!sheetsClient || headerWritten) return;
-  // Read the entire first row (range '1:1' is width-independent).
+  // Read the whole tab: we need to know whether any response rows already
+  // exist before deciding what to do with a mismatched header.
   const res = await sheetsClient.spreadsheets.values.get({
     spreadsheetId: sheetId,
-    range: 'Responses!1:1'
+    range: 'Responses'
   });
-  const existing = res.data.values && res.data.values[0];
-  if (!existing || existing.length === 0) {
+  const rows = res.data.values || [];
+  const existing = rows[0] || [];
+  const dataRows = rows.length > 1 ? rows.length - 1 : 0;
+
+  if (existing.length === 0) {
     await sheetsClient.spreadsheets.values.append({
       spreadsheetId: sheetId,
       range: 'Responses!A1',
@@ -81,24 +87,54 @@ async function ensureHeader(columns) {
       insertDataOption: 'INSERT_ROWS',
       requestBody: { values: [columns] }
     });
-  } else {
-    // Refuse to append if the stored header does not match the current
-    // instrument schema - misaligned rows would corrupt the dataset.
-    const matches = columns.length === existing.length &&
-      columns.every((c, i) => existing[i] === c);
-    if (!matches) {
-      throw new Error(
-        'Google Sheet header does not match the v3.2 instrument schema. ' +
-        'Clear the Responses tab (or rename it) so a fresh header can be written, then restart the server.'
-      );
-    }
+    headerWritten = true;
+    return;
   }
-  headerWritten = true;
+
+  const matches = columns.length === existing.length &&
+    columns.every((c, i) => existing[i] === c);
+  if (matches) {
+    headerWritten = true;
+    return;
+  }
+
+  // Header no longer matches the instrument (e.g. a column was added).
+  // Safe to repair automatically only when the stored header is clearly the
+  // same instrument (nearly all column names still occur) AND no response
+  // rows exist yet. Anything else still refuses, because rewriting could
+  // misalign or destroy existing data.
+  const shared = existing.filter((c) => columns.includes(c)).length;
+  const overlap = shared / Math.max(existing.length, 1);
+  if (dataRows === 0 && overlap >= 0.8) {
+    await sheetsClient.spreadsheets.values.update({
+      spreadsheetId: sheetId,
+      range: 'Responses!A1',
+      valueInputOption: 'RAW',
+      requestBody: { values: [columns] }
+    });
+    console.warn(
+      '[sheets] stored header was stale (no data rows); rewrote it to the current ' +
+      `${columns.length}-column schema.`
+    );
+    headerWritten = true;
+    return;
+  }
+
+  throw new Error(
+    'Google Sheet header does not match the current instrument schema (' +
+    `sheet has ${existing.length} columns, this build expects ${columns.length}, ` +
+    `only ${shared} name(s) shared) and the tab contains ${dataRows} response row(s). ` +
+    'Export those rows first, clear the Responses tab (A1:ZZ), then restart the server ' +
+    'so a fresh header can be written.'
+  );
 }
 
 // Append one response row. Returns true on success, false on any failure.
 async function appendRow(values, columns) {
-  if (!sheetsClient) return false;
+  if (!sheetsClient) {
+    lastError = 'Google Sheets not configured';
+    return false;
+  }
   try {
     await ensureHeader(columns);
     await sheetsClient.spreadsheets.values.append({
@@ -108,8 +144,14 @@ async function appendRow(values, columns) {
       insertDataOption: 'INSERT_ROWS',
       requestBody: { values: [values] }
     });
+    lastError = null;
+    lastOkAt = new Date().toISOString();
     return true;
   } catch (err) {
+    // Force a fresh header check on the next submission instead of failing
+    // silently forever.
+    headerWritten = false;
+    lastError = err.message;
     console.error('[sheets] append failed:', err.message);
     return false;
   }
@@ -142,4 +184,15 @@ async function getCellCounts() {
   }
 }
 
-module.exports = { init, appendRow, getCellCounts };
+// Status of the Google Sheets pipeline, for the admin page / diagnostics.
+function status() {
+  return {
+    enabled: !!sheetsClient,
+    sheetId: sheetId || null,
+    headerVerified: headerWritten,
+    lastError: lastError || null,
+    lastOkAt: lastOkAt || null
+  };
+}
+
+module.exports = { init, appendRow, getCellCounts, status };

@@ -172,7 +172,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Assign a participant to the least-filled cell (block randomization).
 app.get('/api/assign', async (req, res) => {
   try {
-    const counts = await getCellCounts();
+    const { counts } = await getAuthoritativeCounts();
     const min = Math.min(...Object.values(counts));
     const candidates = [1, 2, 3, 4].filter((c) => counts[c] === min);
     const cell = candidates[Math.floor(Math.random() * candidates.length)];
@@ -183,20 +183,72 @@ app.get('/api/assign', async (req, res) => {
   }
 });
 
+// Which store is authoritative right now, plus per-cell counts.
+// The Google Sheet is the durable store, but it must never be trusted blindly:
+// if a write silently failed, the sheet holds fewer responses than the server
+// file, and reporting the sheet alone would show 0 responses.
+async function getAuthoritativeCounts() {
+  const localCounts = await getCellCounts();
+  const localTotal = Object.values(localCounts).reduce((a, b) => a + b, 0);
+
+  let sheet = null;
+  try {
+    sheet = await sheets.getCellCounts();
+  } catch (err) {
+    console.error(err);
+  }
+  const st = sheets.status();
+
+  if (sheet && sheet.total >= localTotal) {
+    return {
+      counts: sheet.counts,
+      total: sheet.total,
+      source: 'google-sheet',
+      sheet: { ok: true, total: sheet.total, lastOkAt: st.lastOkAt },
+      local: { counts: localCounts, total: localTotal },
+      warning: null
+    };
+  }
+
+  const payload = {
+    counts: localCounts,
+    total: localTotal,
+    source: 'server-file',
+    sheet: sheet
+      ? { ok: true, total: sheet.total, lastOkAt: st.lastOkAt }
+      : { ok: false, error: st.lastError || (st.enabled ? 'could not read sheet' : 'not configured') },
+    local: { counts: localCounts, total: localTotal },
+    warning: null
+  };
+
+  if (st.enabled && sheet && sheet.total < localTotal) {
+    payload.warning =
+      (localTotal - sheet.total) + ' response(s) exist only in the temporary server file, not in the ' +
+      'Google Sheet. Download them now. ' +
+      (st.lastError
+        ? 'Sheet write error: ' + st.lastError
+        : 'No sheet write was recorded by this server process (it restarted after those responses).');
+  } else if (!st.enabled && localTotal > 0) {
+    payload.warning =
+      'Google Sheets is not configured, so responses live only in the temporary server file. ' +
+      'Download them after every session.';
+  }
+
+  return payload;
+}
+
 app.get('/api/counts', async (req, res) => {
   try {
-    // Prefer the Google Sheet (source of truth for the cloud data).
-    const sheetCounts = await sheets.getCellCounts();
-    if (sheetCounts) return res.json(sheetCounts);
-
-    // Fall back to the local Excel file.
-    const counts = await getCellCounts();
-    const total = Object.values(counts).reduce((a, b) => a + b, 0);
-    res.json({ counts, total });
+    res.json(await getAuthoritativeCounts());
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'counts failed' });
   }
+});
+
+// Diagnostics for the storage pipeline (admin page uses this).
+app.get('/api/status', (req, res) => {
+  res.json({ sheet: sheets.status(), dataFile: fs.existsSync(DATA_FILE) });
 });
 
 // Append one response row to the central Excel file.
@@ -229,12 +281,16 @@ app.post('/api/submit', (req, res) => {
       await wb.xlsx.writeFile(DATA_FILE);
 
       // Also append to Google Sheets (primary cloud copy). If it fails, the
-      // local Excel row is already saved, so no response is lost.
-      await sheets.appendRow(row, HEADERS);
+      // local Excel row is already saved, so no response is lost - but the
+      // failure is reported so it cannot pass unnoticed.
+      const sheetSaved = await sheets.appendRow(row, HEADERS);
+      if (!sheetSaved) {
+        console.error(`[submit] response ${id} saved to the local file but NOT to the Google Sheet.`);
+      }
 
-      return id;
+      return { id, sheetSaved };
     })
-    .then((id) => res.json({ ok: true, id }))
+    .then(({ id, sheetSaved }) => res.json({ ok: true, id, sheetSaved }))
     .catch((err) => {
       console.error(err);
       res.status(500).json({ error: 'write failed' });

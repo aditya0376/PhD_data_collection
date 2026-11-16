@@ -21,9 +21,13 @@
       </table>
 
       <h3>Data</h3>
-      <p>Total responses: <strong id="total">0</strong></p>
+      <p>Total responses: <strong id="total">0</strong>
+        <span id="src-note" class="instr"></span>
+      </p>
+      <div id="warn" class="warn" style="display:none"></div>
       <button class="btn" onclick="location.href='/api/export'">Download Excel (.xlsx)</button>
       <button class="btn" onclick="location.href='/api/export.csv'">Download CSV (.csv)</button>
+      <p class="instr" id="store-note" style="margin-top:12px"></p>
 
       <p class="instr" style="margin-top:20px">
         <strong>Note:</strong> Co-brand cells (2 and 4) display the official FSSAI and AGMARK logos

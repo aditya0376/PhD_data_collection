@@ -16,6 +16,25 @@ async function load() {
   const data = await res.json();
   document.getElementById('total').textContent = data.total;
 
+  const srcNote = document.getElementById('src-note');
+  srcNote.textContent = data.source === 'google-sheet'
+    ? ' (from the Google Sheet)'
+    : ' (from the server file — Google Sheet not authoritative)';
+
+  const warn = document.getElementById('warn');
+  if (data.warning) {
+    warn.textContent = 'Storage warning: ' + data.warning;
+    warn.style.display = 'block';
+  } else {
+    warn.style.display = 'none';
+  }
+
+  const store = document.getElementById('store-note');
+  const s = data.sheet || {};
+  store.textContent = s.ok
+    ? `Google Sheet rows: ${s.total}` + (s.lastOkAt ? ` · last successful write ${new Date(s.lastOkAt).toLocaleString()}` : '')
+    : `Google Sheet unavailable: ${s.error || 'unknown error'}`;
+
   const tbody = document.getElementById('cell-rows');
   let html = '';
   for (const id of [1, 2, 3, 4]) {

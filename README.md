@@ -35,11 +35,10 @@ http://localhost:3000/admin.html (admin).
 | `/api/export`    | Download `responses.xlsx`                            |
 | `/api/export.csv`| Download `responses.csv`                             |
 
-## Excel / Google Sheet columns (v3.2, 93 columns)
+## Excel / Google Sheet columns (v3.2, 94 columns)
 
 `id, submitted_at, cell_id, frame, cobrand, version, lang,
-completion_time_sec,
-b1, b2, b3, b4, b5, b6, b7, b8_1, b8_2, b8_3, b9, b10, b11,
+completion_time_sec,b1, b2, b3, b4, b5, b6, b7, b8_1, b8_2, b8_3, b9, b10, b11,
 pec1..pec3, gds1..gds3, tpr1..tpr3, mv1..mv3,
 dvc1..dvc4, ac1, saf1..saf4,
 psa1..psa6, tp1..tp6, pf1..pf3, psi1..psi5,
@@ -101,11 +100,35 @@ survives restarts) **and** keep the local Excel file as a backup. See
 | `GOOGLE_SHEET_ID` | `1PKzd96paNlyvCGUJ7FgEj7a-DTgHIIlIJWsmcieTe3E` |
 | `GOOGLE_SERVICE_ACCOUNT_KEY` | the full JSON content of `service-account.json` (service account: `survey-writer@survey-writer-506118.iam.gserviceaccount.com`) |
 
-> **Important:** the `Responses` tab must be empty (or its header must match the
-> v3.2 schema) before the first submission. The server refuses to append if the
-> stored header does not match the current instrument schema, to prevent
-> misaligned rows. If you change the instrument, clear the `Responses` tab
-> (all columns, e.g. `A1:ZZ500`) before restarting.
+> **Important:** the `Responses` tab's header must match the current schema. If a
+> column is added to the instrument, the stored header goes stale and the server
+> would otherwise refuse every append (silently, from the admin page's point of
+> view). The server now repairs a stale header **automatically when the tab has
+> zero response rows** (and still refuses when rows already exist, so data is
+> never misaligned). If the tab already holds rows and you change the instrument,
+> export them, clear `A1:ZZ`, then restart.
+
+## Troubleshooting: admin page shows 0 responses
+
+The admin page reads `GET /api/counts`, which reports **both** stores:
+
+- `source: "google-sheet"` — the sheet is level with (or ahead of) the server file.
+- `source: "server-file"` — the sheet is behind; the count comes from the server's
+  own Excel file and a red **storage warning** is shown, naming the sheet error.
+
+If you see the warning, responses were written to the server's local
+`data/responses.xlsx` but **not** to the Google Sheet. That file is temporary on
+a free host (wiped on restart/redeploy), so **download the Excel/CSV immediately**
+from the admin page, then fix the sheet:
+
+1. Check `GET /api/status` — it returns the sheet's `enabled`, `lastError` and
+   `lastOkAt`.
+2. Usually the stored header is stale after an instrument change. With zero data
+   rows it now self-heals on the next submission; otherwise export the rows and
+   clear the tab.
+3. `POST /api/submit` now returns `sheetSaved: false` and logs
+   `[submit] response N saved to the local file but NOT to the Google Sheet.`
+   when the sheet write fails.
 
 If those are not set, the site falls back to local Excel only (download the file
 after each session to avoid losing data on a restart).

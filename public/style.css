@@ -234,3 +234,5 @@ h3 { color: var(--primary-dark); font-size: 1.02rem; margin: 22px 0 4px; }
 .badge.ben { background: #d1fae5; color: #065f46; }
 .badge.co { background: #fef3c7; color: #92400e; }
 .badge.noco { background: #e5e7eb; color: #374151; }
+.warn { background: #fff4f4; border: 1px solid #f3b4b4; border-left: 4px solid #d92d20; color: #7a271a;
+  padding: 10px 12px; border-radius: 6px; margin: 12px 0; font-size: .9rem; line-height: 1.45; }
