@@ -54,3 +54,86 @@ async function load() {
 }
 
 document.addEventListener('DOMContentLoaded', load);
+
+// ---------------------------------------------------------------------------
+// Manual entry: upload a .xlsx/.csv and merge its rows into the Google Sheet.
+// ---------------------------------------------------------------------------
+function readFileBase64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => resolve(String(reader.result).replace(/^data:[^,]*,/, ''));
+    reader.onerror = () => reject(new Error('could not read the file'));
+    reader.readAsDataURL(file);
+  });
+}
+
+function showImportResult(text, isError) {
+  const el = document.getElementById('import-result');
+  el.textContent = text;
+  el.style.display = 'block';
+  el.classList.toggle('err', !!isError);
+}
+
+async function runImport() {
+  const fileEl = document.getElementById('import-file');
+  const btn = document.getElementById('import-btn');
+  const dryRun = document.getElementById('import-dry').checked;
+  const file = fileEl.files && fileEl.files[0];
+
+  if (!file) {
+    showImportResult('Choose a .xlsx or .csv file first.', true);
+    return;
+  }
+  if (file.size > 25 * 1024 * 1024) {
+    showImportResult('That file is larger than 25 MB. Split it and upload the parts.', true);
+    return;
+  }
+
+  btn.disabled = true;
+  showImportResult('Uploading and checking ' + file.name + ' …', false);
+
+  try {
+    const dataBase64 = await readFileBase64(file);
+    const res = await fetch('/api/import', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: file.name, dataBase64, dryRun })
+    });
+    const data = await res.json();
+
+    if (!res.ok) {
+      showImportResult('Import failed: ' + (data.error || res.status) +
+        (data.foundHeaders ? '\n\nFirst columns seen in the file: ' + data.foundHeaders.join(', ') : '') +
+        (data.problems && data.problems.length ? '\n\n' + data.problems.join('\n') : ''), true);
+      return;
+    }
+
+    const lines = [];
+    lines.push((dryRun ? 'CHECK ONLY — nothing was written.' : 'Merged into the Google Sheet.'));
+    lines.push('File: ' + data.filename);
+    lines.push('Columns matched: ' + data.columnsMatched + ' of ' + data.columnsInSchema);
+    lines.push('Rows found in file: ' + data.rowsInFile);
+    lines.push((dryRun ? 'Rows that would be added: ' : 'Rows added: ') + data.toImport);
+    lines.push('Rows already in the sheet (skipped): ' + data.alreadyPresent);
+    if (data.imported !== undefined) lines.push('Imported: ' + data.imported);
+    if (data.message) lines.push(data.message);
+    if (data.total !== undefined) lines.push('Total responses now: ' + data.total + ' (' + data.source + ')');
+    if (data.problems && data.problems.length) {
+      lines.push('', 'Notes:');
+      data.problems.forEach((p) => lines.push('  - ' + p));
+    }
+    showImportResult(lines.join('\n'), false);
+
+    if (!dryRun) {
+      fileEl.value = '';
+      await load();
+    }
+  } catch (err) {
+    showImportResult('Upload error: ' + err.message, true);
+  } finally {
+    btn.disabled = false;
+  }
+}
+
+const importBtn = document.getElementById('import-btn');
+if (importBtn) importBtn.addEventListener('click', runImport);

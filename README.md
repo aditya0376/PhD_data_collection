@@ -32,6 +32,8 @@ http://localhost:3000/admin.html (admin).
 | `/api/assign`    | Block-randomized cell assignment (least-filled cell) |
 | `/api/counts`    | Per-cell response counts                             |
 | `/api/submit`    | Append one response row to the Excel file            |
+| `/api/import`    | Merge an uploaded `.xlsx`/`.csv` into the sheet      |
+| `/api/status`    | Sheet pipeline diagnostics (enabled, last error)     |
 | `/api/export`    | Download `responses.xlsx`                            |
 | `/api/export.csv`| Download `responses.csv`                             |
 
@@ -107,6 +109,33 @@ survives restarts) **and** keep the local Excel file as a backup. See
 > zero response rows** (and still refuses when rows already exist, so data is
 > never misaligned). If the tab already holds rows and you change the instrument,
 > export them, clear `A1:ZZ`, then restart.
+
+## Adding responses manually
+
+Two ways, both land in the same Google Sheet and show up in the admin counts:
+
+1. **Directly in the spreadsheet** — open the `Responses` tab and type a row under
+   the existing header. `/api/counts` reads the sheet, so the admin page reflects
+   it immediately (just reload the page).
+2. **Upload a file on the admin page → “Manual entry — upload a responses file”.**
+   Choose a `.xlsx` or `.csv`, optionally tick *check only, do not write*, then
+   press **Merge into Google Sheet**. The server (`POST /api/import`) reads the
+   file, matches columns **by header name** (so exports from any build work, and
+   legacy short-key exports too), and appends the rows to the sheet.
+
+Import rules:
+
+- A row needs a `cell_id` of 1–4. `frame`, `cobrand` and `version` are derived
+  from it, so an imported row cannot contradict its own condition.
+- `submitted_at` is kept if present and a valid date, otherwise the import time
+  is used. Blank cells stay blank.
+- Rows already in the sheet (same `submitted_at` + `cell_id` + `email`) are
+  skipped, so re-uploading the same file is harmless.
+- The import is refused (nothing written) if the sheet cannot be read, so
+  duplicates cannot slip in. The limit is 25 MB per file.
+- Imported rows get a blank `id` (that column is the local Excel row number).
+
+The spreadsheet: <https://docs.google.com/spreadsheets/d/1PKzd96paNlyvCGUJ7FgEj7a-DTgHIIlIJWsmcieTe3E/edit>
 
 ## Troubleshooting: admin page shows 0 responses
 

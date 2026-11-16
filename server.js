@@ -135,6 +135,68 @@ const COLUMNS = SCHEMA.map((s) => s.key);
 // Descriptive headers written to the spreadsheet.
 const HEADERS = SCHEMA.map((s) => s.header);
 
+// Readable label for which of the 4 questionnaire versions was used.
+const VERSION_LABELS = {
+  1: 'V1_Technical_NoCoBrand',
+  2: 'V2_Technical_CoBrand',
+  3: 'V3_Beneficiary_NoCoBrand',
+  4: 'V4_Beneficiary_CoBrand'
+};
+const FRAME_BY_CELL = { 1: 0, 2: 0, 3: 1, 4: 1 };
+const COBRAND_BY_CELL = { 1: 0, 2: 1, 3: 0, 4: 1 };
+
+// Columns that stay text even when they look numeric.
+const TEXT_KEYS = new Set(['submitted_at', 'version', 'lang', 'g4_reason', 'g5_comment', 'email']);
+
+// Turn an uploaded cell value into what the spreadsheet should receive.
+function coerceValue(key, v) {
+  if (v === null || v === undefined) return '';
+  if (v instanceof Date) return v.toISOString();
+  if (typeof v === 'object') {
+    if ('result' in v) return coerceValue(key, v.result); // formula
+    if ('text' in v) return coerceValue(key, v.text); // hyperlink
+    if ('richText' in v) return coerceValue(key, v.richText.map((t) => t.text).join(''));
+    return String(v);
+  }
+  if (typeof v === 'string') {
+    const t = v.trim();
+    if (t === '') return '';
+    if (!TEXT_KEYS.has(key) && !Number.isNaN(Number(t))) return Number(t);
+    return t;
+  }
+  return v;
+}
+
+// Read an uploaded workbook or CSV into a raw table (array of rows of cells).
+async function parseUpload(filename, buffer) {
+  if (/\.csv$/i.test(filename)) {
+    const text = buffer.toString('utf8').replace(/^\uFEFF/, '');
+    const rows = [];
+    let row = [], field = '', inQuotes = false;
+    for (let i = 0; i < text.length; i++) {
+      const ch = text[i];
+      if (inQuotes) {
+        if (ch === '"' && text[i + 1] === '"') { field += '"'; i++; }
+        else if (ch === '"') inQuotes = false;
+        else field += ch;
+      } else if (ch === '"') inQuotes = true;
+      else if (ch === ',') { row.push(field); field = ''; }
+      else if (ch === '\n') { row.push(field.replace(/\r$/, '')); rows.push(row); row = []; field = ''; }
+      else field += ch;
+    }
+    if (field.length || row.length) { row.push(field.replace(/\r$/, '')); rows.push(row); }
+    return rows.filter((r) => r.some((c) => String(c).trim() !== ''));
+  }
+
+  const wb = new ExcelJS.Workbook();
+  await wb.xlsx.load(buffer);
+  const ws = wb.worksheets[0];
+  if (!ws) throw new Error('the workbook has no sheets');
+  const rows = [];
+  ws.eachRow((r) => rows.push(r.values.slice(1)));
+  return rows;
+}
+
 // Serialize all Excel writes so concurrent submissions never corrupt the file.
 let writeQueue = Promise.resolve();
 
@@ -256,14 +318,6 @@ app.post('/api/submit', (req, res) => {
   const data = req.body || {};
   if (!data.cell_id) return res.status(400).json({ error: 'missing cell_id' });
 
-  // Readable label for which of the 4 questionnaire versions was used.
-  const VERSION_LABELS = {
-    1: 'V1_Technical_NoCoBrand',
-    2: 'V2_Technical_CoBrand',
-    3: 'V3_Beneficiary_NoCoBrand',
-    4: 'V4_Beneficiary_CoBrand'
-  };
-
   writeQueue = writeQueue
     .then(async () => {
       const { wb, ws } = await getSheet();
@@ -295,6 +349,170 @@ app.post('/api/submit', (req, res) => {
       console.error(err);
       res.status(500).json({ error: 'write failed' });
     });
+});
+
+// Import an uploaded sheet (.xlsx or .csv) of responses into the Google Sheet.
+// Accepts JSON { filename, dataBase64, dryRun } so no multipart dependency is
+// needed; the admin page reads the chosen file and sends it this way.
+app.post('/api/import', express.json({ limit: '25mb' }), async (req, res) => {
+  try {
+    const body = req.body || {};
+    if (!body.dataBase64) return res.status(400).json({ error: 'no file received' });
+
+    let buffer;
+    try {
+      buffer = Buffer.from(String(body.dataBase64).replace(/^data:[^,]*,/, ''), 'base64');
+    } catch (err) {
+      return res.status(400).json({ error: 'the upload could not be decoded' });
+    }
+
+    const filename = body.filename || 'upload.xlsx';
+    let table;
+    try {
+      table = await parseUpload(filename, buffer);
+    } catch (err) {
+      return res.status(400).json({ error: 'could not read the file: ' + err.message });
+    }
+    if (!table || table.length < 2) {
+      return res.status(400).json({ error: 'the file has no data rows below its header' });
+    }
+
+    // Map uploaded columns onto the schema by descriptive header OR short key,
+    // so exports from older builds (93 columns, short keys) also import.
+    const headerRow = table[0].map((h) => String(h === undefined || h === null ? '' : h).trim());
+    const idxByKey = new Map();
+    headerRow.forEach((h, i) => {
+      if (!h) return;
+      const match = SCHEMA.find((s) => s.header === h) || SCHEMA.find((s) => s.key === h);
+      if (match && !idxByKey.has(match.key)) idxByKey.set(match.key, i);
+    });
+
+    if (!idxByKey.has('cell_id')) {
+      return res.status(400).json({
+        error: 'no cell_id column found. Expected the survey export headers (e.g. cell_id, b1, …).',
+        foundHeaders: headerRow.slice(0, 12)
+      });
+    }
+    if (idxByKey.size < 3) {
+      return res.status(400).json({
+        error: 'only ' + idxByKey.size + ' recognised column(s). Upload a responses.xlsx / responses.csv ' +
+          'exported from this survey site.',
+        foundHeaders: headerRow.slice(0, 12)
+      });
+    }
+
+    const problems = [];
+    const records = [];
+    table.slice(1).forEach((r, n) => {
+      const line = n + 2; // spreadsheet row number, header is row 1
+      if (!r || r.every((c) => c === undefined || c === null || String(c).trim() === '')) return;
+      const rec = {};
+      for (const [key, i] of idxByKey) rec[key] = r[i];
+
+      const cell = Number(coerceValue('cell_id', rec.cell_id));
+      if (!(cell in FRAME_BY_CELL)) {
+        problems.push(`row ${line}: cell_id ${JSON.stringify(rec.cell_id)} is not 1-4, skipped`);
+        return;
+      }
+      rec.cell_id = cell;
+      // Frame, co-brand and version are derived from the cell so an imported
+      // row can never contradict its own condition.
+      rec.frame = FRAME_BY_CELL[cell];
+      rec.cobrand = COBRAND_BY_CELL[cell];
+      rec.version = VERSION_LABELS[cell];
+
+      if (rec.submitted_at) {
+        const t = Date.parse(rec.submitted_at);
+        if (Number.isNaN(t)) {
+          problems.push(`row ${line}: submitted_at ${JSON.stringify(rec.submitted_at)} is not a date, using the import time`);
+          rec.submitted_at = new Date().toISOString();
+        } else {
+          rec.submitted_at = new Date(t).toISOString();
+        }
+      } else {
+        rec.submitted_at = new Date().toISOString();
+      }
+      records.push(rec);
+    });
+
+    if (!records.length) {
+      return res.status(400).json({ error: 'no usable rows in the file', problems });
+    }
+
+    // Skip rows already in the sheet (same submitted_at + cell_id + email), so
+    // re-uploading the same file is harmless.
+    const existing = await sheets.getRows();
+    const sheetStatus = sheets.status();
+    if (existing === null) {
+      return res.status(502).json({
+        error: 'could not read the Google Sheet, so duplicates cannot be ruled out. Nothing was written. ' +
+          (sheetStatus.lastError || '')
+      });
+    }
+    const existingHeader = existing[0] || [];
+    const atIdx = existingHeader.indexOf('submitted_at');
+    const cellIdx = existingHeader.indexOf('cell_id');
+    const mailIdx = existingHeader.indexOf('email');
+    const seen = new Set();
+    for (let i = 1; i < existing.length; i++) {
+      const r = existing[i];
+      seen.add([r[atIdx], r[cellIdx], r[mailIdx]].join('|'));
+    }
+
+    const toAppend = [];
+    const skipped = [];
+    for (const rec of records) {
+      const key = [rec.submitted_at, rec.cell_id, rec.email === undefined ? '' : rec.email].join('|');
+      if (seen.has(key)) { skipped.push(key); continue; }
+      seen.add(key);
+      toAppend.push(COLUMNS.map((col) => (col === 'id' ? '' : coerceValue(col, rec[col]))));
+    }
+
+    const summary = {
+      ok: true,
+      dryRun: !!body.dryRun,
+      filename,
+      columnsMatched: idxByKey.size,
+      columnsInSchema: SCHEMA.length,
+      rowsInFile: records.length,
+      toImport: toAppend.length,
+      alreadyPresent: skipped.length,
+      problems
+    };
+
+    if (body.dryRun) return res.json(summary);
+    if (!toAppend.length) {
+      return res.json({ ...summary, imported: 0, message: 'every row is already in the Google Sheet' });
+    }
+
+    const result = await sheets.appendRows(toAppend, HEADERS);
+    if (!result.ok) {
+      return res.status(502).json({
+        ...summary,
+        ok: false,
+        error: 'Google Sheet write failed, nothing was imported: ' + result.error
+      });
+    }
+
+    // Best-effort mirror into the local Excel file so /api/export includes the
+    // imported rows too. The sheet already has them, so a failure here is not
+    // fatal.
+    try {
+      const { wb, ws } = await getSheet();
+      if (ws.rowCount === 0) ws.addRow(HEADERS);
+      for (const row of toAppend) ws.addRow(row);
+      await wb.xlsx.writeFile(DATA_FILE);
+    } catch (err) {
+      console.error('[import] local Excel mirror failed:', err.message);
+      summary.problems.push('rows are in the Google Sheet, but the local Excel copy could not be updated: ' + err.message);
+    }
+
+    const counts = await getAuthoritativeCounts();
+    res.json({ ...summary, imported: toAppend.length, total: counts.total, source: counts.source });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'import failed: ' + err.message });
+  }
 });
 
 // Download the Excel file.

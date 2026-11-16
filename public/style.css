@@ -236,3 +236,6 @@ h3 { color: var(--primary-dark); font-size: 1.02rem; margin: 22px 0 4px; }
 .badge.noco { background: #e5e7eb; color: #374151; }
 .warn { background: #fff4f4; border: 1px solid #f3b4b4; border-left: 4px solid #d92d20; color: #7a271a;
   padding: 10px 12px; border-radius: 6px; margin: 12px 0; font-size: .9rem; line-height: 1.45; }
+.import-result { background: #f7f9fb; border: 1px solid var(--border); border-radius: 6px; padding: 12px;
+  font-size: .85rem; line-height: 1.5; white-space: pre-wrap; word-break: break-word; overflow-x: auto; }
+.import-result.err { background: #fff4f4; border-color: #f3b4b4; color: #7a271a; }

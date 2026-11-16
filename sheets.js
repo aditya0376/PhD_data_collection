@@ -184,6 +184,50 @@ async function getCellCounts() {
   }
 }
 
+// Append many response rows in one go (used by the admin import).
+// Returns { ok, appended } or { ok: false, error }.
+async function appendRows(rows, columns) {
+  if (!sheetsClient) return { ok: false, error: 'Google Sheets not configured' };
+  if (!rows.length) return { ok: true, appended: 0 };
+  try {
+    await ensureHeader(columns);
+    // Chunk so a large import cannot exceed the API request size limit.
+    for (let i = 0; i < rows.length; i += 500) {
+      await sheetsClient.spreadsheets.values.append({
+        spreadsheetId: sheetId,
+        range: 'Responses!A1',
+        valueInputOption: 'USER_ENTERED',
+        insertDataOption: 'INSERT_ROWS',
+        requestBody: { values: rows.slice(i, i + 500) }
+      });
+    }
+    lastError = null;
+    lastOkAt = new Date().toISOString();
+    return { ok: true, appended: rows.length };
+  } catch (err) {
+    headerWritten = false;
+    lastError = err.message;
+    console.error('[sheets] batch append failed:', err.message);
+    return { ok: false, error: err.message };
+  }
+}
+
+// Every row currently in the sheet, or null when Sheets is unavailable.
+async function getRows() {
+  if (!sheetsClient) return null;
+  try {
+    const res = await sheetsClient.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: 'Responses'
+    });
+    return res.data.values || [];
+  } catch (err) {
+    lastError = err.message;
+    console.error('[sheets] read failed:', err.message);
+    return null;
+  }
+}
+
 // Status of the Google Sheets pipeline, for the admin page / diagnostics.
 function status() {
   return {
@@ -195,4 +239,4 @@ function status() {
   };
 }
 
-module.exports = { init, appendRow, getCellCounts, status };
+module.exports = { init, appendRow, appendRows, getRows, getCellCounts, status };

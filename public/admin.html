@@ -29,6 +29,25 @@
       <button class="btn" onclick="location.href='/api/export.csv'">Download CSV (.csv)</button>
       <p class="instr" id="store-note" style="margin-top:12px"></p>
 
+      <h3>Manual entry — upload a responses file</h3>
+      <p class="instr">
+        Upload a <code>.xlsx</code> or <code>.csv</code> of responses and its rows are merged into the
+        Google Sheet, so they appear in the counts above and in the sheet itself. Columns are matched by
+        header name, so files exported from this site (any version) work. Rows already in the sheet
+        (same <code>submitted_at</code>, <code>cell_id</code> and <code>email</code>) are skipped, so
+        uploading the same file twice is safe. Maximum 25 MB.
+      </p>
+      <p>
+        <input type="file" id="import-file" accept=".xlsx,.csv" />
+        <label style="display:inline-block;margin-left:12px">
+          <input type="checkbox" id="import-dry" /> check only, do not write
+        </label>
+      </p>
+      <p>
+        <button class="btn" id="import-btn">Merge into Google Sheet</button>
+      </p>
+      <pre id="import-result" class="import-result" style="display:none"></pre>
+
       <p class="instr" style="margin-top:20px">
         <strong>Note:</strong> Co-brand cells (2 and 4) display the official FSSAI and AGMARK logos
         (sourced from fssai.gov.in and uxdt.nic.in). Verify they render correctly in the previews.
