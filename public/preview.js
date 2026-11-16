@@ -23,4 +23,8 @@ document.addEventListener('DOMContentLoaded', () => {
   renderStimulus(cell, document.getElementById('stimulus'));
   document.getElementById('mc-a').textContent = MC_A_TEXT[correct.mc_a];
   document.getElementById('mc-b').textContent = correct.mc_b;
+  const share = document.getElementById('mc-share');
+  const stages = document.getElementById('mc-stages');
+  if (share) share.textContent = correct.mc_share + ' (expect high in beneficiary cells, low in technical cells)';
+  if (stages) stages.textContent = correct.mc_stages + ' (expect high in technical cells, low in beneficiary cells)';
 });

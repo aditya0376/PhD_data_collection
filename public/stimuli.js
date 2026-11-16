@@ -15,24 +15,29 @@ const CELLS = {
 // Correct answers to the manipulation checks (Section H), per cell.
 //   mc_a: 'a' = price sharing (beneficiary) | 'b' = stages checked (technical)
 //   mc_b: marks shown only in co-brand cells.
+//   mc_share: beneficiary-visibility item, expected High in cells 3-4.
+//   mc_stages: stage-visibility item, expected High in cells 1-2.
 const MC_CORRECT = {
-  1: { mc_a: 'b', mc_b: 'No' },
-  2: { mc_a: 'b', mc_b: 'Yes' },
-  3: { mc_a: 'a', mc_b: 'No' },
-  4: { mc_a: 'a', mc_b: 'Yes' }
+  1: { mc_a: 'b', mc_b: 'No', mc_share: 'Low', mc_stages: 'High' },
+  2: { mc_a: 'b', mc_b: 'Yes', mc_share: 'Low', mc_stages: 'High' },
+  3: { mc_a: 'a', mc_b: 'No', mc_share: 'High', mc_stages: 'Low' },
+  4: { mc_a: 'a', mc_b: 'Yes', mc_share: 'High', mc_stages: 'Low' }
 };
 
 // ---------------------------------------------------------------------------
-// Stimulus architecture (v3.2): all four versions share an identical header,
+// Stimulus architecture (v3.3): all four versions share an identical header,
 // an identical opening sentence, an identical closing tamper-resistance
 // sentence and an identical Verification ID. Only the middle content block
 // varies by FRAME, and only the certification block varies by COBRAND. Both
-// middle blocks list six entities so visual density matches.
+// middle blocks list six entities so visual density matches, and each block
+// carries one descriptive line of matching length (within 5% word count).
 //
-// All text is pulled through the i18n layer (t()) so the stimulus renders in
-// the participant's chosen language. The card title is frame-aware: technical
-// cells show "VERIFIED PRODUCT RECORD", beneficiary cells show "VERIFIED
-// VALUE RECORD" (per the design protocol §2).
+// v3.3 removed the technical-only authenticity sentence ("genuine ... not
+// substituted or relabelled"): a security/authenticity assurance present in one
+// framing only would confound FRAME with the presence of a guarantee, and Paper
+// 2 found safety and authenticity to dominate beneficiary purchase criteria.
+// The header is now identical across cells (plan Section 9.1); the earlier
+// frame-aware title was a second framing cue.
 // ---------------------------------------------------------------------------
 const STAGE_KEYS = ['stage.harvest', 'stage.processing', 'stage.packaging', 'stage.storage', 'stage.transport', 'stage.retail'];
 
@@ -51,7 +56,9 @@ function buildStimulus(cellId) {
   const isTech = cell.frame === 0;
   const hasCo = cell.cobrand === 1;
 
-  // Middle content block - the only part that varies by FRAME.
+  // Middle content block - the only part that varies by FRAME. Both branches
+  // list six entities, carry one descriptive line of matching length, and make
+  // no security or authenticity claim that the other does not make.
   let middle;
   if (isTech) {
     const checks = STAGE_KEYS.map(
@@ -65,7 +72,7 @@ function buildStimulus(cellId) {
       (s) => `<div class="seg" style="width:${s.pct}%;background:${s.color}" title="${t(s.key)} \u2014 ${s.pct}%"></div>`
     ).join('');
     const legend = SHARES.map(
-      (s) => `<div class="lg"><span class="dot" style="background:${s.color}"></span>${t(s.key)} \u2014 ${s.pct}%</div>`
+      (s) => `<div class="lg"><span class="dot" style="background:${s.color}"></span>${t(s.key)} (${s.pct}%)</div>`
     ).join('');
     middle = `
       <div class="share-bar">${bar}</div>
@@ -86,7 +93,7 @@ function buildStimulus(cellId) {
     <div class="phone-card">
       <div class="card-head">
         <span class="head-icon">&#128196;</span>
-        <span class="head-title">${t(isTech ? 'stim.head.product' : 'stim.head.value')}</span>
+        <span class="head-title">${t('stim.head.product')}</span>
       </div>
       <p class="stim-line">${t('stim.sharedOpen')}</p>
       ${middle}

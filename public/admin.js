@@ -35,6 +35,20 @@ async function load() {
     ? `Google Sheet rows: ${s.total}` + (s.lastOkAt ? ` · last successful write ${new Date(s.lastOkAt).toLocaleString()}` : '')
     : `Google Sheet unavailable: ${s.error || 'unknown error'}`;
 
+  const quotaBody = document.getElementById('quota-rows');
+  if (quotaBody) {
+    if (!data.quotas || !data.quotas.length) {
+      quotaBody.innerHTML = '<tr><td colspan="4" class="instr">No quota data yet.</td></tr>';
+    } else {
+      quotaBody.innerHTML = data.quotas.map((q) => `<tr>
+        <td>${q.label}</td>
+        <td>${q.target}</td>
+        <td>${q.current}</td>
+        <td>${badge(q.met ? 'met' : 'short', q.met ? 'tech' : 'co')}</td>
+      </tr>`).join('');
+    }
+  }
+
   const tbody = document.getElementById('cell-rows');
   let html = '';
   for (const id of [1, 2, 3, 4]) {

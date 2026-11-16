@@ -228,6 +228,61 @@ async function getRows() {
   }
 }
 
+// ---------------------------------------------------------------------------
+// Findings-summary contacts, kept in their own tab so an email address can never
+// be joined to a response row (plan Section 9.3).
+// ---------------------------------------------------------------------------
+const CONTACT_HEADERS = ['submitted_at', 'email'];
+let contactsReady = false;
+
+async function ensureContactsTab() {
+  if (contactsReady) return;
+  const meta = await sheetsClient.spreadsheets.get({
+    spreadsheetId: sheetId,
+    fields: 'sheets.properties.title'
+  });
+  const has = (meta.data.sheets || []).some((s) => s.properties.title === 'Contacts');
+  if (!has) {
+    await sheetsClient.spreadsheets.batchUpdate({
+      spreadsheetId: sheetId,
+      requestBody: { requests: [{ addSheet: { properties: { title: 'Contacts' } } }] }
+    });
+  }
+  const res = await sheetsClient.spreadsheets.values.get({
+    spreadsheetId: sheetId,
+    range: "'Contacts'!1:1"
+  });
+  const existing = (res.data.values || [])[0] || [];
+  if (existing.length === 0) {
+    await sheetsClient.spreadsheets.values.append({
+      spreadsheetId: sheetId,
+      range: "'Contacts'!A1",
+      valueInputOption: 'RAW',
+      requestBody: { values: [CONTACT_HEADERS] }
+    });
+  }
+  contactsReady = true;
+}
+
+async function appendContact(email) {
+  if (!sheetsClient) return { ok: false, error: 'Google Sheets not configured' };
+  try {
+    await ensureContactsTab();
+    await sheetsClient.spreadsheets.values.append({
+      spreadsheetId: sheetId,
+      range: "'Contacts'!A1",
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: [[new Date().toISOString(), email]] }
+    });
+    return { ok: true };
+  } catch (err) {
+    lastError = err.message;
+    console.error('[sheets] contact append failed:', err.message);
+    return { ok: false, error: err.message };
+  }
+}
+
 // Status of the Google Sheets pipeline, for the admin page / diagnostics.
 function status() {
   return {
@@ -239,4 +294,4 @@ function status() {
   };
 }
 
-module.exports = { init, appendRow, appendRows, getRows, getCellCounts, status };
+module.exports = { init, appendRow, appendRows, getRows, getCellCounts, appendContact, status };

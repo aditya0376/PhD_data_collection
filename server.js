@@ -34,6 +34,8 @@ const SCHEMA = [
   { key: 'cobrand', header: 'cobrand' },
   { key: 'version', header: 'version' },
   { key: 'lang', header: 'lang' },
+  { key: 'mode', header: 'mode' },
+  { key: 'phase', header: 'phase' },
   { key: 'completion_time_sec', header: 'completion_time_sec' },
   // B1-B11 demographics
   { key: 'b1', header: 'B1_ParentGuardian_1to16' },
@@ -73,12 +75,12 @@ const SCHEMA = [
   { key: 'saf3', header: 'SAF3_RefusedGenuine' },
   { key: 'saf4', header: 'SAF4_CheckOrigin' },
   // E (product reactions)
-  { key: 'psa1', header: 'PSA1_InfoEnough' },
-  { key: 'psa2', header: 'PSA2_ClearRecord' },
-  { key: 'psa3', header: 'PSA3_AccurateComplete' },
-  { key: 'psa4', header: 'PSA4_JourneyVisible' },
-  { key: 'psa5', header: 'PSA5_IdentifyGroups' },
-  { key: 'psa6', header: 'PSA6_KnowReceives' },
+  // v3.3: PSA is four condition-neutral items (visibility, clarity,
+  // comprehensibility, global). No accuracy judgement and no journey wording.
+  { key: 'psa1', header: 'PSA1_StagesAndPeopleVisible' },
+  { key: 'psa2', header: 'PSA2_ClearWhatRecordSays' },
+  { key: 'psa3', header: 'PSA3_EasyToUnderstand' },
+  { key: 'psa4', header: 'PSA4_ClearOverallPicture' },
   { key: 'tp1', header: 'TP1_Capable' },
   { key: 'tp2', header: 'TP2_AssurancesReliable' },
   { key: 'tp3', header: 'TP3_Honest' },
@@ -124,10 +126,15 @@ const SCHEMA = [
   { key: 'g3_wtp', header: 'G3_WillingnessToPay' },
   { key: 'g4_reason', header: 'G4_ReasonNothing' },
   { key: 'g5_comment', header: 'G5_BeneficiaryComment' },
-  // H (manipulation checks) + contact
+  // H (manipulation checks)
+  // H1 categorical recall of the content block, H2 recall of the marks, and the
+  // two scale-rated manipulation-strength items required by the plan (Step 2).
+  // Email is deliberately NOT a column (plan Section 9.3): it is collected in a
+  // separate form after submission and stored in its own tab.
   { key: 'mc_a', header: 'H1_ContentRecall' },
   { key: 'mc_b', header: 'H2_MarksRecall' },
-  { key: 'email', header: 'email' }
+  { key: 'mc_share', header: 'H3_BeneficiaryVisibility' },
+  { key: 'mc_stages', header: 'H4_StageVisibility' }
 ];
 
 // Short keys used to read the submitted payload.
@@ -146,7 +153,7 @@ const FRAME_BY_CELL = { 1: 0, 2: 0, 3: 1, 4: 1 };
 const COBRAND_BY_CELL = { 1: 0, 2: 1, 3: 0, 4: 1 };
 
 // Columns that stay text even when they look numeric.
-const TEXT_KEYS = new Set(['submitted_at', 'version', 'lang', 'g4_reason', 'g5_comment', 'email']);
+const TEXT_KEYS = new Set(['submitted_at', 'version', 'lang', 'mode', 'phase', 'g4_reason', 'g5_comment']);
 
 // Turn an uploaded cell value into what the spreadsheet should receive.
 function coerceValue(key, v) {
@@ -299,9 +306,41 @@ async function getAuthoritativeCounts() {
   return payload;
 }
 
+// Minimum coverage the design commits to (plan Section 9.2). Reported on the
+// admin page so the quotas are visible while sampling, not after.
+const QUOTA_RULES = [
+  { key: 'rural', label: 'Rural or semi-urban (B9 = 2 or 3)', target: 150 },
+  { key: 'belowGrad', label: 'Below graduate (B4 = 1, 2 or 3)', target: 200 },
+  { key: 'nonScanner', label: 'Never / once-or-twice scanner (B10 = 1 or 2)', target: 100 }
+];
+
+async function getQuotas() {
+  const rows = await sheets.getRows();
+  if (!rows || rows.length < 2) return null;
+  const header = rows[0];
+  const i9 = header.indexOf('B9_Residence');
+  const i4 = header.indexOf('B4_Education');
+  const i10 = header.indexOf('B10_QRScanFrequency');
+  if (i9 < 0 || i4 < 0 || i10 < 0) return null;
+
+  const out = QUOTA_RULES.map((q) => ({ key: q.key, label: q.label, target: q.target, current: 0 }));
+  for (let i = 1; i < rows.length; i++) {
+    const b9 = String(rows[i][i9]);
+    const b4 = String(rows[i][i4]);
+    const b10 = String(rows[i][i10]);
+    if (b9 === '2' || b9 === '3') out[0].current++;
+    if (b4 === '1' || b4 === '2' || b4 === '3') out[1].current++;
+    if (b10 === '1' || b10 === '2') out[2].current++;
+  }
+  out.forEach((q) => { q.met = q.current >= q.target; });
+  return out;
+}
+
 app.get('/api/counts', async (req, res) => {
   try {
-    res.json(await getAuthoritativeCounts());
+    const payload = await getAuthoritativeCounts();
+    payload.quotas = await getQuotas();
+    res.json(payload);
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'counts failed' });
@@ -333,6 +372,8 @@ app.post('/api/submit', (req, res) => {
     if (data.frame === undefined || data.frame === '') data.frame = FRAME_BY_CELL[cell];
     if (data.cobrand === undefined || data.cobrand === '') data.cobrand = COBRAND_BY_CELL[cell];
   }
+  if (!data.mode) data.mode = 'self';
+  if (!data.phase) data.phase = 'main';
 
   writeQueue = writeQueue
     .then(async () => {
@@ -345,7 +386,7 @@ app.post('/api/submit', (req, res) => {
         if (col === 'id') v = id;
         if (col === 'submitted_at') v = new Date().toISOString();
         if (col === 'version') v = VERSION_LABELS[data.cell_id] || ('Cell_' + data.cell_id);
-        row.push(v !== undefined && v !== null ? v : '');
+        row.push(v !== undefined && v !== null && v !== '' ? coerceValue(col, v) : '');
       }
       ws.addRow(row);
       await wb.xlsx.writeFile(DATA_FILE);
@@ -468,17 +509,17 @@ app.post('/api/import', express.json({ limit: '25mb' }), async (req, res) => {
     const existingHeader = existing[0] || [];
     const atIdx = existingHeader.indexOf('submitted_at');
     const cellIdx = existingHeader.indexOf('cell_id');
-    const mailIdx = existingHeader.indexOf('email');
+    const timeIdx = existingHeader.indexOf('completion_time_sec');
     const seen = new Set();
     for (let i = 1; i < existing.length; i++) {
       const r = existing[i];
-      seen.add([r[atIdx], r[cellIdx], r[mailIdx]].join('|'));
+      seen.add([r[atIdx], r[cellIdx], r[timeIdx]].join('|'));
     }
 
     const toAppend = [];
     const skipped = [];
     for (const rec of records) {
-      const key = [rec.submitted_at, rec.cell_id, rec.email === undefined ? '' : rec.email].join('|');
+      const key = [rec.submitted_at, rec.cell_id, rec.completion_time_sec === undefined ? '' : rec.completion_time_sec].join('|');
       if (seen.has(key)) { skipped.push(key); continue; }
       seen.add(key);
       toAppend.push(COLUMNS.map((col) => (col === 'id' ? '' : coerceValue(col, rec[col]))));
@@ -529,6 +570,32 @@ app.post('/api/import', express.json({ limit: '25mb' }), async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'import failed: ' + err.message });
   }
+});
+
+// Findings-summary email capture. Deliberately a separate endpoint and a
+// separate tab: it must never be possible to join an address to a response.
+app.post('/api/subscribe', async (req, res) => {
+  const email = String((req.body || {}).email || '').trim();
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(email)) {
+    return res.status(400).json({ ok: false, error: 'invalid email address' });
+  }
+  const stamp = new Date().toISOString();
+  const result = await sheets.appendContact(email);
+  if (!result.ok) {
+    // Fall back to a local file so a participant is not turned away.
+    try {
+      fs.appendFileSync(
+        path.join(DATA_DIR, 'contacts.csv'),
+        `"${stamp}","${email.replace(/"/g, '""')}"\n`,
+        'utf8'
+      );
+      return res.json({ ok: true, stored: 'server-file' });
+    } catch (err) {
+      console.error(err);
+      return res.status(502).json({ ok: false, error: 'could not store the address' });
+    }
+  }
+  res.json({ ok: true, stored: 'google-sheet' });
 });
 
 // Download the Excel file.

@@ -1,19 +1,29 @@
 'use strict';
 
 // ---------------------------------------------------------------------------
-// Paper 3 instrument, Version 3.2 (TAM3). 67 Likert items in total:
+// Paper 3 instrument, Version 3.3 (TAM3), per Paper3_Objectives_Analysis v2.3.
+// 65 Likert items in total:
 //   B block: PEC(3) GDS(3) TPR(3) MV(3)                          = 12
 //   C block: DVC(4) AC1(1) SAF(4)                                =  9
-//   E block: PSA(6) TP(6) PF(3) PSI(5)                           = 20
+//   E block: PSA(4) TP(6) PF(3) PSI(5)                           = 18
 //   F block: PU(4) PEOU(4) ITU(3) PE(3) SN(3) AC2(1)             = 18
 //   G block: PI(4) RES(4)                                        =  8
+// plus the Section H manipulation checks: mc_a and mc_b are categorical recall,
+// mc_share and mc_stages are the scale-rated manipulation-strength items
+// (plan Section 10, Step 2). Email is NOT collected here (plan Section 9.3): it
+// goes to a separate form after the response is stored.
+//
+// Changes from v3.2: PSA reduced from 6 items to 4 and made condition-neutral
+// (no accuracy judgement, no journey wording); PF2 reworded; two manipulation-
+// strength items added.
+//
 // 5-point Likert: 1 = Strongly disagree ... 5 = Strongly agree
 // SAF2 is reverse-coded at analysis; no (R) marker is shown to respondents.
 //
 // Each item carries both languages: `en` (English) and `as` (Assamese). The
-// active language is read via getLang() from i18n.js. The Assamese strings
-// are DRAFT translations and must be verified/back-translated before fielding
-// (see i18n.js header).
+// active language is read via getLang() from i18n.js. The Assamese strings are
+// DRAFT translations and must be verified/back-translated before fielding
+// (see i18n.js header and TRANSLATION_TODO.md).
 // ---------------------------------------------------------------------------
 
 // Section B - B12 Perceptions of external control (digital access)
@@ -65,15 +75,15 @@ const SAF_ITEMS = [
   { n: 'saf4', en: 'I check where a children\u2019s product came from before buying it.', as: 'কিনাৰ আগতে শিশুৰ পণ্যটো ক\u2019ৰ পৰা আহিছে মই পৰীক্ষা কৰোঁ।' }
 ];
 
-// Section E - E1 Perceived signal accessibility (PSA5/PSA6 are
-// manipulation-strength checks, analysed separately, still collected here)
+// Section E - E1 Perceived signal accessibility (v3.3: four items, worded so
+// that they are answerable from either framing - visibility, clarity,
+// comprehensibility and one global item. No accuracy judgement (that belongs to
+// trust) and no journey wording (answerable only from the technical stimulus).
 const PSA_ITEMS = [
-  { n: 'psa1', en: 'The information tells me enough about how this product reached the shop.', as: 'এই পণ্যটো দোকানলৈ কেনেকৈ আহিল সেই বিষয়ে তথ্যই মোক যথেষ্ট কয়।' },
+  { n: 'psa1', en: 'This record makes visible the stages and the people involved in bringing this product to me.', as: 'এই ৰেকৰ্ডে এই পণ্যটো মোৰ ওচৰলৈ অনাত জড়িত পৰ্যায় আৰু লোকসকলক দৃশ্যমান কৰে।' },
   { n: 'psa2', en: 'It is clear to me what this record is telling me about the product.', as: 'এই ৰেকৰ্ডটোৱে পণ্যৰ বিষয়ে মোক কি কৈছে সেয়া মোৰ ওচৰত স্পষ্ট।' },
-  { n: 'psa3', en: 'The information appears accurate and complete.', as: 'তথ্যটো শুদ্ধ আৰু সম্পূৰ্ণ যেন লাগে।' },
-  { n: 'psa4', en: 'Overall, this record makes the product\u2019s journey visible to me.', as: 'সামগ্ৰিকভাৱে, এই ৰেকৰ্ডটোৱে পণ্যটোৰ যাত্ৰা মোৰ ওচৰত দৃশ্যমান কৰে।' },
-  { n: 'psa5', en: 'I can identify the different people or groups involved in making this product.', as: 'এই পণ্যটো তৈয়াৰ কৰাত জড়িত বিভিন্ন লোক বা গোটবোৰ মই চিনাক্ত কৰিব পাৰোঁ।' },
-  { n: 'psa6', en: 'I can tell what each of them receives from the price I pay.', as: 'মই দিয়া দামৰ পৰা তেওঁলোকৰ প্ৰতিজনে কি পায় মই ক\u2019ব পাৰোঁ।' }
+  { n: 'psa3', en: 'The information in this record is easy for me to understand.', as: 'এই ৰেকৰ্ডৰ তথ্য মোৰ বাবে বুজিবলৈ সহজ।' },
+  { n: 'psa4', en: 'Overall, this record gives me a clear picture of the product and the people behind it.', as: 'সামগ্ৰিকভাৱে, এই ৰেকৰ্ডে পণ্যটো আৰু ইয়াৰ পিছত থকা লোকসকলৰ এটা স্পষ্ট চিত্ৰ মোক দিয়ে।' }
 ];
 
 // Section E - E2 Trust in the product source
@@ -89,7 +99,7 @@ const TP_ITEMS = [
 // Section E - E3 Perceived fairness (worded to be answerable in all four cells)
 const PF_ITEMS = [
   { n: 'pf1', en: 'This product seems to be produced in a way that treats people fairly.', as: 'এই পণ্যটো লোকসকলক ন্যায্য ব্যৱহাৰ কৰা ধৰণেৰে উৎপাদিত যেন লাগে।' },
-  { n: 'pf2', en: 'The people who produced this product are probably paid reasonably.', as: 'এই পণ্যটো উৎপাদন কৰা লোকসকলক সম্ভৱতঃ যুক্তিসংগতভাৱে দৰমহা দিয়া হয়।' },
+  { n: 'pf2', en: 'The people who produced this product are paid fairly for their work.', as: 'এই পণ্যটো উৎপাদন কৰা লোকসকলক তেওঁলোকৰ কামৰ বাবে ন্যায্যভাৱে দৰমহা দিয়া হয়।' },
   { n: 'pf3', en: 'I feel this product\u2019s supply chain is fair to the people working in it.', as: 'এই পণ্যৰ যোগান শৃংখল ইয়াত কাম কৰা লোকসকলৰ প্ৰতি ন্যায্য বুলি মই অনুভৱ কৰোঁ।' }
 ];
 
@@ -154,6 +164,16 @@ const RES_ITEMS = [
   { n: 'res2', en: 'Checking products this way is not something I would do.', as: 'এইদৰে পণ্য পৰীক্ষা কৰাটো মই নকৰা কাম।' },
   { n: 'res3', en: 'Honesty should not cost the customer extra \u2014 it is the government\u2019s job to ensure it.', as: 'সততাই গ্ৰাহকক বেছি খৰচ নকৰা উচিত \u2014 সেয়া নিশ্চিত কৰা চৰকাৰৰ কাম।' },
   { n: 'res4', en: 'I already trust the brands I buy, so I do not need this information.', as: 'মই কিনা ব্ৰেণ্ডবোৰত মই ইতিমধ্যে বিশ্বাস কৰোঁ, গতিকে এই তথ্যৰ প্ৰয়োজন নাই।' }
+];
+
+// ---------------------------------------------------------------------------
+// Section H - manipulation strength (plan Section 10, Step 2). Deliberately
+// condition-specific: these exist to show that each framing delivered the
+// information it was meant to deliver. They are NOT part of PSA.
+// ---------------------------------------------------------------------------
+const MC_STRENGTH_ITEMS = [
+  { n: 'mc_share', en: 'The screen showed how the price I pay is shared among the people involved.', as: 'পৰ্দাটোত মই দিয়া দাম জড়িত লোকসকলৰ মাজত কেনেকৈ ভাগ হয় সেয়া দেখুওৱা হৈছিল।' },
+  { n: 'mc_stages', en: 'The screen showed which stages of the journey had been checked.', as: 'পৰ্দাটোত যাত্ৰাৰ কোন কোন পৰ্যায় পৰীক্ষা কৰা হৈছিল সেয়া দেখুওৱা হৈছিল।' }
 ];
 
 // ---------------------------------------------------------------------------
@@ -322,6 +342,7 @@ function applyLanguage() {
   likertGrid(AC2_ITEM, 'ac2-items');
   likertGrid(PI_ITEMS, 'pi-items');
   likertGrid(RES_ITEMS, 'res-items');
+  likertGrid(MC_STRENGTH_ITEMS, 'mc-items');
 
   // Re-render the stimulus in the new language.
   if (assignedCell) renderStimulus(assignedCell, document.getElementById('stimulus'));
@@ -368,6 +389,31 @@ async function ensureCell() {
 }
 
 // ---------------------------------------------------------------------------
+// Supplementary flags carried in the study link, so that the same build can
+// serve the pilot and the main study, and self-completed vs enumerator-
+// administered respondents are recorded (plan Section 9.3).
+//   ?phase=pilot|main      ?mode=self|enumerator        ?lang=en|as
+// ---------------------------------------------------------------------------
+function urlParam(name) {
+  try {
+    const v = new URLSearchParams(window.location.search).get(name);
+    return v ? String(v).trim().toLowerCase() : null;
+  } catch (err) {
+    return null;
+  }
+}
+
+function studyPhase() {
+  const p = urlParam('phase');
+  return p === 'pilot' ? 'pilot' : 'main';
+}
+
+function adminMode() {
+  const m = urlParam('mode');
+  return (m === 'enumerator' || m === 'assisted') ? 'enumerator' : 'self';
+}
+
+// ---------------------------------------------------------------------------
 // Submit
 // ---------------------------------------------------------------------------
 async function submitSurvey() {
@@ -378,6 +424,8 @@ async function submitSurvey() {
   payload.frame = cell.frame;
   payload.cobrand = cell.cobrand;
   payload.lang = getLang();
+  payload.mode = adminMode();
+  payload.phase = studyPhase();
   payload.completion_time_sec = Math.round((Date.now() - startTime) / 1000);
 
   // All radio groups
@@ -385,8 +433,9 @@ async function submitSurvey() {
     if (r.checked) payload[r.name] = r.value;
   });
 
-  // Text, number and email inputs
-  document.querySelectorAll('input[type="text"], input[type="number"], input[type="email"]').forEach((r) => {
+  // Text and number inputs. The findings-summary email is deliberately NOT
+  // gathered: it is sent to a separate endpoint after the response is stored.
+  document.querySelectorAll('input[type="text"], input[type="number"]').forEach((r) => {
     payload[r.name] = r.value.trim();
   });
 
@@ -410,6 +459,35 @@ async function submitSurvey() {
     }
   } catch (err) {
     alert('Network error. Please check your connection and try again.');
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Findings summary: a separate form, sent after the response is stored, so an
+// email address can never be linked to a response row (plan Section 9.3).
+// ---------------------------------------------------------------------------
+async function subscribeFindings() {
+  const input = document.getElementById('summary-email');
+  const msg = document.getElementById('summary-msg');
+  if (!input || !msg) return;
+  const email = input.value.trim();
+  if (!email) { msg.textContent = t('summary.needEmail'); return; }
+  msg.textContent = t('summary.sending');
+  try {
+    const res = await fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      msg.textContent = t('summary.saved');
+      input.value = '';
+    } else {
+      msg.textContent = t('summary.failed');
+    }
+  } catch (err) {
+    msg.textContent = t('summary.failed');
   }
 }
 
@@ -464,6 +542,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   // Section G
   likertGrid(PI_ITEMS, 'pi-items');
   likertGrid(RES_ITEMS, 'res-items');
+  likertGrid(MC_STRENGTH_ITEMS, 'mc-items');
 
   await ensureCell();
   renderStimulus(assignedCell, document.getElementById('stimulus'));

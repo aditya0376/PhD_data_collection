@@ -211,6 +211,10 @@
           <label><input type="radio" name="mc_b" value="Not sure" /><span data-i18n="opt.notSure">Not sure</span></label>
         </div>
 
+        <p class="q" data-i18n="h3.q">H3. Still thinking about the screen you saw, please say how far you agree:</p>
+        <p class="scale-note" data-i18n="scale.note">1 = Strongly disagree &nbsp; 2 = Disagree &nbsp; 3 = Neither agree nor disagree &nbsp; 4 = Agree &nbsp; 5 = Strongly agree</p>
+        <div id="mc-items"></div>
+
         <button class="btn" onclick="go('s-e')" data-i18n="btn.continue">Continue</button>
       </section>
 
@@ -296,13 +300,11 @@
         <button class="btn" onclick="go('s-h')" data-i18n="btn.continue">Continue</button>
       </section>
 
-      <!-- STEP: Closing (email + submit) -->
+      <!-- STEP: Closing (submit only - email is collected separately afterwards) -->
       <section class="step" id="s-h">
         <h2 data-i18n="closing.title">Thank You</h2>
 
         <p class="instr" data-i18n="closing.thanks">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
-        <p class="instr" data-i18n="closing.emailInstr">If you would like to receive a short summary of the findings when the study is complete, you may leave an email address below. This is entirely optional and will be stored separately from your responses.</p>
-        <input type="email" name="email" data-i18n-placeholder="closing.emailPlaceholder" placeholder="Optional email" />
 
         <button class="btn" onclick="submitSurvey()" data-i18n="btn.submit">Submit</button>
       </section>
@@ -311,6 +313,15 @@
       <section class="step" id="s-done">
         <h2 data-i18n="done.title">Thank you</h2>
         <p data-i18n="done.thanks">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
+
+        <div class="card summary-card">
+          <h3 data-i18n="summary.title">Findings summary</h3>
+          <p class="instr" data-i18n="summary.instr">If you would like a short summary of the findings when the study is complete, you may leave an email address. This is optional, it is sent in a separate form, and it is never stored with your answers.</p>
+          <input type="email" id="summary-email" data-i18n-placeholder="summary.placeholder" placeholder="Optional email" />
+          <button class="btn" onclick="subscribeFindings()" data-i18n="btn.send">Send</button>
+          <p class="instr" id="summary-msg"></p>
+        </div>
+
         <button class="btn" onclick="resetSurvey()" data-i18n="btn.another">Submit another response</button>
       </section>
 

@@ -29,6 +29,12 @@
       <button class="btn" onclick="location.href='/api/export.csv'">Download CSV (.csv)</button>
       <p class="instr" id="store-note" style="margin-top:12px"></p>
 
+      <h3>Minimum quotas (plan 9.2)</h3>
+      <table class="admin-table">
+        <thead><tr><th>Quota</th><th>Target</th><th>So far</th><th>Status</th></tr></thead>
+        <tbody id="quota-rows"><tr><td colspan="4" class="instr">—</td></tr></tbody>
+      </table>
+
       <h3>Manual entry — upload a responses file</h3>
       <p class="instr">
         Upload a <code>.xlsx</code> or <code>.csv</code> of responses and its rows are merged into the
