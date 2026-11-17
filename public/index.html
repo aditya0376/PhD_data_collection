@@ -17,7 +17,10 @@
   </header>
   <div class="progress-wrap">
     <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
-    <div class="progress-label" id="progressLabel">Start</div>
+    <div class="progress-row">
+      <div class="progress-label" id="progressLabel">Start</div>
+      <button type="button" class="btn btn-ghost btn-back" id="backBtn" onclick="goBack()" data-i18n="btn.back" style="display:none">Back</button>
+    </div>
   </div>
   <div class="wrap">
     <div class="card" id="app">
@@ -96,15 +99,15 @@
         <div class="num-row">
           <div class="num-field">
             <label for="b8_1" data-i18n="b8.1_5">Aged 1–5</label>
-            <input type="number" id="b8_1" name="b8_1" min="0" max="15" value="0" />
+            <input type="number" id="b8_1" name="b8_1" min="0" max="15" step="1" inputmode="numeric" value="0" />
           </div>
           <div class="num-field">
             <label for="b8_2" data-i18n="b8.6_10">Aged 6–10</label>
-            <input type="number" id="b8_2" name="b8_2" min="0" max="15" value="0" />
+            <input type="number" id="b8_2" name="b8_2" min="0" max="15" step="1" inputmode="numeric" value="0" />
           </div>
           <div class="num-field">
             <label for="b8_3" data-i18n="b8.11_16">Aged 11–16</label>
-            <input type="number" id="b8_3" name="b8_3" min="0" max="15" value="0" />
+            <input type="number" id="b8_3" name="b8_3" min="0" max="15" step="1" inputmode="numeric" value="0" />
           </div>
         </div>
 
@@ -232,7 +235,7 @@
 
         <p class="q" data-i18n="g5.q">G5. In your own words, how would knowing who benefits from your purchase affect your decision to buy products for your child?</p>
         <p class="instr" data-i18n="g5.englishNote">Please write your answer in English.</p>
-        <textarea name="g5_comment" rows="3" data-i18n-placeholder="opt.optional" placeholder="Optional"></textarea>
+        <textarea name="g5_comment" rows="3" maxlength="500" data-i18n-placeholder="opt.optional" placeholder="Optional"></textarea>
 
         <button class="btn" onclick="go('s-checks')" data-i18n="btn.continue">Continue</button>
       </section>
@@ -263,9 +266,9 @@
       <section class="step" id="s-h">
         <h2 data-i18n="closing.title">Thank You</h2>
 
-        <p class="instr" data-i18n="closing.thanks">Thank you for your time. Your responses will be used only for academic research and will be reported in aggregate form.</p>
+        <p class="instr" data-i18n="closing.thanks">Press Submit to send your answers. Nothing has been saved yet.</p>
 
-        <button class="btn" onclick="submitSurvey()" data-i18n="btn.submit">Submit</button>
+        <button class="btn" id="submitBtn" onclick="submitSurvey()" data-i18n="btn.submit">Submit</button>
       </section>
 
       <!-- STEP: Done -->
@@ -281,7 +284,7 @@
           <p class="instr" id="summary-msg"></p>
         </div>
 
-        <button class="btn" onclick="resetSurvey()" data-i18n="btn.another">Submit another response</button>
+        <button class="btn" id="anotherBtn" onclick="resetSurvey()" data-i18n="btn.another" style="display:none">Submit another response</button>
       </section>
 
       <!-- STEP: Thank you (B1 = No) -->

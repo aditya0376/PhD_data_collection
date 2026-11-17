@@ -69,7 +69,12 @@ html[lang="as"] .lang-btn {
 .progress-wrap { max-width: 640px; margin: 0 auto; padding: 12px 16px 0; }
 .progress-track { height: 8px; background: #dbe4ec; border-radius: 8px; overflow: hidden; }
 .progress-fill { height: 100%; width: 0%; background: linear-gradient(90deg, var(--primary), var(--accent)); transition: width .4s ease; }
-.progress-label { text-align: center; font-size: .75rem; color: var(--muted); margin-top: 6px; }
+.progress-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 6px; }
+.progress-label { text-align: center; font-size: .75rem; color: var(--muted); }
+.btn-back { padding: 4px 10px; font-size: .75rem; background: transparent; border: 1px solid var(--border);
+  color: var(--muted); box-shadow: none; }
+.btn-back:hover { background: #eef2f6; }
+.lang-btn:disabled, .lang-btn.is-locked { opacity: .45; cursor: not-allowed; }
 
 .wrap { max-width: 640px; margin: 0 auto; padding: 16px; }
 
@@ -183,8 +188,16 @@ textarea:focus, input:focus { outline: 2px solid var(--primary-light); border-co
 .head-icon { font-size: 1.4rem; }
 
 .cobrand-row { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
-.cobrand-logo { height: 44px; width: auto; object-fit: contain; }
-.co-brand-line { font-weight: 600; color: var(--primary-dark); }
+/* Identical box for both marks, so neither looks more prominent than the other. */
+.cobrand-logo { height: 40px; width: 64px; object-fit: contain; }
+.co-brand-line { font-weight: inherit; color: inherit; }
+
+/* Six-entity record block, used identically by both framings. */
+.record-rows { margin: 10px 0; border-top: 1px solid var(--border); }
+.record-rows .rr { display: flex; justify-content: space-between; gap: 12px;
+  padding: 5px 2px; border-bottom: 1px solid var(--border); font-size: .92rem; }
+.record-rows .rr-k { color: var(--muted); }
+.record-rows .rr-v { font-weight: 600; }
 
 /* Six verified stages (technical cells) — 2 rows x 3 cols to match the
    six-entity beneficiary block visually. */

@@ -1,11 +1,11 @@
-﻿# Paper 3 Survey Site (Node.js)
+# Paper 3 Survey Site (Node.js)
 
-Custom survey-experiment website for PhD Paper 3 â€” a 2Ã—2 between-subjects
-experiment (**FRAME**: Technical vs Beneficiary Ã— **COBRAND**: Absent vs Present).
+Custom survey-experiment website for PhD Paper 3 — a 2×2 between-subjects
+experiment (**FRAME**: Technical vs Beneficiary × **COBRAND**: Absent vs Present).
 
-- **Participant flow:** `http://localhost:3000/` â€” one shared link; each
+- **Participant flow:** `http://localhost:3000/` — one shared link; each
   participant is block-randomized to one of the 4 cells.
-- **Admin / version check:** `http://localhost:3000/admin.html` â€” preview each
+- **Admin / version check:** `http://localhost:3000/admin.html` — preview each
   of the 4 versions directly and verify the correct manipulation-check answers.
 - **Data storage:** a central Excel file (`data/responses.xlsx`) **and** a
   Google Sheet (cloud copy that survives server restarts). Every submission
@@ -13,7 +13,7 @@ experiment (**FRAME**: Technical vs Beneficiary Ã— **COBRAND**: Absent vs Pre
 - **Instrument:** Version 3.4 (TAM3) - 41 Likert items across B/C/E/F/G blocks,
   2 attention checks and 2 manipulation-strength items (PSA6, PSA7). About 55
   questions in all, 10-12 minutes.
-  2 attention checks and a 4-item manipulation-check block (H1â€“H4).
+  2 attention checks and a 4-item manipulation-check block (H1–H4).
 
 ## Run locally
 
@@ -40,10 +40,10 @@ http://localhost:3000/admin.html (admin).
 | `/api/export`    | Download `responses.xlsx`                            |
 | `/api/export.csv`| Download `responses.csv`                             |
 
-## Excel / Google Sheet columns (v3.4, 65 columns)
+## Excel / Google Sheet columns (v3.4, 67 columns)
 
-`id, submitted_at, cell_id, frame, cobrand, version, lang, mode, phase,
-completion_time_sec, b1, b2, b3, b4, b6, b8_1, b8_2, b8_3, b9, b10,
+`id, submitted_at, cell_id, frame, cobrand, version, lang, lang_start, mode, phase,
+completion_time_sec, scenario_time_sec, b1, b2, b3, b4, b6, b8_1, b8_2, b8_3, b9, b10,
 pec1, pec2, mv1, mv2, mv3,
 dvc1..dvc4, ac1, saf3, saf4,
 psa1..psa4, psa6, psa7, tp1..tp4, pf1..pf3,
@@ -52,8 +52,10 @@ pi2, pi3, pi4, res1, res3, res4, g3_wtp, g5_comment,
 mc_a, mc_b`
 
 - `frame` = 0 (Technical) / 1 (Beneficiary); `cobrand` = 0 (Absent) / 1 (Present).
-- `lang` = `en` or `as`; `mode` = `self` or `enumerator`; `phase` = `main` or `pilot`.
-  All three are recorded per response and set by the study link.
+- `lang` = `en` or `as` at submission; `lang_start` = the language the respondent
+  began in. `mode` = `self` or `enumerator`; `phase` = `main` or `pilot`.
+- `scenario_time_sec` = seconds spent on the product-scenario page, so instant
+  skips are detectable.
 - **PSA6 and PSA7 are manipulation-strength checks, not PSA items.** `psa1`-`psa4`
   form the construct; PSA6 should be higher under beneficiary framing, PSA7 higher
   under technical framing. Never score `psa1..psa7` as one scale.
@@ -102,10 +104,35 @@ scanned a QR code >= 100.
 authoritative instrument; the site mirrors its item order and wording. If an item
 changes there, change it here too - the two must not drift.
 
+## Fieldwork safeguards
+
+Added after a 10-response QA pass, so that real respondents cannot lose or corrupt data.
+
+| Risk | Handling |
+|---|---|
+| Repeated clicks on Submit wrote duplicate rows | The button disables on first click and a `submitted` flag blocks re-entry until the response is confirmed saved |
+| Final page said "Thank You" before anything was saved | The page is now "Almost done" with "Press Submit to send your answers. Nothing has been saved yet" |
+| Impossible B8 counts (0/0/0 from a parent, -2, 99, 1.5) | Whole numbers only, 0-15 each, and at least one child when B1 = parent |
+| Mid-survey language switching mixed languages in one row | The toggle locks once the scenario is shown; `lang` and `lang_start` are both recorded |
+| `?lang=as` ignored, choice forgotten | `?lang=` is honoured and the choice is remembered across reloads |
+| Reload wiped all answers, no way back | Answers autosave as a draft and the survey resumes at the last step; a Back button is shown on every step except the first and the final two |
+| No timing evidence | `completion_time_sec` and `scenario_time_sec` are recorded |
+| Screen-outs left no trace | B1 = No posts to `/api/screenout`, recorded in a `Screenouts` tab so the exclusion flowchart is reportable without counting as a response |
+| Public per-cell counts | `/api/assign` returns only the assigned cell, no counts |
+| Free text used as a spreadsheet formula | Free text is capped (500 in the page, 1000 server-side) and a leading `= + - @` is neutralised |
+| "Submit another response" shown to respondents | Shown only in enumerator mode |
+
+**Ethics reference.** Set `ETHICS_APPROVAL_REF` on the host and the consent page
+prints it in place of the placeholder; the value is served by `GET /api/config`.
+
+**Two extra tabs** live beside `Responses`: `Contacts` (findings-summary email
+addresses, with no identifier) and `Screenouts` (B1 = No). Neither is included in
+`/api/counts` or in cell balance.
+
 ## Language toggle (English / Assamese)
 
-The participant page (`/`) offers a **language toggle** in the header (English â‡„
-à¦…à¦¸à¦®à§€à¦¯à¦¼à¦¾). Participants can switch at any point; their answers are preserved
+The participant page (`/`) offers a **language toggle** in the header (English ⇄
+অসমীয়া). Participants can switch at any point; their answers are preserved
 across the switch. The chosen language is stored in the `lang` column.
 
 - All survey text, Likert items, and the four experimental stimuli are
@@ -115,8 +142,8 @@ across the switch. The chosen language is stored in the `lang` column.
   `public/app.js` are **DRAFT translations** prepared for the build. They MUST
   be verified by a bilingual researcher and passed through the forward
   translation / blind back-translation / third-reviewer reconciliation
-  procedure (design protocol Â§7.3) BEFORE fielding. To revise, edit the `as`
-  block in `public/i18n.js` and the `as` fields in `public/app.js` â€” no code
+  procedure (design protocol §7.3) BEFORE fielding. To revise, edit the `as`
+  block in `public/i18n.js` and the `as` fields in `public/app.js` — no code
   changes are needed.
 - **Analysis note:** because respondents self-select their language, test
   configural/metric/scalar invariance across the `en` and `as` groups (in
@@ -133,10 +160,10 @@ not safe. The site can append every response to a Google Sheet (cloud copy that
 survives restarts) **and** keep the local Excel file as a backup. See
 `SETUP_GOOGLE_SHEETS.md` for the one-time setup (~10 minutes). Set these env vars:
 
-- `GOOGLE_SERVICE_ACCOUNT_KEY` â€” the service-account key. On a cloud host,
+- `GOOGLE_SERVICE_ACCOUNT_KEY` — the service-account key. On a cloud host,
   paste the **entire JSON content** of the key file into this variable
   (the code accepts raw JSON or a file path).
-- `GOOGLE_SHEET_ID` â€” the spreadsheet ID.
+- `GOOGLE_SHEET_ID` — the spreadsheet ID.
 
 **Current values for this project:**
 
@@ -157,10 +184,10 @@ survives restarts) **and** keep the local Excel file as a backup. See
 
 Two ways, both land in the same Google Sheet and show up in the admin counts:
 
-1. **Directly in the spreadsheet** â€” open the `Responses` tab and type a row under
+1. **Directly in the spreadsheet** — open the `Responses` tab and type a row under
    the existing header. `/api/counts` reads the sheet, so the admin page reflects
    it immediately (just reload the page).
-2. **Upload a file on the admin page â†’ â€œManual entry â€” upload a responses fileâ€.**
+2. **Upload a file on the admin page → “Manual entry — upload a responses file”.**
    Choose a `.xlsx` or `.csv`, optionally tick *check only, do not write*, then
    press **Merge into Google Sheet**. The server (`POST /api/import`) reads the
    file, matches columns **by header name** (so exports from any build work, and
@@ -168,7 +195,7 @@ Two ways, both land in the same Google Sheet and show up in the admin counts:
 
 Import rules:
 
-- A row needs a `cell_id` of 1â€“4. `frame`, `cobrand` and `version` are derived
+- A row needs a `cell_id` of 1–4. `frame`, `cobrand` and `version` are derived
   from it, so an imported row cannot contradict its own condition.
 - `submitted_at` is kept if present and a valid date, otherwise the import time
   is used. Blank cells stay blank.
@@ -184,8 +211,8 @@ The spreadsheet: <https://docs.google.com/spreadsheets/d/1PKzd96paNlyvCGUJ7FgEj7
 
 The admin page reads `GET /api/counts`, which reports **both** stores:
 
-- `source: "google-sheet"` â€” the sheet is level with (or ahead of) the server file.
-- `source: "server-file"` â€” the sheet is behind; the count comes from the server's
+- `source: "google-sheet"` — the sheet is level with (or ahead of) the server file.
+- `source: "server-file"` — the sheet is behind; the count comes from the server's
   own Excel file and a red **storage warning** is shown, naming the sheet error.
 
 If you see the warning, responses were written to the server's local
@@ -193,7 +220,7 @@ If you see the warning, responses were written to the server's local
 a free host (wiped on restart/redeploy), so **download the Excel/CSV immediately**
 from the admin page, then fix the sheet:
 
-1. Check `GET /api/status` â€” it returns the sheet's `enabled`, `lastError` and
+1. Check `GET /api/status` — it returns the sheet's `enabled`, `lastError` and
    `lastOkAt`.
 2. Usually the stored header is stale after an instrument change. With zero data
    rows it now self-heals on the next submission; otherwise export the rows and
@@ -208,8 +235,8 @@ after each session to avoid losing data on a restart).
 ### Quick deploy on Render (recommended, free)
 1. Push this folder to a GitHub repository.
 2. Create a free account at https://render.com.
-3. **New â†’ Web Service** â†’ connect your GitHub repo.
-4. Build command: `npm install` Â· Start command: `node server.js`.
+3. **New → Web Service** → connect your GitHub repo.
+4. Build command: `npm install` · Start command: `node server.js`.
 5. Under **Environment**, add:
    - `GOOGLE_SERVICE_ACCOUNT_KEY` = the full JSON key content
    - `GOOGLE_SHEET_ID` = your spreadsheet ID
@@ -218,8 +245,8 @@ after each session to avoid losing data on a restart).
 
 ### Quick deploy on Glitch (simpler, free)
 1. Create a free account at https://glitch.com.
-2. **New Project â†’ Import from GitHub** (or upload the files).
-3. Add the two env vars in **Project â†’ .env**.
+2. **New Project → Import from GitHub** (or upload the files).
+3. Add the two env vars in **Project → .env**.
 4. The app runs at `https://your-project.glitch.me`.
    - Free tier sleeps after ~5 min idle and has a monthly usage limit.
 

@@ -56,31 +56,20 @@ function buildStimulus(cellId) {
   const isTech = cell.frame === 0;
   const hasCo = cell.cobrand === 1;
 
-  // Middle content block - the only part that varies by FRAME. Both branches
-  // list six entities, carry one descriptive line of matching length, and make
-  // no security or authenticity claim that the other does not make.
-  let middle;
-  if (isTech) {
-    const checks = STAGE_KEYS.map(
-      (k) => `<div class="check"><span class="tick">&#10003;</span>${t(k)}: ${t('stim.verified')}</div>`
-    ).join('');
-    middle = `
-      <div class="stage-grid">${checks}</div>
-      <p class="stim-line">${t('stim.techLine')}</p>`;
-  } else {
-    const bar = SHARES.map(
-      (s) => `<div class="seg" style="width:${s.pct}%;background:${s.color}" title="${t(s.key)} \u2014 ${s.pct}%"></div>`
-    ).join('');
-    const legend = SHARES.map(
-      (s) => `<div class="lg"><span class="dot" style="background:${s.color}"></span>${t(s.key)} (${s.pct}%)</div>`
-    ).join('');
-    middle = `
-      <div class="share-bar">${bar}</div>
-      <div class="share-legend">${legend}</div>
-      <p class="stim-line">${t('stim.benLine')}</p>`;
-  }
+  // Middle content block - the only part that varies by FRAME. Both branches use
+  // the same six-row component (label + value) so the framing difference is
+  // content only: no bar chart in one version and a tick list in the other.
+  const rows = isTech
+    ? STAGE_KEYS.map((k) => ({ k: t(k), v: t('stim.verified') }))
+    : SHARES.map((s) => ({ k: t(s.key), v: s.pct + '%' }));
+  const middle = `
+    <div class="record-rows">
+      ${rows.map((r) => `<div class="rr"><span class="rr-k">${r.k}</span><span class="rr-v">${r.v}</span></div>`).join('')}
+    </div>
+    <p class="stim-line">${t(isTech ? 'stim.techLine' : 'stim.benLine')}</p>`;
 
-  // Certification block - the only part that varies by COBRAND.
+  // Certification block - the only part that varies by COBRAND. It follows the
+  // tamper-resistance sentence, as in the printed instrument.
   const cobrand = hasCo
     ? `<p class="stim-line co-brand-line">${t('stim.coBrandLine')}</p>
        <div class="cobrand-row">
@@ -97,8 +86,8 @@ function buildStimulus(cellId) {
       </div>
       <p class="stim-line">${t('stim.sharedOpen')}</p>
       ${middle}
-      ${cobrand}
       <p class="stim-line">${t('stim.sharedClose')}</p>
+      ${cobrand}
       <div class="ver-id">${t('stim.verId')}</div>
     </div>`;
 }

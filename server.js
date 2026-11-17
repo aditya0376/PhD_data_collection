@@ -34,9 +34,11 @@ const SCHEMA = [
   { key: 'cobrand', header: 'cobrand' },
   { key: 'version', header: 'version' },
   { key: 'lang', header: 'lang' },
+  { key: 'lang_start', header: 'lang_start' },
   { key: 'mode', header: 'mode' },
   { key: 'phase', header: 'phase' },
   { key: 'completion_time_sec', header: 'completion_time_sec' },
+  { key: 'scenario_time_sec', header: 'scenario_time_sec' },
   // B1-B10 background (v3.4: B5, B7 and B11 removed)
   { key: 'b1', header: 'B1_ParentGuardian_1to16' },
   { key: 'b2', header: 'B2_Gender' },
@@ -123,7 +125,9 @@ const FRAME_BY_CELL = { 1: 0, 2: 0, 3: 1, 4: 1 };
 const COBRAND_BY_CELL = { 1: 0, 2: 1, 3: 0, 4: 1 };
 
 // Columns that stay text even when they look numeric.
-const TEXT_KEYS = new Set(['submitted_at', 'version', 'lang', 'mode', 'phase', 'g4_reason', 'g5_comment']);
+const TEXT_KEYS = new Set(['submitted_at', 'version', 'lang', 'lang_start', 'mode', 'phase', 'g5_comment']);
+// Cap on free-text answers, so one respondent cannot paste a wall of text in.
+const MAX_TEXT_LEN = 1000;
 
 // Turn an uploaded cell value into what the spreadsheet should receive.
 function coerceValue(key, v) {
@@ -136,9 +140,16 @@ function coerceValue(key, v) {
     return String(v);
   }
   if (typeof v === 'string') {
-    const t = v.trim();
+    let t = v.trim();
     if (t === '') return '';
-    if (!TEXT_KEYS.has(key) && !Number.isNaN(Number(t))) return Number(t);
+    if (TEXT_KEYS.has(key)) {
+      if (t.length > MAX_TEXT_LEN) t = t.slice(0, MAX_TEXT_LEN);
+      // Defuse spreadsheet-formula injection: a leading = + - @ would be
+      // interpreted as a formula by Google Sheets (USER_ENTERED) and by Excel.
+      if (/^[=+\-@]/.test(t)) t = "'" + t;
+      return t;
+    }
+    if (!Number.isNaN(Number(t))) return Number(t);
     return t;
   }
   return v;
@@ -209,17 +220,28 @@ app.use(express.json({ limit: '2mb' }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Assign a participant to the least-filled cell (block randomization).
+// Counts stay server-side: revealing them would let anyone infer condition
+// balance, and the client does not need them.
 app.get('/api/assign', async (req, res) => {
   try {
     const { counts } = await getAuthoritativeCounts();
     const min = Math.min(...Object.values(counts));
     const candidates = [1, 2, 3, 4].filter((c) => counts[c] === min);
     const cell = candidates[Math.floor(Math.random() * candidates.length)];
-    res.json({ cell, counts });
+    res.set('Cache-Control', 'no-store');
+    res.json({ cell });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'assign failed' });
   }
+});
+
+// Public configuration the survey page needs (nothing sensitive).
+app.get('/api/config', (req, res) => {
+  res.json({
+    ethicsRef: (process.env.ETHICS_APPROVAL_REF || '').trim() || null,
+    maxCommentLength: MAX_TEXT_LEN
+  });
 });
 
 // Which store is authoritative right now, plus per-cell counts.
@@ -330,10 +352,36 @@ app.get('/api/status', (req, res) => {
   });
 });
 
+// Server-side duplicate guard: a repeated identical submission (double click, a
+// retried fetch, a script that fires Submit twice) must not create a second row.
+// Fingerprints are held in memory for ten minutes.
+const recentSubmissions = new Map();
+const DUP_WINDOW_MS = 10 * 60 * 1000;
+
+function submissionFingerprint(data) {
+  const keys = Object.keys(data).sort();
+  const canon = keys.map((k) => k + '=' + String(data[k])).join('&');
+  return require('crypto').createHash('sha1').update(canon).digest('hex');
+}
+
+function rememberSubmission(fp) {
+  const now = Date.now();
+  for (const [k, t] of recentSubmissions) {
+    if (now - t > DUP_WINDOW_MS) recentSubmissions.delete(k);
+  }
+  recentSubmissions.set(fp, now);
+}
+
 // Append one response row to the central Excel file.
 app.post('/api/submit', (req, res) => {
   const data = req.body || {};
   if (!data.cell_id) return res.status(400).json({ error: 'missing cell_id' });
+
+  const fp = submissionFingerprint(data);
+  if (recentSubmissions.has(fp)) {
+    return res.json({ ok: true, duplicate: true });
+  }
+  rememberSubmission(fp);
 
   // Derive the condition if the caller omitted it, so a submission without
   // frame/cobrand can never leave those analysis columns blank.
@@ -540,6 +588,37 @@ app.post('/api/import', express.json({ limit: '25mb' }), async (req, res) => {
     console.error(err);
     res.status(500).json({ error: 'import failed: ' + err.message });
   }
+});
+
+// Screen-out record (B1 = No). Kept off the response sheet so it cannot affect
+// cell balance or the response count, but available for the exclusion flowchart.
+app.post('/api/screenout', async (req, res) => {
+  const body = req.body || {};
+  const record = {
+    submitted_at: new Date().toISOString(),
+    b1: '0',
+    lang: body.lang || '',
+    lang_start: body.lang_start || '',
+    mode: body.mode || 'self',
+    phase: body.phase || 'main',
+    reason: body.reason || 'not_parent_guardian'
+  };
+  const result = await sheets.appendScreenout(record);
+  if (!result.ok) {
+    try {
+      fs.appendFileSync(
+        path.join(DATA_DIR, 'screenouts.csv'),
+        [record.submitted_at, record.b1, record.lang, record.lang_start, record.mode, record.phase, record.reason]
+          .map((v) => `"${String(v).replace(/"/g, '""')}"`).join(',') + '\n',
+        'utf8'
+      );
+      return res.json({ ok: true, stored: 'server-file' });
+    } catch (err) {
+      console.error(err);
+      return res.status(502).json({ ok: false, error: 'could not record the screen-out' });
+    }
+  }
+  res.json({ ok: true, stored: 'google-sheet' });
 });
 
 // Findings-summary email capture. Deliberately a separate endpoint and a

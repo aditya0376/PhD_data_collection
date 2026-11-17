@@ -28,7 +28,7 @@ const PEC_ITEMS = [
   { n: 'pec2', en: 'I usually have enough mobile network or data to check a product while I am shopping.', as: 'কিনাকিনি কৰি থকা সময়ত পণ্য পৰীক্ষা কৰিবলৈ সাধাৰণতে মোৰ যথেষ্ট মোবাইল নেটৱৰ্ক বা ডেটা থাকে।' }
 ];
 
-// Section B - B15 Marker variable (theoretically unrelated, CFA marker technique)
+// Section B - B15 Marker variable
 const MV_ITEMS = [
   { n: 'mv1', en: 'I prefer to plan my day in advance rather than decide as I go.', as: 'যেতিয়াই যাওঁ তেতিয়াই ঠিক কৰাতকৈ মই দিনটো আগতীয়াকৈ পৰিকল্পনা কৰিবলৈ ভাল পাওঁ।' },
   { n: 'mv2', en: 'I enjoy trying food I have never eaten before.', as: 'আগতে কেতিয়াও নোখোৱা খাদ্য চেষ্টা কৰিবলৈ মই ভাল পাওঁ।' },
@@ -43,7 +43,7 @@ const DVC_ITEMS = [
   { n: 'dvc4', en: 'I have the skills needed to check products digitally when I shop.', as: 'কিনাকিনি কৰোঁতে ডিজিটেলভাৱে পণ্য পৰীক্ষা কৰিবলৈ প্ৰয়োজনীয় দক্ষতা মোৰ আছে।' }
 ];
 
-// Section C - C2 Attention check (instructed response: select 2)
+// Section C - C2 Attention check (select 2)
 const AC1_ITEM = [
   { n: 'ac1', en: 'This is a check to confirm you are reading carefully. Please select "Disagree" (2) for this statement.', as: 'আপুনি মনোযোগেৰে পঢ়ি আছে নে নাই পৰীক্ষা কৰিবলৈ এইটো এটা পৰীক্ষা। এই উক্তিটোৰ বাবে অনুগ্ৰহ কৰি "অসন্মত" (2) বাছনি কৰক।' }
 ];
@@ -54,9 +54,9 @@ const SAF_ITEMS = [
   { n: 'saf4', en: 'I check where a children\u2019s product came from before buying it.', as: 'কিনাৰ আগতে শিশুৰ পণ্যটো ক\u2019ৰ পৰা আহিছে মই পৰীক্ষা কৰোঁ।' }
 ];
 
-// Section E - E1 Perceived signal accessibility (PSA1-PSA4 enter the construct)
-// PSA6 and PSA7 are manipulation-strength checks, NOT part of the scale: PSA6
-// should be higher under beneficiary framing, PSA7 under technical framing.
+// Section E - E1 Perceived signal accessibility. PSA1-PSA4 enter the construct;
+// PSA6 (beneficiary direction) and PSA7 (technical direction) are the two
+// manipulation-strength checks and are never scored as PSA.
 const PSA_ITEMS = [
   { n: 'psa1', en: 'The important information on this screen is easy to notice.', as: 'এই পৰ্দাত থকা গুৰুত্বপূৰ্ণ তথ্য সহজে চকুত পৰে।' },
   { n: 'psa2', en: 'It is clear to me what this record is telling me about the product.', as: 'এই ৰেকৰ্ডটোৱে পণ্যৰ বিষয়ে মোক কি কৈছে সেয়া মোৰ ওচৰত স্পষ্ট।' },
@@ -66,7 +66,7 @@ const PSA_ITEMS = [
   { n: 'psa7', en: 'I can tell which stages of this product\u2019s journey have been checked.', as: 'এই পণ্যটোৰ যাত্ৰাৰ কোনবোৰ পৰ্যায় পৰীক্ষা কৰা হৈছে মই ক\u2019ব পাৰোঁ।' }
 ];
 
-// Section E - E2 Trust in the product source (one item per dimension)
+// Section E - E2 Trust in the product source
 const TP_ITEMS = [
   { n: 'tp1', en: 'I believe the people behind this product are capable of doing what they claim.', as: 'এই পণ্যৰ পিছত থকা লোকসকল তেওঁলোকে দাবী কৰা কাম কৰিবলৈ সক্ষম বুলি মই বিশ্বাস কৰোঁ।' },
   { n: 'tp2', en: 'The assurances given about this product are reliable.', as: 'এই পণ্যৰ বিষয়ে দিয়া আশ্বাসবোৰ বিশ্বাসযোগ্য।' },
@@ -100,7 +100,7 @@ const ITU_ITEMS = [
   { n: 'itu3', en: 'I plan to use this way of checking products when it is available.', as: 'উপলব্ধ হ\u2019লে এইদৰে পণ্য পৰীক্ষা কৰা ব্যৱহাৰ কৰিবলৈ মই পৰিকল্পনা কৰিছো।' }
 ];
 
-// Section F - F4 Attention check (instructed response: select 5)
+// Section F - F4 Attention check (select 5)
 const AC2_ITEM = [
   { n: 'ac2', en: 'Please select "Strongly agree" (5) for this statement so that we know you are reading carefully.', as: 'আপুনি মনোযোগেৰে পঢ়ি আছে বুলি জানিবলৈ এই উক্তিটোৰ বাবে অনুগ্ৰহ কৰি "দৃঢ়ভাৱে সন্মত" (5) বাছনি কৰক।' }
 ];
@@ -112,12 +112,27 @@ const PI_ITEMS = [
   { n: 'pi4', en: 'I intend to buy this product the next time I shop for my child.', as: 'মোৰ সন্তানৰ বাবে পৰৱৰ্তী কিনাত মই এই পণ্যটো কিনিবলৈ মন কৰিছো।' }
 ];
 
-// Section G - G2 Resistance beliefs (three roots; not a scale, not factor-analysed)
+// Section G - G2 Resistance beliefs (three roots; not a scale)
 const RES_ITEMS = [
   { n: 'res1', en: 'I could not afford to pay extra for a product like this.', as: 'এনেধৰণৰ পণ্যৰ বাবে বেছি দাম দিবলৈ মোৰ সাধ্য নাই।' },
   { n: 'res3', en: 'Honesty should not cost the customer extra \u2014 it is the government\u2019s job to ensure it.', as: 'সততাই গ্ৰাহকক বেছি খৰচ নকৰা উচিত \u2014 সেয়া নিশ্চিত কৰা চৰকাৰৰ কাম।' },
   { n: 'res4', en: 'I already trust the brands I buy, so I do not need this information.', as: 'মই কিনা ব্ৰেণ্ডবোৰত মই ইতিমধ্যে বিশ্বাস কৰোঁ, গতিকে এই তথ্যৰ প্ৰয়োজন নাই।' }
 ];
+
+// ---------------------------------------------------------------------------
+// State
+// ---------------------------------------------------------------------------
+let startTime = Date.now();
+let scenarioStart = null;
+let scenarioTime = null;
+let assignedCell = null;
+let langStart = null;
+let submitted = false;
+let currentStep = 's-consent';
+let config = { ethicsRef: null, maxCommentLength: 500 };
+
+const DRAFT_KEY = 'p3_draft';
+const LANG_KEY = 'p3_lang';
 
 // ---------------------------------------------------------------------------
 // Build Likert grids
@@ -137,12 +152,26 @@ function likertGrid(items, containerId) {
   el.innerHTML = html;
 }
 
+function renderAllGrids() {
+  likertGrid(PEC_ITEMS, 'pec-items');
+  likertGrid(MV_ITEMS, 'mv-items');
+  likertGrid(DVC_ITEMS, 'dvc-items');
+  likertGrid(AC1_ITEM, 'ac1-items');
+  likertGrid(SAF_ITEMS, 'saf-items');
+  likertGrid(PSA_ITEMS, 'psa-items');
+  likertGrid(TP_ITEMS, 'tp-items');
+  likertGrid(PF_ITEMS, 'pf-items');
+  likertGrid(PU_ITEMS, 'pu-items');
+  likertGrid(PEOU_ITEMS, 'peou-items');
+  likertGrid(ITU_ITEMS, 'itu-items');
+  likertGrid(AC2_ITEM, 'ac2-items');
+  likertGrid(PI_ITEMS, 'pi-items');
+  likertGrid(RES_ITEMS, 'res-items');
+}
+
 // ---------------------------------------------------------------------------
 // Step navigation
 // ---------------------------------------------------------------------------
-let startTime = Date.now();
-let assignedCell = null;
-
 const STEP_ORDER = [
   's-consent', 's-b1', 's-demo', 's-habits', 's-c',
   's-stimulus', 's-e', 's-f', 's-g', 's-checks', 's-h', 's-done'
@@ -158,15 +187,26 @@ const STEP_LABELS = {
   's-f': 'The checking technology',
   's-g': 'Your decision',
   's-checks': 'Final checks',
-  's-h': 'Thank you',
+  's-h': 'Almost done',
   's-done': 'Done'
 };
 
 function show(id) {
+  // Scenario timing: measured from entering the stimulus page to leaving it.
+  if (currentStep === 's-stimulus' && id !== 's-stimulus' && scenarioStart) {
+    scenarioTime = Math.round((Date.now() - scenarioStart) / 1000);
+  }
+  if (id === 's-stimulus' && !scenarioStart) scenarioStart = Date.now();
+
   document.querySelectorAll('.step').forEach((s) => (s.style.display = 'none'));
   document.getElementById(id).style.display = 'block';
+  currentStep = id;
   window.scrollTo(0, 0);
   updateProgress(id);
+  lockLanguage(id);
+  updateBackButton();
+  if (id === 's-done') forceAnotherButtonVisibility();
+  saveDraft();
 }
 
 function updateProgress(id) {
@@ -177,7 +217,25 @@ function updateProgress(id) {
     const pct = id === 's-done' ? 100 : Math.round(((idx + 1) / STEP_ORDER.length) * 100);
     fill.style.width = pct + '%';
   }
-  if (label) label.textContent = STEP_LABELS[id] || '';
+  if (label) {
+    const key = 'step.' + id;
+    const translated = t(key);
+    label.textContent = translated && translated !== key ? translated : (STEP_LABELS[id] || '');
+  }
+}
+
+function updateBackButton() {
+  const btn = document.getElementById('backBtn');
+  if (!btn) return;
+  const idx = STEP_ORDER.indexOf(currentStep);
+  const hidden = idx <= 0 || currentStep === 's-done' || currentStep === 's-h';
+  btn.style.display = hidden ? 'none' : 'inline-block';
+}
+
+function goBack() {
+  const idx = STEP_ORDER.indexOf(currentStep);
+  if (idx <= 0) return;
+  show(STEP_ORDER[idx - 1]);
 }
 
 function go(id) {
@@ -185,22 +243,47 @@ function go(id) {
   show(id);
 }
 
-function validateStep(nextId) {
-  const current = document.querySelector('.step[style*="block"]') ||
-    document.querySelector('.step:not([style])');
-  const stepId = current ? current.id : null;
+// The language is fixed once the scenario has been shown: switching later would
+// mix languages inside one response and make the invariance test meaningless.
+function lockLanguage(id) {
+  const idx = STEP_ORDER.indexOf(id);
+  const locked = idx >= STEP_ORDER.indexOf('s-stimulus');
+  document.querySelectorAll('.lang-btn').forEach((b) => {
+    b.disabled = locked;
+    b.classList.toggle('is-locked', locked);
+  });
+}
 
-  if (stepId === 's-consent') {
+function validateStep(nextId) {
+  const current = document.getElementById(currentStep);
+  if (!current) return true;
+
+  if (currentStep === 's-consent') {
     if (!document.getElementById('consentBox').checked) {
-      alert('Please tick the consent box to continue.');
+      alert(t('alert.consent'));
       return false;
     }
     return true;
   }
 
-  if (stepId === 's-b1') {
-    if (!radioVal('b1')) { alert('Please answer B1.'); return false; }
+  if (currentStep === 's-b1') {
+    if (!radioVal('b1')) { alert(t('alert.b1')); return false; }
     return true;
+  }
+
+  // B8: whole numbers, each 0-15, and at least one child (B1 said parent).
+  if (currentStep === 's-demo') {
+    const b8 = ['b8_1', 'b8_2', 'b8_3'].map((n) => document.querySelector(`input[name="${n}"]`));
+    let total = 0;
+    for (const inp of b8) {
+      if (!inp) continue;
+      const raw = inp.value.trim();
+      if (raw === '' || !/^\d+$/.test(raw)) { alert(t('alert.b8integer')); inp.focus(); return false; }
+      const v = Number(raw);
+      if (v < 0 || v > 15) { alert(t('alert.b8range')); inp.focus(); return false; }
+      total += v;
+    }
+    if (total < 1) { alert(t('alert.b8zero')); return false; }
   }
 
   // Require every VISIBLE radio group on the step to be answered.
@@ -209,14 +292,7 @@ function validateStep(nextId) {
   const groups = {};
   radios.forEach((r) => { groups[r.name] = true; });
   for (const name of Object.keys(groups)) {
-    if (!radioVal(name)) { alert('Please answer every question before continuing.'); return false; }
-  }
-
-  // Required number inputs (B8 age bands).
-  const requiredText = Array.from(current.querySelectorAll('input[type="number"]'))
-    .filter((r) => r.offsetParent !== null || isInVisibleWrap(r));
-  for (const inp of requiredText) {
-    if (inp.value.trim() === '') { alert('Please answer every question before continuing. Enter 0 if none.'); return false; }
+    if (!radioVal(name)) { alert(t('alert.answerAll')); return false; }
   }
 
   return true;
@@ -237,13 +313,103 @@ function radioVal(name) {
 }
 
 function checkB1() {
-  if (!radioVal('b1')) { alert('Please answer B1.'); return; }
-  if (radioVal('b1') === '0') { show('s-thankyou'); return; }
+  if (!radioVal('b1')) { alert(t('alert.b1')); return; }
+  if (radioVal('b1') === '0') {
+    recordScreenout();
+    show('s-thankyou');
+    return;
+  }
   show('s-demo');
 }
 
+// Screen-outs are recorded, so they can be reported in the exclusion flowchart.
+function recordScreenout() {
+  try {
+    fetch('/api/screenout', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        lang: getLang(),
+        lang_start: langStart || getLang(),
+        mode: adminMode(),
+        phase: studyPhase(),
+        reason: 'not_parent_guardian'
+      })
+    }).catch(() => {});
+  } catch (err) { /* never block the respondent */ }
+  clearDraft();
+}
+
 // ---------------------------------------------------------------------------
-// Language switching
+// Draft: answers survive a reload or an interrupted session
+// ---------------------------------------------------------------------------
+function collectAnswers() {
+  const out = { radio: {}, text: {}, area: {} };
+  document.querySelectorAll('input[type="radio"]:checked').forEach((r) => { out.radio[r.name] = r.value; });
+  document.querySelectorAll('input[type="number"], input[type="text"]').forEach((r) => { out.text[r.name] = r.value; });
+  document.querySelectorAll('textarea').forEach((r) => { out.area[r.name] = r.value; });
+  return out;
+}
+
+function saveDraft() {
+  if (submitted) return;
+  try {
+    localStorage.setItem(DRAFT_KEY, JSON.stringify({
+      step: currentStep,
+      answers: collectAnswers(),
+      startTime,
+      scenarioStart,
+      scenarioTime,
+      consent: document.getElementById('consentBox').checked,
+      langStart: langStart || getLang()
+    }));
+  } catch (err) { /* storage may be unavailable */ }
+}
+
+function clearDraft() {
+  try { localStorage.removeItem(DRAFT_KEY); } catch (err) { /* ignore */ }
+}
+
+function restoreDraft() {
+  let draft = null;
+  try { draft = JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (err) { draft = null; }
+  if (!draft || !draft.answers) return false;
+
+  const a = draft.answers;
+  Object.keys(a.radio || {}).forEach((name) => {
+    const el = document.querySelector(`input[name="${name}"][value="${a.radio[name]}"]`);
+    if (el) el.checked = true;
+  });
+  Object.keys(a.text || {}).forEach((name) => {
+    const el = document.querySelector(`[name="${name}"]`);
+    if (el) el.value = a.text[name];
+  });
+  Object.keys(a.area || {}).forEach((name) => {
+    const el = document.querySelector(`textarea[name="${name}"]`);
+    if (el) el.value = a.area[name];
+  });
+  if (draft.consent) document.getElementById('consentBox').checked = true;
+  if (draft.startTime) startTime = draft.startTime;
+  if (draft.scenarioStart) scenarioStart = draft.scenarioStart;
+  if (draft.scenarioTime) scenarioTime = draft.scenarioTime;
+  if (draft.langStart) langStart = draft.langStart;
+
+  const step = STEP_ORDER.includes(draft.step) && draft.step !== 's-done' ? draft.step : 's-consent';
+  show(step);
+  return true;
+}
+
+function wireDraftAutosave() {
+  const handler = () => {
+    clearTimeout(wireDraftAutosave._t);
+    wireDraftAutosave._t = setTimeout(saveDraft, 400);
+  };
+  document.addEventListener('change', handler);
+  document.addEventListener('input', handler);
+}
+
+// ---------------------------------------------------------------------------
+// Language
 // ---------------------------------------------------------------------------
 function applyLanguage() {
   const radioVals = {};
@@ -262,15 +428,15 @@ function applyLanguage() {
   });
 
   renderAllGrids();
-
   if (assignedCell) renderStimulus(assignedCell, document.getElementById('stimulus'));
+  applyEthicsRef();
 
   Object.keys(radioVals).forEach((name) => {
     const el = document.querySelector(`input[name="${name}"][value="${radioVals[name]}"]`);
     if (el) el.checked = true;
   });
   Object.keys(inputVals).forEach((name) => {
-    const el = document.querySelector(`input[name="${name}"]`);
+    const el = document.querySelector(`[name="${name}"]`);
     if (el) el.value = inputVals[name];
   });
   Object.keys(textareaVals).forEach((name) => {
@@ -278,33 +444,33 @@ function applyLanguage() {
     if (el) el.value = textareaVals[name];
   });
   document.getElementById('consentBox').checked = consentChecked;
-}
 
-function renderAllGrids() {
-  likertGrid(PEC_ITEMS, 'pec-items');
-  likertGrid(MV_ITEMS, 'mv-items');
-  likertGrid(DVC_ITEMS, 'dvc-items');
-  likertGrid(AC1_ITEM, 'ac1-items');
-  likertGrid(SAF_ITEMS, 'saf-items');
-  likertGrid(PSA_ITEMS, 'psa-items');
-  likertGrid(TP_ITEMS, 'tp-items');
-  likertGrid(PF_ITEMS, 'pf-items');
-  likertGrid(PU_ITEMS, 'pu-items');
-  likertGrid(PEOU_ITEMS, 'peou-items');
-  likertGrid(ITU_ITEMS, 'itu-items');
-  likertGrid(AC2_ITEM, 'ac2-items');
-  likertGrid(PI_ITEMS, 'pi-items');
-  likertGrid(RES_ITEMS, 'res-items');
+  document.querySelectorAll('.lang-btn').forEach((b) => {
+    b.classList.toggle('active', b.getAttribute('data-lang') === getLang());
+  });
+  updateProgress(currentStep);
 }
 
 function wireLanguageToggle() {
   document.querySelectorAll('.lang-btn').forEach((btn) => {
     btn.addEventListener('click', () => {
+      if (btn.disabled) return;
       setLang(btn.getAttribute('data-lang'));
-      document.querySelectorAll('.lang-btn').forEach((b) => b.classList.toggle('active', b === btn));
+      try { localStorage.setItem(LANG_KEY, getLang()); } catch (err) { /* ignore */ }
       applyLanguage();
+      saveDraft();
     });
   });
+}
+
+function initialLanguage() {
+  const q = urlParam('lang');
+  if (q === 'as' || q === 'en') return q;
+  try {
+    const saved = localStorage.getItem(LANG_KEY);
+    if (saved === 'as' || saved === 'en') return saved;
+  } catch (err) { /* ignore */ }
+  return 'en';
 }
 
 // ---------------------------------------------------------------------------
@@ -317,6 +483,14 @@ async function ensureCell() {
   const data = await res.json();
   assignedCell = data.cell;
   localStorage.setItem('p3_cell', String(assignedCell));
+}
+
+function ensureCellLocal() {
+  // Offline fallback so a network blip cannot block the survey.
+  if (!assignedCell) {
+    assignedCell = 1 + Math.floor(Math.random() * 4);
+    try { localStorage.setItem('p3_cell', String(assignedCell)); } catch (err) { /* ignore */ }
+  }
 }
 
 // ---------------------------------------------------------------------------
@@ -341,20 +515,56 @@ function adminMode() {
   return (m === 'enumerator' || m === 'assisted') ? 'enumerator' : 'self';
 }
 
+function forceAnotherButtonVisibility() {
+  const btn = document.getElementById('anotherBtn');
+  if (!btn) return;
+  btn.style.display = adminMode() === 'enumerator' ? 'inline-block' : 'none';
+}
+
+// ---------------------------------------------------------------------------
+// Ethics reference, supplied by the server so it is not hard-coded
+// ---------------------------------------------------------------------------
+function applyEthicsRef() {
+  if (!config.ethicsRef) return;
+  const el = document.querySelector('[data-i18n="consent.ethics"]');
+  if (!el) return;
+  el.textContent = t('consent.ethics').replace(/\[[^\]]*\]/, '(ref. ' + config.ethicsRef + ')');
+}
+
+async function loadConfig() {
+  try {
+    const res = await fetch('/api/config');
+    if (res.ok) {
+      const data = await res.json();
+      if (data && typeof data === 'object') config = Object.assign(config, data);
+    }
+  } catch (err) { /* keep defaults */ }
+  applyEthicsRef();
+  const g5 = document.querySelector('textarea[name="g5_comment"]');
+  if (g5) g5.maxLength = config.maxCommentLength || 500;
+}
+
 // ---------------------------------------------------------------------------
 // Submit
 // ---------------------------------------------------------------------------
 async function submitSurvey() {
+  if (submitted) return;
   if (!validateStep('s-h')) return;
+
+  const btn = document.getElementById('submitBtn');
+  submitted = true;
+  if (btn) { btn.disabled = true; btn.textContent = t('btn.saving'); }
 
   const payload = { cell_id: assignedCell };
   const cell = window.CELLS[assignedCell];
   payload.frame = cell.frame;
   payload.cobrand = cell.cobrand;
   payload.lang = getLang();
+  payload.lang_start = langStart || getLang();
   payload.mode = adminMode();
   payload.phase = studyPhase();
   payload.completion_time_sec = Math.round((Date.now() - startTime) / 1000);
+  payload.scenario_time_sec = scenarioTime === null ? '' : scenarioTime;
 
   document.querySelectorAll('input[type="radio"]').forEach((r) => {
     if (r.checked) payload[r.name] = r.value;
@@ -366,8 +576,9 @@ async function submitSurvey() {
     payload[r.name] = r.value.trim();
   });
 
+  const maxLen = config.maxCommentLength || 500;
   document.querySelectorAll('textarea').forEach((r) => {
-    payload[r.name] = r.value.trim();
+    payload[r.name] = r.value.trim().slice(0, maxLen);
   });
 
   try {
@@ -379,12 +590,17 @@ async function submitSurvey() {
     const data = await res.json();
     if (data.ok) {
       localStorage.removeItem('p3_cell');
+      clearDraft();
       show('s-done');
     } else {
-      alert('There was a problem saving your response. Please try again.');
+      submitted = false;
+      if (btn) { btn.disabled = false; btn.textContent = t('btn.submit'); }
+      alert(t('alert.submitFail'));
     }
   } catch (err) {
-    alert('Network error. Please check your connection and try again.');
+    submitted = false;
+    if (btn) { btn.disabled = false; btn.textContent = t('btn.submit'); }
+    alert(t('alert.network'));
   }
 }
 
@@ -418,7 +634,7 @@ async function subscribeFindings() {
 }
 
 // ---------------------------------------------------------------------------
-// Reset - allow submitting another response
+// Reset - enumerator mode only
 // ---------------------------------------------------------------------------
 async function resetSurvey() {
   document.querySelectorAll('input[type="radio"]').forEach((r) => (r.checked = false));
@@ -431,10 +647,13 @@ async function resetSurvey() {
   const email = document.getElementById('summary-email');
   if (email) email.value = '';
 
+  submitted = false;
+  scenarioStart = null;
+  scenarioTime = null;
+  clearDraft();
   localStorage.removeItem('p3_cell');
   assignedCell = null;
   await ensureCell();
-  renderStimulus(assignedCell, document.getElementById('stimulus'));
 
   startTime = Date.now();
   show('s-consent');
@@ -444,11 +663,29 @@ async function resetSurvey() {
 // Init
 // ---------------------------------------------------------------------------
 document.addEventListener('DOMContentLoaded', async () => {
-  renderAllGrids();
+  setLang(initialLanguage());
+  langStart = getLang();
+  try { localStorage.setItem(LANG_KEY, getLang()); } catch (err) { /* ignore */ }
 
-  await ensureCell();
+  renderAllGrids();
+  await loadConfig();
+
+  try {
+    await ensureCell();
+  } catch (err) {
+    ensureCellLocal();
+  }
   renderStimulus(assignedCell, document.getElementById('stimulus'));
 
   wireLanguageToggle();
-  show('s-consent');
+  wireDraftAutosave();
+
+  document.querySelectorAll('[data-i18n]').forEach((el) => {
+    const val = t(el.getAttribute('data-i18n'));
+    if (val) el.textContent = val;
+  });
+  applyEthicsRef();
+  updateProgress('s-consent');
+
+  if (!restoreDraft()) show('s-consent');
 });

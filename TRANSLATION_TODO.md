@@ -1,7 +1,7 @@
-# Translation work list — Assamese (instrument v3.4)
+﻿# Translation work list â€” Assamese (instrument v3.4)
 
 The Assamese strings in `public/i18n.js` and `public/app.js` are **draft**. The
-design protocol (§9.3 of the objectives document) requires forward translation,
+design protocol (Â§9.3 of the objectives document) requires forward translation,
 blind back-translation and bilingual reconciliation (Brislin) before fielding.
 This file lists what changed or was added in v3.4 so the reviewer does not have
 to diff the whole instrument.
@@ -19,8 +19,8 @@ to diff the whole instrument.
 | `pi3` | I would choose this product over a similar product without this information. | reworded |
 | `pi4` | I intend to buy this product the next time I shop for my child. | reworded |
 
-Unchanged: PSA2, TP1–TP4, PF1–PF3, PU1/PU2/PU4, PEOU1/PEOU2/PEOU4, ITU1–ITU3,
-DVC1–DVC4, PEC1–PEC2, MV1–MV3, SAF3–SAF4, RES1/RES3/RES4, AC1, AC2.
+Unchanged: PSA2, TP1â€“TP4, PF1â€“PF3, PU1/PU2/PU4, PEOU1/PEOU2/PEOU4, ITU1â€“ITU3,
+DVC1â€“DVC4, PEC1â€“PEC2, MV1â€“MV3, SAF3â€“SAF4, RES1/RES3/RES4, AC1, AC2.
 
 ## Stimulus text
 
@@ -31,7 +31,7 @@ DVC1–DVC4, PEC1–PEC2, MV1–MV3, SAF3–SAF4, RES1/RES3/RES4, AC1, AC2.
 | `share.processing`, `share.transport`, `share.community` | restored to "Processing unit", "Transport co-operative", "Community fund" to match the approved instrument |
 
 Word-count parity of the two middle blocks: measured at 76 words (D-1) against
-78 (D-3) and 85 (D-2) against 87 (D-4), i.e. 2.6 per cent and 2.3 per cent — under
+78 (D-3) and 85 (D-2) against 87 (D-4), i.e. 2.6 per cent and 2.3 per cent â€” under
 the 5 per cent ceiling. Re-check after translation; what matters is that the
 technical and beneficiary blocks do not diverge systematically from each other.
 
@@ -51,3 +51,13 @@ Removed constructs no longer need translations, but their keys are still in
 ```bash
 node -e "const {I18N}=require('./public/i18n.js');const en=Object.keys(I18N.en);const as=Object.keys(I18N.as);console.log('missing in as:',en.filter(k=>!as.includes(k)));"
 ```
+
+## Interface strings added in the fieldwork-safeguards pass
+
+Alerts and step labels are now translated: `btn.back`, `btn.saving`,
+`step.s-consent` … `step.s-done`, `alert.consent`, `alert.b1`, `alert.answerAll`,
+`alert.b8integer`, `alert.b8range`, `alert.b8zero`, `alert.submitFail`,
+`alert.network`. The consent paragraphs `consent.asked` (10-12 minutes) and
+`consent.confidentiality` (email collected separately) were rewritten in both
+languages, and Assamese numerals were normalised to Latin digits so the scenario
+shows "50" consistently with the percentages.

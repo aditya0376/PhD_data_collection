@@ -235,32 +235,36 @@ async function getRows() {
 const CONTACT_HEADERS = ['submitted_at', 'email'];
 let contactsReady = false;
 
-async function ensureContactsTab() {
-  if (contactsReady) return;
+async function ensureTab(title, headers) {
   const meta = await sheetsClient.spreadsheets.get({
     spreadsheetId: sheetId,
     fields: 'sheets.properties.title'
   });
-  const has = (meta.data.sheets || []).some((s) => s.properties.title === 'Contacts');
+  const has = (meta.data.sheets || []).some((s) => s.properties.title === title);
   if (!has) {
     await sheetsClient.spreadsheets.batchUpdate({
       spreadsheetId: sheetId,
-      requestBody: { requests: [{ addSheet: { properties: { title: 'Contacts' } } }] }
+      requestBody: { requests: [{ addSheet: { properties: { title } } }] }
     });
   }
   const res = await sheetsClient.spreadsheets.values.get({
     spreadsheetId: sheetId,
-    range: "'Contacts'!1:1"
+    range: `'${title}'!1:1`
   });
   const existing = (res.data.values || [])[0] || [];
   if (existing.length === 0) {
     await sheetsClient.spreadsheets.values.append({
       spreadsheetId: sheetId,
-      range: "'Contacts'!A1",
+      range: `'${title}'!A1`,
       valueInputOption: 'RAW',
-      requestBody: { values: [CONTACT_HEADERS] }
+      requestBody: { values: [headers] }
     });
   }
+}
+
+async function ensureContactsTab() {
+  if (contactsReady) return;
+  await ensureTab('Contacts', CONTACT_HEADERS);
   contactsReady = true;
 }
 
@@ -283,6 +287,37 @@ async function appendContact(email) {
   }
 }
 
+// Screen-outs are recorded on their own tab: they must appear in the exclusion
+// flow diagram, but they must not count as responses or affect cell balance.
+const SCREENOUT_HEADERS = ['submitted_at', 'b1', 'lang', 'lang_start', 'mode', 'phase', 'reason'];
+let screenoutsReady = false;
+
+async function appendScreenout(record) {
+  if (!sheetsClient) return { ok: false, error: 'Google Sheets not configured' };
+  try {
+    if (!screenoutsReady) {
+      await ensureTab('Screenouts', SCREENOUT_HEADERS);
+      screenoutsReady = true;
+    }
+    const row = SCREENOUT_HEADERS.map((h) => {
+      const v = record[h];
+      return v === undefined || v === null ? '' : v;
+    });
+    await sheetsClient.spreadsheets.values.append({
+      spreadsheetId: sheetId,
+      range: "'Screenouts'!A1",
+      valueInputOption: 'USER_ENTERED',
+      insertDataOption: 'INSERT_ROWS',
+      requestBody: { values: [row] }
+    });
+    return { ok: true };
+  } catch (err) {
+    lastError = err.message;
+    console.error('[sheets] screenout append failed:', err.message);
+    return { ok: false, error: err.message };
+  }
+}
+
 // Status of the Google Sheets pipeline, for the admin page / diagnostics.
 function status() {
   return {
@@ -294,4 +329,4 @@ function status() {
   };
 }
 
-module.exports = { init, appendRow, appendRows, getRows, getCellCounts, appendContact, status };
+module.exports = { init, appendRow, appendRows, getRows, getCellCounts, appendContact, appendScreenout, status };
