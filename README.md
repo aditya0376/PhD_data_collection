@@ -10,7 +10,9 @@ experiment (**FRAME**: Technical vs Beneficiary Ã— **COBRAND**: Absent vs Pre
 - **Data storage:** a central Excel file (`data/responses.xlsx`) **and** a
   Google Sheet (cloud copy that survives server restarts). Every submission
   appends one row to both. CSV export is also available for SPSS/AMOS/R.
-- **Instrument:** Version 3.3 (TAM3) â€” 65 Likert items across B/C/E/F/G blocks,
+- **Instrument:** Version 3.4 (TAM3) - 41 Likert items across B/C/E/F/G blocks,
+  2 attention checks and 2 manipulation-strength items (PSA6, PSA7). About 55
+  questions in all, 10-12 minutes.
   2 attention checks and a 4-item manipulation-check block (H1â€“H4).
 
 ## Run locally
@@ -38,45 +40,52 @@ http://localhost:3000/admin.html (admin).
 | `/api/export`    | Download `responses.xlsx`                            |
 | `/api/export.csv`| Download `responses.csv`                             |
 
-## Excel / Google Sheet columns (v3.3, 95 columns)
+## Excel / Google Sheet columns (v3.4, 65 columns)
 
 `id, submitted_at, cell_id, frame, cobrand, version, lang, mode, phase,
-completion_time_sec, b1, b2, b3, b4, b5, b6, b7, b8_1, b8_2, b8_3, b9, b10, b11,
-pec1..pec3, gds1..gds3, tpr1..tpr3, mv1..mv3,
-dvc1..dvc4, ac1, saf1..saf4,
-psa1..psa4, tp1..tp6, pf1..pf3, psi1..psi5,
-pu1..pu4, peou1..peou4, itu1..itu3, pe1..pe3, sn1..sn3, ac2,
-pi1..pi4, res1..res4, g3_wtp, g4_reason, g5_comment,
-mc_a, mc_b, mc_share, mc_stages`
+completion_time_sec, b1, b2, b3, b4, b6, b8_1, b8_2, b8_3, b9, b10,
+pec1, pec2, mv1, mv2, mv3,
+dvc1..dvc4, ac1, saf3, saf4,
+psa1..psa4, psa6, psa7, tp1..tp4, pf1..pf3,
+pu1, pu2, pu4, peou1, peou2, peou4, itu1..itu3, ac2,
+pi2, pi3, pi4, res1, res3, res4, g3_wtp, g5_comment,
+mc_a, mc_b`
 
 - `frame` = 0 (Technical) / 1 (Beneficiary); `cobrand` = 0 (Absent) / 1 (Present).
-- `lang` = `en` or `as`, the language the participant completed the survey in. Recorded so invariance across language versions can be tested and used as a covariate.
-- `mode` = `self` or `enumerator`, set by the study link (`?mode=enumerator`). Entered as a control; invariance tested at Step 5.
-- `phase` = `main` or `pilot`, set by the study link (`?phase=pilot`). The pilot is analysed separately (EFA) and never pooled with the main sample.
-- `b8_1 / b8_2 / b8_3` = number of children aged 1-5 / 6-10 / 11-16 (B8).
-- **v3.3 PSA is four items** (`psa1`-`psa4`: visibility, clarity, comprehensibility, global), worded so they are answerable from either framing. No accuracy judgement (that belongs to trust, and made H8a partly circular) and no journey wording (answerable only from the technical stimulus). `psa5`/`psa6` no longer exist.
-- **Manipulation checks:** `mc_a` = H1 categorical recall (a-d); `mc_b` = H2 marks recall (Yes/No/Not sure); `mc_share` = H3a beneficiary visibility (1-5); `mc_stages` = H3b stage visibility (1-5). H3a/H3b are t-tested by FRAME at Analysis Step 2; none enters a latent construct.
-- `ac1` (select "Disagree" = 2) and `ac2` (select "Strongly agree" = 5) are instructed-response attention checks. Step 1 excludes only on failure of **both**; single failures are flagged and retained, and manipulation-check failures are retained in the primary analysis.
-- `saf2` is reverse-coded in analysis.
-- `g3_wtp` = willingness-to-pay band (0 = Nothing ... 4 = More than 15%); `g4_reason` is shown only when `g3_wtp` = 0.
-- `completion_time_sec` supports the speed screening rule (< 1/3 pilot median -> exclude).
-- **No email column.** The findings-summary address is collected after submission by a separate form (`POST /api/subscribe`) into its own `Contacts` tab, so it can never be joined to a response (plan Section 9.3).
+- `lang` = `en` or `as`; `mode` = `self` or `enumerator`; `phase` = `main` or `pilot`.
+  All three are recorded per response and set by the study link.
+- **PSA6 and PSA7 are manipulation-strength checks, not PSA items.** `psa1`-`psa4`
+  form the construct; PSA6 should be higher under beneficiary framing, PSA7 higher
+  under technical framing. Never score `psa1..psa7` as one scale.
+- **Item codes keep the gaps of earlier versions on purpose** (no PU3, PEOU3, PI1,
+  RES2, SAF1/2, PSA5, B5, B7, B11, G4) so that the data file stays comparable with
+  Version 3.2/3.3 exports. Do not assume contiguous numbering in analysis syntax.
+- Attention checks `ac1` (select 2) and `ac2` (select 5). Step 1 excludes only on
+  failure of **both**; single failures are flagged and retained, and
+  manipulation-check failures are retained in the primary analysis.
+- `g3_wtp` = willingness-to-pay band (0 = Nothing ... 4 = More than 15%).
+- `completion_time_sec` supports the speed screening rule (< 1/3 pilot median).
+- **No email column.** The findings-summary address is collected after submission
+  through a separate form (`POST /api/subscribe`) into its own `Contacts` tab, so
+  it can never be joined to a response (plan Section 9.3).
 
-## Instrument version 3.3 (aligned to Objectives & Analysis v2.3)
+## Instrument version 3.4 (aligned to Objectives & Analysis v2.4)
 
-v3.3 is a targeted revision, not a rebuild. What changed from v3.2:
+A shortened instrument: 41 Likert items instead of 65, eight constructs instead of
+nine, 27 indicators and about 82 free parameters (4.9 responses per parameter at
+n = 400).
 
-| Change | Where |
+| Change from v3.3 | Where |
 |---|---|
-| PSA cut from 6 items to 4, made condition-neutral (visibility, clarity, comprehensibility, global); no accuracy judgement, no journey wording | `app.js` `PSA_ITEMS`, schema `psa1..psa4` |
-| PF2 reworded to a general fairness inference | `app.js` `PF_ITEMS` |
-| Technical-only authenticity sentence removed; both middle blocks now carry a parallel descriptive line and match in word count (D-1 = D-3 = 72, D-2 = D-4 = 81) | `i18n.js`, `stimuli.js` |
-| Card header identical across the four versions (was frame-aware) | `stimuli.js` |
-| Two manipulation-strength items added (H3a beneficiary visibility, H3b stage visibility) | `app.js` `MC_STRENGTH_ITEMS` |
-| Email removed from the response; collected by a separate form after submission into a `Contacts` tab | `index.html`, `/api/subscribe` |
-| `mode` (self/enumerator) and `phase` (main/pilot) recorded per response | `app.js` `adminMode()` / `studyPhase()` |
+| Constructs removed: PSI, TPR, GDS, PE, SN | `app.js`, schema |
+| Items removed: TP5/TP6, PU3, PEOU3, PI1, SAF1/2, RES2, PEC3, B5, B7, B11, G4 | `app.js`, `index.html`, schema |
+| PSA1/PSA3/PSA4 reworded (salience, comprehensibility, global); PSA6 reworded; PSA7 added as the technical-direction strength check | `PSA_ITEMS` |
+| PSA6/PSA7 administered with the PSA block but scored as manipulation checks | `PSA_ITEMS`, schema |
+| Manipulation checks H1/H2 moved to the end, after the dependent variables | `index.html` `s-checks` step |
+| Section F referent: the checking shown in the scenario, not technology in general | `i18n.js` `f.instr` |
+| Consent: 10-12 minutes, anonymity wording including the email form | `i18n.js` |
 
-**Study links.** One build serves every condition:
+**Study links.**
 
 ```
 https://<host>/                      main study, self-completed
@@ -85,9 +94,13 @@ https://<host>/?phase=pilot          pilot sample, analysed separately
 https://<host>/?lang=as              open in Assamese
 ```
 
-**Quotas.** The admin page shows progress against the minimum coverage in plan Section 9.2: rural or semi-urban ≥ 150, below graduate ≥ 200, never/rarely scanned a QR code ≥ 100.
+**Quotas.** The admin page shows progress against the minimum coverage in plan
+Section 9.2: rural or semi-urban >= 150, below graduate >= 200, never/rarely
+scanned a QR code >= 100.
 
-**Questionnaire.** `Paper3_Questionnaire_v3.3.docx` in the workspace root mirrors this instrument. The site is the source of truth: if an item changes here, regenerate the questionnaire so the two cannot drift.
+**Questionnaire.** `Paper3_Questionnaire_v3.4.docx` (workspace root) is the
+authoritative instrument; the site mirrors its item order and wording. If an item
+changes there, change it here too - the two must not drift.
 
 ## Language toggle (English / Assamese)
 

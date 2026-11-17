@@ -30,7 +30,7 @@ const I18N = {
     'consent.title': 'Information and Consent',
     'consent.intro': 'You are invited to take part in a research study conducted by Mr. Aditya Man Borborah, Assistant Professor, Assam Women\u2019s University, as part of doctoral research at the Centre for Management Studies, North Eastern Regional Institute of Science and Technology (NERIST).',
     'consent.about': 'What the study is about. This study examines how parents respond to different kinds of information printed on packaging for children\u2019s products, and how that information affects their buying decisions.',
-    'consent.asked': 'What you will be asked to do. You will answer some questions about yourself and your shopping habits, read a short description of a product label, and then answer questions about your reactions to it. The survey takes about 18 to 20 minutes.',
+    'consent.asked': 'What you will be asked to do. You will answer some questions about yourself and your shopping habits, read a short description of a product label, and then answer questions about your reactions to it. The survey takes about 10 to 12 minutes.',
     'consent.voluntary': 'Voluntary participation. Your participation is entirely voluntary. You may skip any question or stop at any point without giving a reason and without any consequence.',
     'consent.confidentiality': 'Confidentiality. Your responses are anonymous. No information that could identify you will be collected or stored. Data will be reported only in aggregate form and will be used solely for academic research and publication. Data will be retained only as long as required for the research and then securely deleted, in line with the Digital Personal Data Protection Act, 2023.',
     'consent.risks': 'Risks and benefits. There are no foreseeable risks to participating. There is no payment for participation.',
@@ -120,6 +120,7 @@ const I18N = {
     'stimulus.title': 'Product Scenario',
     'stimulus.instr': 'Please read the following carefully.',
     'stimulus.scenario': 'Imagine you are buying a packet of biscuits for your child, priced at Rs 50. The package carries a code that you can scan with your phone. When you scan it, the screen below appears.',
+    'checks.title': 'A Few Final Checks',
     'h1.q': 'H1. The screen you saw mainly showed:',
     'h1.a': 'How the price is shared among the people involved',
     'h1.b': 'Which stages of the journey had been checked',
@@ -131,7 +132,7 @@ const I18N = {
 
     // Section E
     'e.title': 'Your Reactions to the Product',
-    'e.instr': 'The remaining questions refer to <strong>the packet of biscuits you saw on the screen above</strong>. Please answer thinking about buying this product for your child.',
+    'e.instr': 'The remaining questions refer to the product and the screen you have just read about. Please answer thinking about buying this product for your child.',
     'e.psaHeading': 'What the information shows',
     'e.tpHeading': 'Trust in the product source',
     'e.pfHeading': 'Fairness',
@@ -139,7 +140,7 @@ const I18N = {
 
     // Section F
     'f.title': 'The Checking Technology',
-    'f.instr': 'The following questions ask about the technology in general \u2014 that is, scanning a code on a product package with your phone to check the product \u2014 not about this specific product.',
+    'f.instr': 'The following questions are about checking products in the way you have just seen: scanning a code on the package with your phone and reading a screen like the one shown to you.',
     'f.puHeading': 'How useful it would be',
     'f.peouHeading': 'How easy it would be',
     'f.ituHeading': 'Whether you would use it',
@@ -192,8 +193,8 @@ const I18N = {
     'stim.sharedOpen': 'Every step of this product\u2019s journey \u2014 from farm to shelf \u2014 is stored in a secure digital record that cannot be changed once entered.',
     'stim.sharedClose': 'This record is tamper-resistant. It cannot be altered by anyone in the supply chain.',
     'stim.verified': 'verified',
-    'stim.techLine': 'This record lists each of the six stages that were checked for this product.',
-    'stim.benLine': 'This record shows how the price you pay is shared among the six parties.',
+    'stim.techLine': 'This record shows which stages of the product\u2019s journey were checked and verified before it reached the shop.',
+    'stim.benLine': 'This record shows how the price you pay is shared among the people involved at each stage.',
     'stim.coBrandLine': 'The brand behind this product is FSSAI-licensed and AGMARK-certified.',
     'stim.verId': 'Verification ID: TX-4471',
     'stage.harvest': 'Harvest',
@@ -203,10 +204,10 @@ const I18N = {
     'stage.transport': 'Transport',
     'stage.retail': 'Retail',
     'share.farmer': 'Farmer',
-    'share.processing': 'Processing',
-    'share.transport': 'Transport',
+    'share.processing': 'Processing unit',
+    'share.transport': 'Transport co-operative',
     'share.retailer': 'Retailer',
-    'share.community': 'Community',
+    'share.community': 'Community fund',
     'share.company': 'Company'
   },
 
@@ -221,7 +222,7 @@ const I18N = {
     'consent.title': 'তথ্য আৰু সন্মতি',
     'consent.intro': 'আপোনাক অসম মহিলা বিশ্ববিদ্যালয়ৰ সহযোগী অধ্যাপক শ্ৰী আদিত্য মান বৰবৰা ডাঙৰীয়াই চলোৱা এক গৱেষণা অধ্যয়নত অংশগ্ৰহণ কৰিবলৈ আমন্ত্ৰণ জনোৱা হৈছে। এই অধ্যয়ন উত্তৰ-পূব বিজ্ঞান আৰু প্ৰযুক্তি প্ৰতিষ্ঠান (NERIST)ৰ ব্যৱস্থাপনা অধ্যয়ন কেন্দ্ৰত ডক্টৰেল গৱেষণাৰ অংশ হিচাপে চলোৱা হৈছে।',
     'consent.about': 'অধ্যয়নটো কিয়। এই অধ্যয়নে শিশুৰ সামগ্ৰীৰ বস্তাবন্দীত ছপা বিভিন্ন ধৰণৰ তথ্যৰ প্ৰতি অভিভাৱকসকলে কেনে সঁহাৰি দিয়ে, আৰু সেই তথ্যই তেওঁলোকৰ কিনা সিদ্ধান্তত কেনে প্ৰভাৱ পেলায় সেই বিষয়ে পৰীক্ষা কৰে।',
-    'consent.asked': 'আপোনাক কি কৰিবলৈ কোৱা হ\u2019ব। আপুনি নিজৰ আৰু আপোনাৰ কিনাকিনিৰ অভ্যাসৰ বিষয়ে কিছুমান প্ৰশ্নৰ উত্তৰ দিব, এটা পণ্যৰ লেবেলৰ চমু বৰ্ণনা পঢ়িব, আৰু তাৰ পিছত ইয়াৰ প্ৰতি আপোনাৰ প্ৰতিক্ৰিয়াৰ বিষয়ে প্ৰশ্নৰ উত্তৰ দিব। জৰীপটো প্ৰায় ১৮ৰ পৰা ২০ মিনিট সময় লাগে।',
+    'consent.asked': 'আপোনাক কি কৰিবলৈ কোৱা হ\u2019ব। আপুনি নিজৰ আৰু আপোনাৰ কিনাকিনিৰ অভ্যাসৰ বিষয়ে কিছুমান প্ৰশ্নৰ উত্তৰ দিব, এটা পণ্যৰ লেবেলৰ চমু বৰ্ণনা পঢ়িব, আৰু তাৰ পিছত ইয়াৰ প্ৰতি আপোনাৰ প্ৰতিক্ৰিয়াৰ বিষয়ে প্ৰশ্নৰ উত্তৰ দিব। জৰীপটো প্ৰায় ১০ৰ পৰা ১২ মিনিট সময় লাগে।',
     'consent.voluntary': 'স্বেচ্ছামূলক অংশগ্ৰহণ। আপোনাৰ অংশগ্ৰহণ সম্পূৰ্ণ স্বেচ্ছামূলক। কাৰণ নিদিয়াকৈ আৰু কোনো পৰিণতি নোহোৱাকৈ আপুনি যিকোনো প্ৰশ্ন এৰি যাব পাৰে বা যিকোনো সময়ত বন্ধ কৰিব পাৰে।',
     'consent.confidentiality': 'গোপনীয়তা। আপোনাৰ উত্তৰবোৰ বেনামী। আপোনাক চিনাক্ত কৰিব পৰা কোনো তথ্য সংগ্ৰহ বা সংৰক্ষণ কৰা নহ\u2019ব। তথ্য কেৱল সামগ্ৰিক ৰূপত প্ৰতিবেদন কৰা হ\u2019ব আৰু কেৱল শিক্ষাগত গৱেষণা আৰু প্ৰকাশৰ বাবে ব্যৱহাৰ কৰা হ\u2019ব। ডিজিটেল ব্যক্তিগত তথ্য সুৰক্ষা আইন, ২০২৩ অনুসৰি তথ্য গৱেষণাৰ বাবে প্ৰয়োজন হোৱা সময়লৈকে সংৰক্ষণ কৰা হ\u2019ব আৰু তাৰ পিছত নিৰাপদে মচি পেলোৱা হ\u2019ব।',
     'consent.risks': 'বিপদ আৰু লাভ। অংশগ্ৰহণৰ কোনো আগতীয়া বিপদ নাই। অংশগ্ৰহণৰ বাবে কোনো পাৰিশ্ৰমিক নাই।',
@@ -311,6 +312,7 @@ const I18N = {
     'stimulus.title': 'পণ্যৰ পৰিস্থিতি',
     'stimulus.instr': 'অনুগ্ৰহ কৰি তলৰ কথাখিনি মনোযোগেৰে পঢ়ক।',
     'stimulus.scenario': 'কল্পনা কৰক আপুনি আপোনাৰ সন্তানৰ বাবে ৫০ টকা দামৰ এটা বিস্কুটৰ পেকেট কিনি আছে। বাকচটোত এটা কোড আছে যিটো আপুনি ফোনেৰে স্কেন কৰিব পাৰে। স্কেন কৰিলে তলৰ স্ক্ৰীনটো দেখা যায়।',
+    'checks.title': 'অলপ শেষ পৰীক্ষা',
     'h1.q': 'H1. আপুনি দেখা স্ক্ৰীনটোৱে মূলতঃ দেখুৱাইছিল:',
     'h1.a': 'দাম কেনেকৈ জড়িত লোকসকলৰ মাজত ভাগ হয়',
     'h1.b': 'যাত্ৰাৰ কোনবোৰ পৰ্যায় পৰীক্ষা কৰা হৈছিল',
@@ -322,7 +324,7 @@ const I18N = {
 
     // Section E
     'e.title': 'পণ্যৰ প্ৰতি আপোনাৰ প্ৰতিক্ৰিয়া',
-    'e.instr': 'অৱশিষ্ট প্ৰশ্নবোৰ আপুনি ওপৰৰ স্ক্ৰীনত দেখা বিস্কুটৰ পেকেটটোৰ বিষয়ে। এই পণ্যটো আপোনাৰ সন্তানৰ বাবে কিনা কথা ভাবি উত্তৰ দিয়ক।',
+    'e.instr': 'অৱশিষ্ট প্ৰশ্নবোৰ আপুনি এইমাত্ৰ পঢ়ি থকা পণ্য আৰু পৰ্দাৰ বিষয়ে। এই পণ্যটো আপোনাৰ সন্তানৰ বাবে কিনা কথা ভাবি উত্তৰ দিয়ক।',
     'e.psaHeading': 'তথ্যই কি দেখুৱায়',
     'e.tpHeading': 'পণ্যৰ উৎসৰ প্ৰতি বিশ্বাস',
     'e.pfHeading': 'ন্যায্যতা',
@@ -330,7 +332,7 @@ const I18N = {
 
     // Section F
     'f.title': 'পৰীক্ষণ প্ৰযুক্তি',
-    'f.instr': 'তলৰ প্ৰশ্নবোৰ সাধাৰণতে প্ৰযুক্তিৰ বিষয়ে সোধে \u2014 অৰ্থাৎ পণ্য পৰীক্ষা কৰিবলৈ ফোনেৰে পণ্যৰ বাকচত থকা কোড স্কেন কৰা \u2014 এই বিশেষ পণ্যটোৰ বিষয়ে নহয়।',
+    'f.instr': 'তলৰ প্ৰশ্নবোৰ আপুনি এইমাত্ৰ দেখাৰ দৰে পণ্য পৰীক্ষা কৰাৰ বিষয়ে — অৰ্থাৎ ফোনেৰে পেকেজৰ কোড স্কেন কৰি দেখুওৱাৰ দৰে পৰ্দা পঢ়াৰ বিষয়ে।',
     'f.puHeading': 'ই কিমান উপযোগী হ\u2019ব',
     'f.peouHeading': 'ই কিমান সহজ হ\u2019ব',
     'f.ituHeading': 'আপুনি ইয়াক ব্যৱহাৰ কৰিব নে নকৰে',
@@ -385,8 +387,8 @@ const I18N = {
     'stim.sharedOpen': 'এই পণ্যৰ যাত্ৰাৰ প্ৰতিটো পদক্ষেপ \u2014 খেতিপথাৰৰ পৰা দোকানৰ বাচনলৈকে \u2014 এটা সুৰক্ষিত ডিজিটেল ৰেকৰ্ডত সংৰক্ষিত হয় যিটো এবাৰ দাখিল কৰিলে সলনি কৰিব নোৱাৰি।',
     'stim.sharedClose': 'এই ৰেকৰ্ডটো ছুটি-বুটি নোৱাৰা। যোগান শৃংখলৰ কোনোৱেই ইয়াক সলনি কৰিব নোৱাৰে।',
     'stim.verified': 'পৰীক্ষিত',
-    'stim.techLine': 'এই ৰেকৰ্ডে এই পণ্যটোৰ বাবে পৰীক্ষা কৰা ছটা পৰ্যায় দেখুৱায়।',
-    'stim.benLine': 'এই ৰেকৰ্ডে আপোনাৰ দাম ছটা পক্ষৰ মাজত কেনেকৈ ভাগ হয় দেখুৱায়।',
+    'stim.techLine': 'এই ৰেকৰ্ডে দেখুৱায় যে পণ্যটোৰ যাত্ৰাৰ কোনবোৰ পৰ্যায় দোকানত উপনীত হোৱাৰ আগতে পৰীক্ষা আৰু সত্যাপন কৰা হৈছে।',
+    'stim.benLine': 'এই ৰেকৰ্ডে দেখুৱায় যে আপুনি দিয়া দাম প্ৰতিটো পৰ্যায়ত জড়িত লোকসকলৰ মাজত কেনেকৈ ভাগ হয়।',
     'stim.coBrandLine': 'এই পণ্যৰ পিছত থকা ব্ৰেণ্ডটো FSSAI-অনুমোদিত আৰু AGMARK-প্ৰমাণিত।',
     'stim.verId': 'পৰীক্ষণ আইডি: TX-4471',
     'stage.harvest': 'খেতি',

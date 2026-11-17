@@ -37,30 +37,21 @@ const SCHEMA = [
   { key: 'mode', header: 'mode' },
   { key: 'phase', header: 'phase' },
   { key: 'completion_time_sec', header: 'completion_time_sec' },
-  // B1-B11 demographics
+  // B1-B10 background (v3.4: B5, B7 and B11 removed)
   { key: 'b1', header: 'B1_ParentGuardian_1to16' },
   { key: 'b2', header: 'B2_Gender' },
   { key: 'b3', header: 'B3_Age' },
   { key: 'b4', header: 'B4_Education' },
-  { key: 'b5', header: 'B5_Occupation' },
   { key: 'b6', header: 'B6_Income' },
-  { key: 'b7', header: 'B7_NumChildren_1to16' },
   { key: 'b8_1', header: 'B8_Children_1to5' },
   { key: 'b8_2', header: 'B8_Children_6to10' },
   { key: 'b8_3', header: 'B8_Children_11to16' },
   { key: 'b9', header: 'B9_Residence' },
   { key: 'b10', header: 'B10_QRScanFrequency' },
-  { key: 'b11', header: 'B11_WhoBuys' },
-  // B12-B15
+  // B12 external control (PEC3 removed)
   { key: 'pec1', header: 'PEC1_PhoneCanScan' },
   { key: 'pec2', header: 'PEC2_NetworkData' },
-  { key: 'pec3', header: 'PEC3_ShopNetwork' },
-  { key: 'gds1', header: 'GDS1_ConfidentSmartphone' },
-  { key: 'gds2', header: 'GDS2_NewApp' },
-  { key: 'gds3', header: 'GDS3_GoodWithTech' },
-  { key: 'tpr1', header: 'TPR1_InHurry' },
-  { key: 'tpr2', header: 'TPR2_ChildrenShopping' },
-  { key: 'tpr3', header: 'TPR3_NoTimeCompare' },
+  // B15 marker variable
   { key: 'mv1', header: 'MV1_PlanDay' },
   { key: 'mv2', header: 'MV2_TryNewFood' },
   { key: 'mv3', header: 'MV3_StayHome' },
@@ -70,71 +61,50 @@ const SCHEMA = [
   { key: 'dvc3', header: 'DVC3_TrustInfo' },
   { key: 'dvc4', header: 'DVC4_Skills' },
   { key: 'ac1', header: 'AC1_AttentionCheck_Disagree' },
-  { key: 'saf1', header: 'SAF1_SwitchBrand' },
-  { key: 'saf2', header: 'SAF2_NoLabelCheck' },
   { key: 'saf3', header: 'SAF3_RefusedGenuine' },
   { key: 'saf4', header: 'SAF4_CheckOrigin' },
   // E (product reactions)
-  // v3.3: PSA is four condition-neutral items (visibility, clarity,
-  // comprehensibility, global). No accuracy judgement and no journey wording.
-  { key: 'psa1', header: 'PSA1_StagesAndPeopleVisible' },
+  // PSA1-PSA4 enter the latent construct. PSA6 and PSA7 are the two
+  // manipulation-strength checks (beneficiary and technical direction) and must
+  // NOT be scored as part of PSA.
+  { key: 'psa1', header: 'PSA1_EasyToNotice' },
   { key: 'psa2', header: 'PSA2_ClearWhatRecordSays' },
-  { key: 'psa3', header: 'PSA3_EasyToUnderstand' },
-  { key: 'psa4', header: 'PSA4_ClearOverallPicture' },
+  { key: 'psa3', header: 'PSA3_UnderstandWithoutHelp' },
+  { key: 'psa4', header: 'PSA4_EasyToFollow' },
+  { key: 'psa6', header: 'PSA6_ManipBeneficiaryVisibility' },
+  { key: 'psa7', header: 'PSA7_ManipStageVisibility' },
   { key: 'tp1', header: 'TP1_Capable' },
   { key: 'tp2', header: 'TP2_AssurancesReliable' },
   { key: 'tp3', header: 'TP3_Honest' },
   { key: 'tp4', header: 'TP4_ChildBestInterest' },
-  { key: 'tp5', header: 'TP5_Depend' },
-  { key: 'tp6', header: 'TP6_Sincere' },
   { key: 'pf1', header: 'PF1_FairProduction' },
   { key: 'pf2', header: 'PF2_PaidReasonably' },
   { key: 'pf3', header: 'PF3_FairSupplyChain' },
-  { key: 'psi1', header: 'PSI1_ImproveLives' },
-  { key: 'psi2', header: 'PSI2_ReducePoverty' },
-  { key: 'psi3', header: 'PSI3_FairWages' },
-  { key: 'psi4', header: 'PSI4_MakeDifference' },
-  { key: 'psi5', header: 'PSI5_DoesGood' },
   // F (acceptance of the verification technology)
   { key: 'pu1', header: 'PU1_BetterDecision' },
   { key: 'pu2', header: 'PU2_UsefulInfo' },
-  { key: 'pu3', header: 'PU3_ImproveQuality' },
   { key: 'pu4', header: 'PU4_UsefulOverall' },
   { key: 'peou1', header: 'PEOU1_EasyLearn' },
   { key: 'peou2', header: 'PEOU2_EasyScan' },
-  { key: 'peou3', header: 'PEOU3_ClearUnderstand' },
   { key: 'peou4', header: 'PEOU4_EasyOverall' },
   { key: 'itu1', header: 'ITU1_IntendScan' },
   { key: 'itu2', header: 'ITU2_TryFuture' },
   { key: 'itu3', header: 'ITU3_PlanUse' },
-  { key: 'pe1', header: 'PE1_Interesting' },
-  { key: 'pe2', header: 'PE2_Enjoyable' },
-  { key: 'pe3', header: 'PE3_Pleasant' },
-  { key: 'sn1', header: 'SN1_ImportantPeople' },
-  { key: 'sn2', header: 'SN2_ValueOpinions' },
-  { key: 'sn3', header: 'SN3_FamilyExpect' },
   { key: 'ac2', header: 'AC2_AttentionCheck_StronglyAgree' },
-  // G (outcomes)
-  { key: 'pi1', header: 'PI1_ConsiderBuying' },
+  // G (outcomes; G4 removed in v3.4)
   { key: 'pi2', header: 'PI2_LikelyPurchase' },
   { key: 'pi3', header: 'PI3_ChooseOverSimilar' },
   { key: 'pi4', header: 'PI4_IntendNextShop' },
   { key: 'res1', header: 'RES1_CannotAfford' },
-  { key: 'res2', header: 'RES2_NotDo' },
   { key: 'res3', header: 'RES3_GovernmentJob' },
   { key: 'res4', header: 'RES4_TrustBrands' },
   { key: 'g3_wtp', header: 'G3_WillingnessToPay' },
-  { key: 'g4_reason', header: 'G4_ReasonNothing' },
   { key: 'g5_comment', header: 'G5_BeneficiaryComment' },
-  // H (manipulation checks)
-  // H1 categorical recall of the content block, H2 recall of the marks, and the
-  // two scale-rated manipulation-strength items required by the plan (Step 2).
+  // H (manipulation checks, collected after the dependent variables)
   // Email is deliberately NOT a column (plan Section 9.3): it is collected in a
   // separate form after submission and stored in its own tab.
   { key: 'mc_a', header: 'H1_ContentRecall' },
-  { key: 'mc_b', header: 'H2_MarksRecall' },
-  { key: 'mc_share', header: 'H3_BeneficiaryVisibility' },
-  { key: 'mc_stages', header: 'H4_StageVisibility' }
+  { key: 'mc_b', header: 'H2_MarksRecall' }
 ];
 
 // Short keys used to read the submitted payload.

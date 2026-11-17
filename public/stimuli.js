@@ -12,16 +12,16 @@ const CELLS = {
   4: { frame: 1, cobrand: 1, name: 'Beneficiary · Co-brand' }
 };
 
-// Correct answers to the manipulation checks (Section H), per cell.
+// Correct answers to the Section H checks per cell.
 //   mc_a: 'a' = price sharing (beneficiary) | 'b' = stages checked (technical)
 //   mc_b: marks shown only in co-brand cells.
-//   mc_share: beneficiary-visibility item, expected High in cells 3-4.
-//   mc_stages: stage-visibility item, expected High in cells 1-2.
+//   psa6: manipulation strength, beneficiary direction (high in cells 3-4).
+//   psa7: manipulation strength, technical direction (high in cells 1-2).
 const MC_CORRECT = {
-  1: { mc_a: 'b', mc_b: 'No', mc_share: 'Low', mc_stages: 'High' },
-  2: { mc_a: 'b', mc_b: 'Yes', mc_share: 'Low', mc_stages: 'High' },
-  3: { mc_a: 'a', mc_b: 'No', mc_share: 'High', mc_stages: 'Low' },
-  4: { mc_a: 'a', mc_b: 'Yes', mc_share: 'High', mc_stages: 'Low' }
+  1: { mc_a: 'b', mc_b: 'No', psa6: 'Low', psa7: 'High' },
+  2: { mc_a: 'b', mc_b: 'Yes', psa6: 'Low', psa7: 'High' },
+  3: { mc_a: 'a', mc_b: 'No', psa6: 'High', psa7: 'Low' },
+  4: { mc_a: 'a', mc_b: 'Yes', psa6: 'High', psa7: 'Low' }
 };
 
 // ---------------------------------------------------------------------------
