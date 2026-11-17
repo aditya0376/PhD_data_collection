@@ -267,15 +267,16 @@ app.use(express.json({ limit: '2mb' }));
 
 // Protected surface: the admin page, its previews, the exports, the import
 // endpoint and the diagnostics. The participant endpoints below stay public.
-app.use([
-  '/admin.html',
-  '/preview.html',
-  '/api/counts',
-  '/api/status',
-  '/api/export',
-  '/api/export.csv',
-  '/api/import'
-], requireAdmin);
+// Matched case-insensitively so /ADMIN.html cannot slip past on a host whose
+// filesystem is case-insensitive.
+const PROTECTED_PREFIXES = ['/api/counts', '/api/status', '/api/export', '/api/import'];
+app.use((req, res, next) => {
+  const p = (req.path || '').toLowerCase();
+  const isProtected = p === '/admin.html' || p === '/preview.html' ||
+    PROTECTED_PREFIXES.some((prefix) => p === prefix || p.startsWith(prefix));
+  if (isProtected) return requireAdmin(req, res, next);
+  return next();
+});
 
 app.use(express.static(path.join(__dirname, 'public')));
 
