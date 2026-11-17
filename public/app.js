@@ -446,7 +446,9 @@ function applyLanguage() {
   const consentChecked = document.getElementById('consentBox').checked;
 
   document.querySelectorAll('[data-i18n]').forEach((el) => {
-    el.textContent = t(el.getAttribute('data-i18n'));
+    // Translations are authored markup (the scale legend uses &nbsp;), so they
+    // must be rendered as HTML, not as literal text.
+    el.innerHTML = t(el.getAttribute('data-i18n'));
   });
   document.querySelectorAll('[data-i18n-placeholder]').forEach((el) => {
     el.placeholder = t(el.getAttribute('data-i18n-placeholder'));
@@ -733,7 +735,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   document.querySelectorAll('[data-i18n]').forEach((el) => {
     const val = t(el.getAttribute('data-i18n'));
-    if (val) el.textContent = val;
+    if (val) el.innerHTML = val;
   });
   syncLangButtons();
   applyEthicsRef();
