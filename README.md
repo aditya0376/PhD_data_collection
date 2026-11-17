@@ -48,8 +48,14 @@ host:
 
 | Variable | Purpose |
 |---|---|
-| `ADMIN_PASSWORD` | **Required.** Without it the whole admin surface returns 503, so it fails closed rather than open |
+| `ADMIN_PASSWORD` | Optional override. The built-in default is `Aditya@785001`, so the admin works without extra setup |
 | `ADMIN_USER` | Optional; defaults to `admin` |
+
+> **The default password is in the source code, and this repository is public.**
+> Anyone who reads GitHub can log in to the admin page. Treat it as a lock that
+> stops casual visitors, not as real security. If that matters, set
+> `ADMIN_PASSWORD` to something else in the host environment (it overrides the
+> default) and make the repository private.
 
 The participant endpoints stay public: `/`, `/api/assign`, `/api/submit`,
 `/api/subscribe`, `/api/screenout`, `/api/config`.

@@ -225,7 +225,11 @@ async function getCellCounts(phase) {
 // admin surface stays closed rather than open.
 // ---------------------------------------------------------------------------
 const ADMIN_USER = process.env.ADMIN_USER || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+// NOTE: the default below is committed to a public repository, so it is visible
+// to anyone who reads the source. It is a convenience for this project, not a
+// secret: replace it with ADMIN_PASSWORD in the host environment (or make the
+// repository private) if the survey is used for anything beyond this fieldwork.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Aditya@785001';
 
 function safeEqual(a, b) {
   const ab = Buffer.from(String(a), 'utf8');
