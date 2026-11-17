@@ -326,6 +326,32 @@ async function appendScreenout(record) {
   }
 }
 
+// Highest response id already in the sheet, so numbering continues across
+// restarts instead of restarting at 1. Returns null when the sheet is unreadable.
+async function getMaxId() {
+  if (!sheetsClient) return null;
+  try {
+    const res = await sheetsClient.spreadsheets.values.get({
+      spreadsheetId: sheetId,
+      range: 'Responses'
+    });
+    const rows = res.data.values || [];
+    if (rows.length < 2) return 0;
+    const idx = (rows[0] || []).indexOf('id');
+    if (idx < 0) return 0;
+    let max = 0;
+    for (let i = 1; i < rows.length; i++) {
+      const v = Number(rows[i][idx]);
+      if (Number.isFinite(v) && v > max) max = v;
+    }
+    return max;
+  } catch (err) {
+    lastError = err.message;
+    console.error('[sheets] getMaxId failed:', err.message);
+    return null;
+  }
+}
+
 // Status of the Google Sheets pipeline, for the admin page / diagnostics.
 function status() {
   return {
@@ -337,4 +363,4 @@ function status() {
   };
 }
 
-module.exports = { init, appendRow, appendRows, getRows, getCellCounts, appendContact, appendScreenout, status };
+module.exports = { init, appendRow, appendRows, getRows, getCellCounts, getMaxId, appendContact, appendScreenout, status };

@@ -188,6 +188,28 @@ async function parseUpload(filename, buffer) {
 // Serialize all Excel writes so concurrent submissions never corrupt the file.
 let writeQueue = Promise.resolve();
 
+// Response ids must not restart at 1 when the server restarts (the local Excel
+// file is ephemeral on a free host, the sheet is not). The counter is seeded from
+// the highest id already in the sheet and then incremented in memory.
+let idSequence = null;
+let idSequenceSeededAt = null;
+
+async function allocateId(localNext) {
+  if (idSequence === null) {
+    let sheetMax = 0;
+    try {
+      const max = await sheets.getMaxId();
+      sheetMax = Number.isFinite(max) ? max : 0;
+    } catch (err) {
+      sheetMax = 0;
+    }
+    idSequence = Math.max(sheetMax, Math.max(0, localNext - 1));
+    idSequenceSeededAt = new Date().toISOString();
+  }
+  idSequence += 1;
+  return idSequence;
+}
+
 async function getSheet() {
   const wb = new ExcelJS.Workbook();
   if (fs.existsSync(DATA_FILE)) {
@@ -422,6 +444,8 @@ app.get('/api/status', (req, res) => {
     // Which build is actually running: Render injects RENDER_GIT_COMMIT at
     // deploy time, and startedAt proves whether this process has restarted.
     commit: process.env.RENDER_GIT_COMMIT || process.env.GIT_COMMIT || null,
+    nextId: idSequence === null ? null : idSequence + 1,
+    idSequenceSeededAt,
     startedAt: new Date(Date.now() - Math.round(process.uptime() * 1000)).toISOString(),
     uptimeSec: Math.round(process.uptime())
   });
@@ -472,7 +496,7 @@ app.post('/api/submit', (req, res) => {
     .then(async () => {
       const { wb, ws } = await getSheet();
       if (ws.rowCount === 0) ws.addRow(HEADERS);
-      const id = ws.rowCount; // rowCount includes header, so this is the new row number
+      const id = await allocateId(ws.rowCount); // continues the sheet's sequence
       const row = [];
       for (const col of COLUMNS) {
         let v = data[col];

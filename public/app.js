@@ -470,10 +470,16 @@ function applyLanguage() {
   });
   document.getElementById('consentBox').checked = consentChecked;
 
+  syncLangButtons();
+  updateProgress(currentStep);
+}
+
+// The active button must always follow the language actually in use, including
+// when the page was opened from a ?lang= link.
+function syncLangButtons() {
   document.querySelectorAll('.lang-btn').forEach((b) => {
     b.classList.toggle('active', b.getAttribute('data-lang') === getLang());
   });
-  updateProgress(currentStep);
 }
 
 function wireLanguageToggle() {
@@ -729,6 +735,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const val = t(el.getAttribute('data-i18n'));
     if (val) el.textContent = val;
   });
+  syncLangButtons();
   applyEthicsRef();
   updateProgress('s-consent');
 
