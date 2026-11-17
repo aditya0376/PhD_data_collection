@@ -232,20 +232,31 @@ function updateProgress(id) {
   }
 }
 
+// Going back is allowed only within a block. Once the respondent is past the
+// scenario, Back can never return to it (or to anything before it), so the
+// stimulus cannot be re-read after the reactions have been answered. Moving
+// backwards inside Sections E-G stays possible, so a mistyped answer can be
+// corrected.
+const FIRST_POST_SCENARIO_STEP = STEP_ORDER.indexOf('s-e');
+
+function backTarget() {
+  const idx = STEP_ORDER.indexOf(currentStep);
+  if (idx <= 0) return null;
+  if (currentStep === 's-h' || currentStep === 's-done') return null;
+  const prev = idx - 1;
+  if (idx >= FIRST_POST_SCENARIO_STEP && prev < FIRST_POST_SCENARIO_STEP) return null;
+  return STEP_ORDER[prev];
+}
+
 function updateBackButton() {
   const btn = document.getElementById('backBtn');
   if (!btn) return;
-  const idx = STEP_ORDER.indexOf(currentStep);
-  // No going back from the final checks: a respondent must not re-read the
-  // scenario after answering what it showed.
-  const hidden = idx <= 0 || currentStep === 's-done' || currentStep === 's-h' || currentStep === 's-checks';
-  btn.style.display = hidden ? 'none' : 'inline-block';
+  btn.style.display = backTarget() ? 'inline-block' : 'none';
 }
 
 function goBack() {
-  const idx = STEP_ORDER.indexOf(currentStep);
-  if (idx <= 0) return;
-  show(STEP_ORDER[idx - 1]);
+  const target = backTarget();
+  if (target) show(target);
 }
 
 function go(id) {
@@ -493,7 +504,7 @@ function initialLanguage() {
 async function ensureCell() {
   const cached = localStorage.getItem('p3_cell');
   if (cached) { assignedCell = parseInt(cached, 10); return; }
-  const res = await fetch('/api/assign');
+  const res = await fetch('/api/assign?phase=' + encodeURIComponent(studyPhase()));
   const data = await res.json();
   assignedCell = data.cell;
   localStorage.setItem('p3_cell', String(assignedCell));

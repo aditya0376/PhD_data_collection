@@ -289,8 +289,10 @@ app.use(express.static(path.join(__dirname, 'public')));
 // balance, and the client does not need them.
 app.get('/api/assign', async (req, res) => {
   try {
-    // Balanced on main-study rows only: pilot responses must not skew it.
-    const { counts } = await getAuthoritativeCounts('main');
+    // Balanced within the respondent's own study phase: pilot rows fill their
+    // own four cells and never skew the main study, and vice versa.
+    const phase = req.query.phase === 'pilot' ? 'pilot' : 'main';
+    const { counts } = await getAuthoritativeCounts(phase);
     const min = Math.min(...Object.values(counts));
     const candidates = [1, 2, 3, 4].filter((c) => counts[c] === min);
     const cell = candidates[Math.floor(Math.random() * candidates.length)];

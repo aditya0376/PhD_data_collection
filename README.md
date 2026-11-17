@@ -147,7 +147,7 @@ Added after a 10-response QA pass, so that real respondents cannot lose or corru
 | Free text used as a spreadsheet formula | Free text is capped (500 in the page, 1000 server-side) and a leading `= + - @` is neutralised |
 | "Submit another response" shown to respondents | Shown only in enumerator mode |
 | Enumerator reset reused the previous respondent's stimulus and left Submit disabled | The reset re-assigns a cell, rebuilds the stimulus, re-arms the button and releases the language lock |
-| Back button unlocked the language and allowed re-reading the scenario | The language lock is permanent once the scenario has been shown, and Back is unavailable from the final-checks page |
+| Back button unlocked the language and allowed re-reading the scenario | The language lock is permanent once the scenario has been shown. Back is clamped: past the scenario it can only move within Sections E-G, never back to the stimulus, and it is hidden on the submit page |
 | Scenario timing inflated on revisits | Measured on the first exit only, then frozen |
 | Pilot rows counted with the main study | Cell counts, quotas and assignment use `phase = main` only; the pilot is reported beside it |
 
