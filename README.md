@@ -40,6 +40,25 @@ http://localhost:3000/admin.html (admin).
 | `/api/export`    | Download `responses.xlsx`                            |
 | `/api/export.csv`| Download `responses.csv`                             |
 
+## Admin access (required before sharing the link)
+
+`/admin.html`, its previews, both exports, the upload endpoint, `/api/counts` and
+`/api/status` sit behind **HTTP Basic authentication**. Set two variables on the
+host:
+
+| Variable | Purpose |
+|---|---|
+| `ADMIN_PASSWORD` | **Required.** Without it the whole admin surface returns 503, so it fails closed rather than open |
+| `ADMIN_USER` | Optional; defaults to `admin` |
+
+The participant endpoints stay public: `/`, `/api/assign`, `/api/submit`,
+`/api/subscribe`, `/api/screenout`, `/api/config`.
+
+The browser prompts once for the credentials and sends them on every admin
+request, including the downloads and the upload, so no links can be used without
+them. Use a long random password - this is the only thing between a stranger and
+your dataset.
+
 ## Excel / Google Sheet columns (v3.4, 67 columns)
 
 `id, submitted_at, cell_id, frame, cobrand, version, lang, lang_start, mode, phase,
@@ -121,6 +140,10 @@ Added after a 10-response QA pass, so that real respondents cannot lose or corru
 | Public per-cell counts | `/api/assign` returns only the assigned cell, no counts |
 | Free text used as a spreadsheet formula | Free text is capped (500 in the page, 1000 server-side) and a leading `= + - @` is neutralised |
 | "Submit another response" shown to respondents | Shown only in enumerator mode |
+| Enumerator reset reused the previous respondent's stimulus and left Submit disabled | The reset re-assigns a cell, rebuilds the stimulus, re-arms the button and releases the language lock |
+| Back button unlocked the language and allowed re-reading the scenario | The language lock is permanent once the scenario has been shown, and Back is unavailable from the final-checks page |
+| Scenario timing inflated on revisits | Measured on the first exit only, then frozen |
+| Pilot rows counted with the main study | Cell counts, quotas and assignment use `phase = main` only; the pilot is reported beside it |
 
 **Ethics reference.** Set `ETHICS_APPROVAL_REF` on the host and the consent page
 prints it in place of the placeholder; the value is served by `GET /api/config`.

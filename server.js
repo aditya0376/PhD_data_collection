@@ -198,15 +198,21 @@ async function getSheet() {
   return { wb, ws };
 }
 
-async function getCellCounts() {
+async function getCellCounts(phase) {
   const counts = { 1: 0, 2: 0, 3: 0, 4: 0 };
   if (!fs.existsSync(DATA_FILE)) return counts;
   const { ws } = await getSheet();
   if (ws.rowCount > 1) {
     const header = ws.getRow(1).values; // 1-based array
     const cellIdx = header.indexOf('cell_id');
+    const phaseIdx = header.indexOf('phase');
     for (let r = 2; r <= ws.rowCount; r++) {
-      const v = ws.getRow(r).getCell(cellIdx).value;
+      const row = ws.getRow(r);
+      if (phase && phaseIdx > 0) {
+        const p = row.getCell(phaseIdx).value;
+        if (String(p || 'main') !== phase) continue;
+      }
+      const v = row.getCell(cellIdx).value;
       if (v !== null && v !== undefined && counts[v] !== undefined) counts[v]++;
     }
   }
@@ -214,9 +220,63 @@ async function getCellCounts() {
 }
 
 // ---------------------------------------------------------------------------
+// Admin authentication. Everything that exposes or mutates collected data sits
+// behind HTTP Basic auth. ADMIN_PASSWORD must be set on the host; without it the
+// admin surface stays closed rather than open.
+// ---------------------------------------------------------------------------
+const ADMIN_USER = process.env.ADMIN_USER || 'admin';
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || '';
+
+function safeEqual(a, b) {
+  const ab = Buffer.from(String(a), 'utf8');
+  const bb = Buffer.from(String(b), 'utf8');
+  if (ab.length !== bb.length) return false;
+  try {
+    return require('crypto').timingSafeEqual(ab, bb);
+  } catch (err) {
+    return false;
+  }
+}
+
+function challenge(res) {
+  res.set('WWW-Authenticate', 'Basic realm="Paper 3 admin", charset="UTF-8"');
+  return res.status(401).type('text/plain').send('Authentication required.');
+}
+
+function requireAdmin(req, res, next) {
+  if (!ADMIN_PASSWORD) {
+    return res.status(503).type('text/plain')
+      .send('Admin is disabled. Set ADMIN_PASSWORD in the host environment, then reload.');
+  }
+  const header = req.headers.authorization || '';
+  const match = /^Basic\s+(.+)$/i.exec(header);
+  if (!match) return challenge(res);
+  const decoded = Buffer.from(match[1], 'base64').toString('utf8');
+  const sep = decoded.indexOf(':');
+  if (sep < 0) return challenge(res);
+  const user = decoded.slice(0, sep);
+  const pass = decoded.slice(sep + 1);
+  if (safeEqual(user, ADMIN_USER) && safeEqual(pass, ADMIN_PASSWORD)) return next();
+  return challenge(res);
+}
+
+// ---------------------------------------------------------------------------
 // Routes
 // ---------------------------------------------------------------------------
 app.use(express.json({ limit: '2mb' }));
+
+// Protected surface: the admin page, its previews, the exports, the import
+// endpoint and the diagnostics. The participant endpoints below stay public.
+app.use([
+  '/admin.html',
+  '/preview.html',
+  '/api/counts',
+  '/api/status',
+  '/api/export',
+  '/api/export.csv',
+  '/api/import'
+], requireAdmin);
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Assign a participant to the least-filled cell (block randomization).
@@ -224,7 +284,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 // balance, and the client does not need them.
 app.get('/api/assign', async (req, res) => {
   try {
-    const { counts } = await getAuthoritativeCounts();
+    // Balanced on main-study rows only: pilot responses must not skew it.
+    const { counts } = await getAuthoritativeCounts('main');
     const min = Math.min(...Object.values(counts));
     const candidates = [1, 2, 3, 4].filter((c) => counts[c] === min);
     const cell = candidates[Math.floor(Math.random() * candidates.length)];
@@ -239,7 +300,7 @@ app.get('/api/assign', async (req, res) => {
 // Public configuration the survey page needs (nothing sensitive).
 app.get('/api/config', (req, res) => {
   res.json({
-    ethicsRef: (process.env.ETHICS_APPROVAL_REF || '').trim() || null,
+    ethicsRef: (process.env.ETHICS_APPROVAL_REF || 'CMS/Ethics/2026/01').trim() || null,
     maxCommentLength: MAX_TEXT_LEN
   });
 });
@@ -248,13 +309,13 @@ app.get('/api/config', (req, res) => {
 // The Google Sheet is the durable store, but it must never be trusted blindly:
 // if a write silently failed, the sheet holds fewer responses than the server
 // file, and reporting the sheet alone would show 0 responses.
-async function getAuthoritativeCounts() {
-  const localCounts = await getCellCounts();
+async function getAuthoritativeCounts(phase) {
+  const localCounts = await getCellCounts(phase);
   const localTotal = Object.values(localCounts).reduce((a, b) => a + b, 0);
 
   let sheet = null;
   try {
-    sheet = await sheets.getCellCounts();
+    sheet = await sheets.getCellCounts(phase);
   } catch (err) {
     console.error(err);
   }
@@ -265,6 +326,7 @@ async function getAuthoritativeCounts() {
       counts: sheet.counts,
       total: sheet.total,
       source: 'google-sheet',
+      phase: phase || 'all',
       sheet: { ok: true, total: sheet.total, lastOkAt: st.lastOkAt },
       local: { counts: localCounts, total: localTotal },
       warning: null
@@ -275,6 +337,7 @@ async function getAuthoritativeCounts() {
     counts: localCounts,
     total: localTotal,
     source: 'server-file',
+    phase: phase || 'all',
     sheet: sheet
       ? { ok: true, total: sheet.total, lastOkAt: st.lastOkAt }
       : { ok: false, error: st.lastError || (st.enabled ? 'could not read sheet' : 'not configured') },
@@ -315,8 +378,10 @@ async function getQuotas() {
   const i10 = header.indexOf('B10_QRScanFrequency');
   if (i9 < 0 || i4 < 0 || i10 < 0) return null;
 
+  const phaseIdx = header.indexOf('phase');
   const out = QUOTA_RULES.map((q) => ({ key: q.key, label: q.label, target: q.target, current: 0 }));
   for (let i = 1; i < rows.length; i++) {
+    if (phaseIdx >= 0 && String(rows[i][phaseIdx] || 'main') !== 'main') continue;
     const b9 = String(rows[i][i9]);
     const b4 = String(rows[i][i4]);
     const b10 = String(rows[i][i10]);
@@ -330,7 +395,10 @@ async function getQuotas() {
 
 app.get('/api/counts', async (req, res) => {
   try {
-    const payload = await getAuthoritativeCounts();
+    // Headline figures are the main study. The pilot is reported beside it and
+    // never enters cell balance or the quota table.
+    const payload = await getAuthoritativeCounts('main');
+    payload.pilot = await getAuthoritativeCounts('pilot');
     payload.quotas = await getQuotas();
     res.json(payload);
   } catch (err) {

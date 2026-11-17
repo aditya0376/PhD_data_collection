@@ -21,13 +21,14 @@
       </table>
 
       <h3>Data</h3>
-      <p>Total responses: <strong id="total">0</strong>
+      <p>Total responses (main study): <strong id="total">0</strong>
         <span id="src-note" class="instr"></span>
       </p>
       <div id="warn" class="warn" style="display:none"></div>
       <button class="btn" onclick="location.href='/api/export'">Download Excel (.xlsx)</button>
       <button class="btn" onclick="location.href='/api/export.csv'">Download CSV (.csv)</button>
       <p class="instr" id="store-note" style="margin-top:12px"></p>
+      <p class="instr" id="pilot-note"></p>
 
       <h3>Minimum quotas (plan 9.2)</h3>
       <table class="admin-table">
@@ -40,7 +41,7 @@
         Upload a <code>.xlsx</code> or <code>.csv</code> of responses and its rows are merged into the
         Google Sheet, so they appear in the counts above and in the sheet itself. Columns are matched by
         header name, so files exported from this site (any version) work. Rows already in the sheet
-        (same <code>submitted_at</code>, <code>cell_id</code> and <code>email</code>) are skipped, so
+        (same <code>submitted_at</code>, <code>cell_id</code> and <code>completion_time_sec</code>) are skipped, so
         uploading the same file twice is safe. Maximum 25 MB.
       </p>
       <p>

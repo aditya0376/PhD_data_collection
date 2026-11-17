@@ -189,7 +189,7 @@ textarea:focus, input:focus { outline: 2px solid var(--primary-light); border-co
 
 .cobrand-row { display: flex; align-items: center; gap: 12px; margin: 10px 0; }
 /* Identical box for both marks, so neither looks more prominent than the other. */
-.cobrand-logo { height: 40px; width: 64px; object-fit: contain; }
+.cobrand-logo { height: 64px; width: 96px; object-fit: contain; background: #fff; padding: 4px; border-radius: 4px; }
 .co-brand-line { font-weight: inherit; color: inherit; }
 
 /* Six-entity record block, used identically by both framings. */

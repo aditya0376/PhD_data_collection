@@ -35,6 +35,17 @@ async function load() {
     ? `Google Sheet rows: ${s.total}` + (s.lastOkAt ? ` · last successful write ${new Date(s.lastOkAt).toLocaleString()}` : '')
     : `Google Sheet unavailable: ${s.error || 'unknown error'}`;
 
+  const pilotNote = document.getElementById('pilot-note');
+  if (pilotNote) {
+    const p = data.pilot || null;
+    if (p && p.total > 0) {
+      const parts = [1, 2, 3, 4].map((c) => c + ': ' + (p.counts[c] || 0)).join('  ');
+      pilotNote.textContent = 'Pilot responses (excluded from cell balance and quotas): ' + p.total + '  —  ' + parts;
+    } else {
+      pilotNote.textContent = 'Pilot responses: none.';
+    }
+  }
+
   const quotaBody = document.getElementById('quota-rows');
   if (quotaBody) {
     if (!data.quotas || !data.quotas.length) {

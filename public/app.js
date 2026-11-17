@@ -129,6 +129,7 @@ let assignedCell = null;
 let langStart = null;
 let submitted = false;
 let currentStep = 's-consent';
+let scenarioSeen = false;
 let config = { ethicsRef: null, maxCommentLength: 500 };
 
 const DRAFT_KEY = 'p3_draft';
@@ -192,11 +193,18 @@ const STEP_LABELS = {
 };
 
 function show(id) {
-  // Scenario timing: measured from entering the stimulus page to leaving it.
-  if (currentStep === 's-stimulus' && id !== 's-stimulus' && scenarioStart) {
-    scenarioTime = Math.round((Date.now() - scenarioStart) / 1000);
+  // Scenario timing is recorded on the FIRST exit and then frozen, so going back
+  // and forth cannot inflate it.
+  if (currentStep === 's-stimulus' && id !== 's-stimulus') {
+    if (scenarioTime === null && scenarioStart) {
+      scenarioTime = Math.round((Date.now() - scenarioStart) / 1000);
+    }
+    scenarioStart = null;
   }
-  if (id === 's-stimulus' && !scenarioStart) scenarioStart = Date.now();
+  if (id === 's-stimulus') {
+    scenarioSeen = true;
+    if (scenarioTime === null) scenarioStart = Date.now();
+  }
 
   document.querySelectorAll('.step').forEach((s) => (s.style.display = 'none'));
   document.getElementById(id).style.display = 'block';
@@ -228,7 +236,9 @@ function updateBackButton() {
   const btn = document.getElementById('backBtn');
   if (!btn) return;
   const idx = STEP_ORDER.indexOf(currentStep);
-  const hidden = idx <= 0 || currentStep === 's-done' || currentStep === 's-h';
+  // No going back from the final checks: a respondent must not re-read the
+  // scenario after answering what it showed.
+  const hidden = idx <= 0 || currentStep === 's-done' || currentStep === 's-h' || currentStep === 's-checks';
   btn.style.display = hidden ? 'none' : 'inline-block';
 }
 
@@ -247,7 +257,7 @@ function go(id) {
 // mix languages inside one response and make the invariance test meaningless.
 function lockLanguage(id) {
   const idx = STEP_ORDER.indexOf(id);
-  const locked = idx >= STEP_ORDER.indexOf('s-stimulus');
+  const locked = scenarioSeen || idx >= STEP_ORDER.indexOf('s-stimulus');
   document.querySelectorAll('.lang-btn').forEach((b) => {
     b.disabled = locked;
     b.classList.toggle('is-locked', locked);
@@ -361,7 +371,9 @@ function saveDraft() {
       scenarioStart,
       scenarioTime,
       consent: document.getElementById('consentBox').checked,
-      langStart: langStart || getLang()
+      langStart: langStart || getLang(),
+      lang: getLang(),
+      scenarioSeen
     }));
   } catch (err) { /* storage may be unavailable */ }
 }
@@ -393,6 +405,8 @@ function restoreDraft() {
   if (draft.scenarioStart) scenarioStart = draft.scenarioStart;
   if (draft.scenarioTime) scenarioTime = draft.scenarioTime;
   if (draft.langStart) langStart = draft.langStart;
+  if (draft.scenarioSeen) scenarioSeen = true;
+  if (draft.lang === 'as' || draft.lang === 'en') setLang(draft.lang);
 
   const step = STEP_ORDER.includes(draft.step) && draft.step !== 's-done' ? draft.step : 's-consent';
   show(step);
@@ -648,12 +662,24 @@ async function resetSurvey() {
   if (email) email.value = '';
 
   submitted = false;
+  scenarioSeen = false;
   scenarioStart = null;
   scenarioTime = null;
   clearDraft();
   localStorage.removeItem('p3_cell');
   assignedCell = null;
   await ensureCell();
+
+  // A new respondent gets a new cell, so the stimulus must be rebuilt - this
+  // was the cause of the second respondent seeing the first one's scenario.
+  renderStimulus(assignedCell, document.getElementById('stimulus'));
+
+  // Re-arm the Submit button, which was disabled when the last response saved.
+  const submitBtn = document.getElementById('submitBtn');
+  if (submitBtn) {
+    submitBtn.disabled = false;
+    submitBtn.textContent = t('btn.submit');
+  }
 
   startTime = Date.now();
   show('s-consent');
@@ -662,8 +688,16 @@ async function resetSurvey() {
 // ---------------------------------------------------------------------------
 // Init
 // ---------------------------------------------------------------------------
+function readDraft() {
+  try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (err) { return null; }
+}
+
 document.addEventListener('DOMContentLoaded', async () => {
-  setLang(initialLanguage());
+  const pendingDraft = readDraft();
+  const resumedLang = pendingDraft && (pendingDraft.lang === 'as' || pendingDraft.lang === 'en')
+    ? pendingDraft.lang
+    : null;
+  setLang(resumedLang || initialLanguage());
   langStart = getLang();
   try { localStorage.setItem(LANG_KEY, getLang()); } catch (err) { /* ignore */ }
 

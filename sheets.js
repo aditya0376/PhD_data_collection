@@ -157,9 +157,10 @@ async function appendRow(values, columns) {
   }
 }
 
-// Read per-cell response counts from the Google Sheet.
+// Read per-cell response counts from the Google Sheet, optionally for one study
+// phase only ('main' or 'pilot'), so pilot rows never affect main balance.
 // Returns { counts, total } or null if Sheets is unavailable.
-async function getCellCounts() {
+async function getCellCounts(phase) {
   if (!sheetsClient) return null;
   try {
     const res = await sheetsClient.spreadsheets.values.get({
@@ -167,13 +168,20 @@ async function getCellCounts() {
       range: 'Responses'
     });
     const rows = res.data.values || [];
-    if (rows.length < 2) return { counts: { 1: 0, 2: 0, 3: 0, 4: 0 }, total: 0 };
+    const empty = { counts: { 1: 0, 2: 0, 3: 0, 4: 0 }, total: 0 };
+    if (rows.length < 2) return empty;
     const header = rows[0];
     const cellIdx = header.indexOf('cell_id');
-    if (cellIdx === -1) return { counts: { 1: 0, 2: 0, 3: 0, 4: 0 }, total: 0 };
+    if (cellIdx === -1) return empty;
+    const phaseIdx = header.indexOf('phase');
     const counts = { 1: 0, 2: 0, 3: 0, 4: 0 };
     for (let i = 1; i < rows.length; i++) {
-      const v = rows[i][cellIdx];
+      const r = rows[i];
+      if (phase && phaseIdx >= 0) {
+        const p = String(r[phaseIdx] || 'main');
+        if (p !== phase) continue;
+      }
+      const v = r[cellIdx];
       if (v !== undefined && v !== null && counts[v] !== undefined) counts[v]++;
     }
     const total = Object.values(counts).reduce((a, b) => a + b, 0);
